@@ -169,9 +169,9 @@ namespace Binboo.Core
 		{
 			if (IsVagabotCommand(message) && IsComplete(status))
 			{
-				EnqueueCommand(message);
+				//EnqueueCommand(message);
+				ProcessCommand(message);
 			}
-			//    Console.WriteLine("[Status: {2}] Mesage from {0}: {1}", message.Sender.FullName, message.Body, status);
 		}
 
 		private static bool IsComplete(TChatMessageStatus status)
