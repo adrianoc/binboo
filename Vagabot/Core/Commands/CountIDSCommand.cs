@@ -49,7 +49,7 @@ namespace Binboo.Core.Commands
 
 		private static string GetStatusOrDefault(string[] args)
 		{
-			return args.Length == 1 ? args[0] : "open";
+			return args.Length == 1 ? args[0] : "all";
 		}
 
 		private string CalculateIDs(string status)
@@ -57,24 +57,22 @@ namespace Binboo.Core.Commands
 			return Run(
 				() =>
 					{
-						IEnumerable<RemoteIssue> results = CurrentIterationIssuesForStatus(status);
+						IEnumerable<RemoteIssue> issues = CurrentIterationIssuesForStatus(status);
 
-						var allDevIssues=  from devName in GetDevs(results)
-							               from RemoteIssue issue in results
-										   group issue by devName
-											   into issuesByDev
-											   select new
-											   {
-												   Name = issuesByDev.Key,
-												   Issues = from issueTemp in results
-															where
-															   issueTemp.assignee == issuesByDev.Key ||
-															   DevIsAPeer(issueTemp, issuesByDev.Key)
-															select new
-															{
-																Item = issueTemp,
-																IsPeer = DevIsAPeer(issueTemp, issuesByDev.Key)
-															}
+						var allDevIssues=  from devName in GetDevs(issues)
+							               from RemoteIssue issue in issues
+										   group issue by devName into issuesByDev
+											   
+										   select new
+										   {
+											   Name = issuesByDev.Key,
+											   Issues = from issueTemp in issues
+														where issueTemp.assignee == issuesByDev.Key || DevIsAPeer(issueTemp, issuesByDev.Key)
+														select new
+														{
+															Item = issueTemp,
+															IsPeer = DevIsAPeer(issueTemp, issuesByDev.Key)
+														}
 											   };
 
 						var sb = new StringBuilder();
@@ -86,16 +84,35 @@ namespace Binboo.Core.Commands
 							{
 								float estimate = GetEstimatedIds(issue.Item);
 								idsForDev += estimate;
-								sb.AppendFormat("{0,-14}{1,3} {2,4}{3}", issue.Item.key, issue.IsPeer ? "" : "(*)", estimate,
-								                Environment.NewLine);
+								sb.AppendFormat("{0,-13}{1,-12} {2,4}{3}", issue.Item.key, IssueStatus.FriendlyName(issue.Item.status), estimate, Environment.NewLine);
 							}
-							sb.AppendFormat("{1}{0,22}{1}", idsForDev, Environment.NewLine);
+							sb.AppendFormat("{1}{0,30}{1}", idsForDev, Environment.NewLine);
 						}
 
-						sb.AppendFormat("{1}Total: {0}", LoadFor(results), Environment.NewLine);
+						AppendTotals(sb, issues);
 
 						return sb.ToString();
 					});
+		}
+
+		private static void AppendTotals(StringBuilder buffer, IEnumerable<RemoteIssue> issues)
+		{
+			buffer.AppendFormat("{1}Total: {0}{1}", LoadFor(issues), Environment.NewLine);
+
+			var totalByStatus = from issue in issues
+			                    group issue by IssueStatus.IsFinished(issue.status)
+			                    into issuesByStatus
+			                    	select new
+			                    	       	{
+			                    	       		Status = issuesByStatus.Key ? "Closed" : "Open",
+			                    	       		Total = issuesByStatus.Sum(item => GetEstimatedIds(item))
+			                    	       	};
+
+			foreach (var idsCountGroup in totalByStatus)
+			{
+				buffer.AppendFormat("\t{0,-7} : {1}{2}", idsCountGroup.Status, idsCountGroup.Total, Environment.NewLine);
+			}
+
 		}
 
 		private static IEnumerable<string> GetDevs(IEnumerable<RemoteIssue> results)

@@ -131,7 +131,7 @@ Use: %cmd% &lt;ticket #&gt;  fixed|won't fix|incomplete|cannot reproduce  [comme
   </data>
   <data name="CountIDS" xml:space="preserve">
     <value>Shows the sum of IDS for the Early Progress Report.
-Use: %cmd% [all|*open|closed]</value>
+Use: %cmd% [*all|open|closed]</value>
   </data>
   <data name="Drop" xml:space="preserve">
     <value>Drop the task for the current iteration by reseting assignee/peer/iteration in the correspondent ticket.
