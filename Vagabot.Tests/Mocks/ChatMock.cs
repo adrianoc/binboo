@@ -26,7 +26,7 @@ using SKYPE4COMLib;
 
 namespace Binboo.Tests.Mocks
 {
-	internal class ChatMock : Chat
+	public class ChatMock : Chat
 	{
 		private readonly IList<ChatMessage> _messages = new List<ChatMessage>();
 		private readonly UserMock _user;

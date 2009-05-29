@@ -30,26 +30,8 @@ using TCL.Cryptography;
 
 namespace Binboo.Core
 {
-	class ConfigServices
+	static class ConfigServices
 	{
-		public static string MatchIssueTrackerUser(string partOfName)
-		{
-			EnsureConfigIsLoaded();
-
-			XmlNodeList users = FindConfigItems(UserNodeMappingXPath + "/@jiraName");
-			if (users == null || users.Count == 0) return String.Empty;
-
-			foreach (XmlNode user in users)
-			{
-				if (Regex.IsMatch(user.Value, partOfName, RegexOptions.IgnoreCase))
-				{
-					return user.Value;
-				}
-			}
-
-			return String.Empty;
-		}
-
 		public static string IMUserToIssueTrackerUser(string name)
 		{
 			EnsureConfigIsLoaded();
@@ -150,15 +132,12 @@ namespace Binboo.Core
 				_config.Load(ConfigFilePath());
 
 				FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(ConfigFilePath()), Path.GetFileName(ConfigFilePath()));
-				FileSystemEventHandler configChangedHandler = null;
 
-				configChangedHandler = delegate 
-										{
-											watcher.Changed -= configChangedHandler;
-											
-											watcher = null;
-											_config = null;
-										};
+				FileSystemEventHandler configChangedHandler = delegate
+				                                              	{
+				                                              		watcher = null;
+				                                              		_config = null;
+				                                              	};
 
 				watcher.Changed += configChangedHandler;
 				watcher.NotifyFilter = NotifyFilters.LastWrite;
@@ -218,6 +197,24 @@ namespace Binboo.Core
 			}
 						
 			return userName;
+		}
+
+		private static string MatchIssueTrackerUser(string partOfName)
+		{
+			EnsureConfigIsLoaded();
+
+			XmlNodeList users = FindConfigItems(UserNodeMappingXPath + "/@jiraName");
+			if (users == null || users.Count == 0) return String.Empty;
+
+			foreach (XmlNode user in users)
+			{
+				if (Regex.IsMatch(user.Value, partOfName, RegexOptions.IgnoreCase))
+				{
+					return user.Value;
+				}
+			}
+
+			return String.Empty;
 		}
 
 		private static XmlDocument _config;

@@ -163,15 +163,5 @@ namespace Binboo {
                 return ResourceManager.GetString("Search", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displays the specified issue.
-        ///Use: %cmd% &lt;ticket&gt;.
-        /// </summary>
-        internal static string Show {
-            get {
-                return ResourceManager.GetString("Show", resourceCulture);
-            }
-        }
     }
 }

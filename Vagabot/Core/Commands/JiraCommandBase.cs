@@ -22,8 +22,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Linq.Expressions;
+using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Exceptions;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -35,83 +36,29 @@ namespace Binboo.Core.Commands
 			_jira = jira;
 		}
 
-		protected string CheckParameters(string[] args, params ParamValidator[] validators)
+		public override sealed string Process(Context context)
 		{
-			int requiredParamCount = RequiredCount(validators);
-			if (args.Length < requiredParamCount || args.Length > validators.Length)
+			try
 			{
-				return string.Format("{0}: Invalid arguments count. Expected at least {1} and no more than {2}, got {3}{4}{4}{5}", 
-				                     Id, 
-				                     requiredParamCount, 
-				                     validators.Length, 
-				                     args.Length,
-									 Environment.NewLine,
-									 Help);
+				return ProcessCommand(context);
+			}
+			catch (InvalidCommandArgumentsException icae)
+			{
+				return icae.Message;
+			}
+		}
+
+		protected abstract string ProcessCommand(Context context);
+		
+		protected static T OptionalArgumentOrDefault<T>(IDictionary<string, Argument> args, string argName, T defaultValue)
+		{
+			if (args.ContainsKey(argName))
+			{
+				Argument argument = args[argName];
+				return argument.IsPresent ? (T) Convert.ChangeType(argument.Value, typeof (T)) : defaultValue;
 			}
 
-
-			string ret = ValidateRequiredArguments(validators, args, requiredParamCount);
-			if (ret != null) return ret;
-
-			return ValidateOptionalArguments(args, validators, requiredParamCount);
-		}
-
-		private static string ValidateOptionalArguments(string[] args, IEnumerable<ParamValidator> validators, int requiredParamCount)
-		{
-			for (int i = requiredParamCount; i < args.Length; i++)
-			{
-				if (!validators.Skip(requiredParamCount).Any(validator => Regex.IsMatch(args[i], validator.Regex)))
-				{
-					return string.Format("Invalid optional argument '{0}' (Position: {1})", args[i], i);
-				}
-			}
-
-			return null;
-		}
-
-		private string ValidateRequiredArguments(ParamValidator[] validators, string[] args, int requiredParamLength)
-		{
-			for (int i = 0; i < requiredParamLength; i++)
-			{
-				if (!Regex.IsMatch(args[i], validators[i].Regex))
-				{
-					return string.Format("{0}: Argument index {1} (vale = '{2}') is invalid (Validator: {3}).", Id, i, args[i], validators[i]);
-				}
-			}
-
-			return null;
-		}
-
-		protected static string OptionalParameterOrDefault(IEnumerable<string> args, int startIndex, ParamValidator validator, string defaultValue)
-		{
-			Match m = OptionalParameterOrNull(args, startIndex, validator);
-			return m == null ? defaultValue : m.Value;
-		}
-
-		protected static Match OptionalParameterOrNull(IEnumerable<String> args, int startIndex, ParamValidator validator)
-		{
-			return OptionalParameterOrNull(args.Skip(startIndex), validator);
-		}
-
-		/**
-		 * 
-		 */
-		protected static Match OptionalParameterOrNull(IEnumerable<String> optionalArgs, ParamValidator validator)
-		{
-			foreach (string arg in optionalArgs)
-			{
-				if (validator.IsMatch(arg))
-				{
-					return Regex.Match(arg, validator.Regex);
-				}
-			}
-
-			return null;
-		}
-
-		protected static int NonOptionalCount(IEnumerable<ParamValidator> validators)
-		{
-			return validators.Count(p => !p.Optional);
+			return defaultValue;
 		}
 
 		protected static string Run(Func<string> command)
@@ -151,9 +98,9 @@ namespace Binboo.Core.Commands
 			}
 		}
 
-		private static int RequiredCount(IEnumerable<ParamValidator> validators)
+		protected IDictionary<string, Argument> CollectAndValidateArguments(string argumentLine, params Expression<Func<int, ParamValidator>>[] validatorExpressions)
 		{
-			return validators.Count(pv => !pv.Optional);
+			return ArgumentCollector.For(validatorExpressions, this).Collect(argumentLine);
 		}
 
 		protected static string UrlFor(RemoteIssue issue)
@@ -161,6 +108,6 @@ namespace Binboo.Core.Commands
 			return String.Format("{0}/browse/{1}", ConfigServices.Server, issue.key);
 		}
 
-		protected IJiraProxy _jira;
+		protected readonly IJiraProxy _jira;
 	}
 }

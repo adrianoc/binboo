@@ -20,47 +20,18 @@
  * THE SOFTWARE.
  **/
 
-using System.Collections.Generic;
-using Binboo.Core.Commands.Arguments;
-using Binboo.JiraIntegration;
+using System;
 
-namespace Binboo.Core.Commands
+namespace Binboo.Core.Exceptions
 {
-	internal class IssueCommand : JiraCommandBase
+	public class InvalidCommandArgumentsException : Exception
 	{
-		public IssueCommand(IJiraProxy proxy, string help) : base(proxy, help)
+		public InvalidCommandArgumentsException(string msg) : base(msg)
 		{
 		}
 
-		public override string Id
+		public InvalidCommandArgumentsException(string msg, Exception innerException) : base(msg, innerException)
 		{
-			get
-			{
-				return "Issue";
-			}
-		}
-
-		protected override string ProcessCommand(Context context)
-		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comments => ParamValidator.Custom("comments", true));
-
-			bool showComments = OptionalArgumentOrDefault(arguments, "comments", false);
-			return Run(
-						() => _jira.GetIssue(arguments["issueId"]),
-						ri => FormatIssue(ri, showComments));
-
-		}
-
-		private string FormatIssue(RemoteIssue issue, bool showComments)
-		{
-			string issueDetails = Run(() => IssueToResultString(issue));
-
-			if (showComments)
-			{
-				issueDetails = issueDetails + Run(() => _jira.GetComments(issue.key));
-			}
-
-			return issueDetails + "\r\n" + UrlFor(issue);
 		}
 	}
 }

@@ -26,7 +26,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -191,8 +190,7 @@ namespace Binboo.Core
 
 		private void StartCommandProcessor()
 		{
-			Thread processorThread = new Thread(ProcessCommands);
-			processorThread.IsBackground = true;
+			Thread processorThread = new Thread(ProcessCommands) { IsBackground = true };
 			processorThread.Start(_commandQueue);
 		}
 
@@ -238,18 +236,19 @@ namespace Binboo.Core
 			}
 		}
 
-		private static string[] CommandParameters(IChatMessage message)
+		private static string CommandParameters(IChatMessage message)
 		{
-			MatchCollection parameters = Regex.Matches(
+			MatchCollection arguments = Regex.Matches(
 									message.Body,
-                                    @"(?<param>[^""\s][^\s]+)|""(?<param>[^""\r\n]+)""|(?<param>[^\s\r\n])",
+									@"\$[A-Za-z]+\s+[A-Za-z]+\s(?<param>.*)", 
 									RegexOptions.IgnoreCase | RegexOptions.Multiline |
 									RegexOptions.CultureInvariant |
 									RegexOptions.IgnorePatternWhitespace |
 									RegexOptions.Compiled);
 
-			int count = 0;
-			return parameters.OfType<Match>().SkipWhile(dummy => count++ < 2).Select(m => m.Groups["param"].Value).ToArray();
+			return arguments.Count == 1 
+				? arguments[0].Groups["param"].Value 
+				: string.Empty;
 		}
 
 		private IBotCommand GetCommand(IChatMessage message)

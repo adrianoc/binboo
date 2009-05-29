@@ -21,6 +21,7 @@
  **/
 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Binboo.JiraIntegration
@@ -77,7 +78,7 @@ namespace Binboo.JiraIntegration
 
 		public override string ToString()
 		{
-			return _id + " : " + Zip(String.Empty, _values, ", ", (s1, s2) => s1 + s2);
+			return _id + _values.Aggregate(String.Empty, (acc, current) => acc + (String.IsNullOrEmpty(acc) ? ":" : ",") + current);
 		}
 
 		private static IssueField FieldName<T, R>(Expression<Func<T, R>> member)
@@ -94,18 +95,6 @@ namespace Binboo.JiraIntegration
 		{
 			_id = id;
 			_values = value;
-		}
-
-		private static T Zip<T>(T initial, T[] values, T sep, Func<T,T,T> appender)
-		{
-			T result = initial;
-			for(int i = 0; i < values.Length; i++)
-			{
-				result = appender(result,  values[i]);
-				if (i < (values.Length - 1)) result = appender(result, sep);
-			}
-
-			return result;
 		}
 
 		private readonly string _id;

@@ -21,46 +21,42 @@
  **/
 
 using System.Collections.Generic;
-using Binboo.Core.Commands.Arguments;
-using Binboo.JiraIntegration;
+using System.Text.RegularExpressions;
 
-namespace Binboo.Core.Commands
+namespace Binboo.Core.Commands.Arguments
 {
-	internal class IssueCommand : JiraCommandBase
+	internal class Argument
 	{
-		public IssueCommand(IJiraProxy proxy, string help) : base(proxy, help)
+		internal bool IsPresent { get; set; }
+		internal string Name { private get; set; }
+		internal string Value { get; set; }
+		internal Match ArgMatch { private get; set; }
+		internal bool IsMultipleMatch { get { return ArgMatch.Captures.Count > 0; } }
+
+		public static implicit operator string(Argument arg)
 		{
+			return arg.Value;
 		}
 
-		public override string Id
+		public IEnumerable<string> Values
 		{
 			get
 			{
-				return "Issue";
+				if (!IsPresent) yield break;
+				
+				if (ArgMatch.Groups["param"].Captures.Count == 0)
+				{
+					yield return ArgMatch.Value;
+					yield break;
+				}
+
+				foreach (Capture capture in ArgMatch.Groups["param"].Captures)
+				{
+					yield return capture.Value;
+				}
+				yield break;
 			}
 		}
 
-		protected override string ProcessCommand(Context context)
-		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comments => ParamValidator.Custom("comments", true));
-
-			bool showComments = OptionalArgumentOrDefault(arguments, "comments", false);
-			return Run(
-						() => _jira.GetIssue(arguments["issueId"]),
-						ri => FormatIssue(ri, showComments));
-
-		}
-
-		private string FormatIssue(RemoteIssue issue, bool showComments)
-		{
-			string issueDetails = Run(() => IssueToResultString(issue));
-
-			if (showComments)
-			{
-				issueDetails = issueDetails + Run(() => _jira.GetComments(issue.key));
-			}
-
-			return issueDetails + "\r\n" + UrlFor(issue);
-		}
 	}
 }

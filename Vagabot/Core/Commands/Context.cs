@@ -24,13 +24,13 @@ namespace Binboo.Core.Commands
 {
 	public class Context
 	{
-		public Context(string userName, string[] args)
+		public Context(string userName, string args)
 		{
 			_args = args;
 			_userName = userName;
 		}
 
-		public string[] Arguments
+		public string Arguments
 		{
 			get { return _args; }
 		}
@@ -40,7 +40,7 @@ namespace Binboo.Core.Commands
 			get { return _userName; }
 		}
 
-		private readonly string[] _args;
+		private readonly string _args;
 		private readonly string _userName;
 	}
 }

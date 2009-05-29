@@ -25,7 +25,7 @@ using SKYPE4COMLib;
 
 namespace Binboo.Tests.Mocks
 {
-	class SkypeMock : Skype
+	public class SkypeMock : Skype
 	{
 		private readonly Func<Chat> _chatRetriever;
 

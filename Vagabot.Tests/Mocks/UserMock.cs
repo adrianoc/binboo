@@ -25,7 +25,7 @@ using SKYPE4COMLib;
 
 namespace Binboo.Tests.Mocks
 {
-	internal class UserMock : User
+	public class UserMock : User
 	{
 		private bool _isBlocked;
 		private string _handle;

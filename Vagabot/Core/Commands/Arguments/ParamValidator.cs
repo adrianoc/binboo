@@ -20,20 +20,27 @@
  * THE SOFTWARE.
  **/
 
-namespace Binboo.Core.Commands
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Binboo.Core.Commands.Arguments
 {
 	internal class ParamValidator
 	{
-		internal static ParamValidator Iteration = new ParamValidator("^[0-9]+", true);
-		internal static ParamValidator Project = new ParamValidator("^[A-Za-z]{3,4}");
-		internal static ParamValidator TicketNumber = new ParamValidator(@"%0%-[0-9]{1,}", Project);
-		internal static ParamValidator UserName = new ParamValidator(@"[A-za-z](\s{0,}[A-Za-z]{0,}[0-9]{0,})*");
-		internal static ParamValidator Peer = new ParamValidator(@"[A-Za-z].*", true);
-		internal static ParamValidator Anything = new ParamValidator(".*");
-		internal static ParamValidator AnythingStartingWithText = new ParamValidator("[a-zA-Z].*");
-		internal static ParamValidator IssueStatus = new ParamValidator("open|closed|all");
-		internal static ParamValidator Order = new ParamValidator(@"^0?[1-9]$", true);
-		internal static ParamValidator Type = new ParamValidator(@"type\s*=\s*(bug|task|improvement|b|t|i)\z", true);
+		internal static readonly ParamValidator Project = new ParamValidator("^[A-Za-z]{3,4}");
+
+		internal static readonly ParamValidator Anything = new ParamValidator("\"(?<param>[^\\r\\n]+)\"|"+ // Quoted string
+			                                                                    "(?<param>[^\\s\"]+)");    // Unquoted string
+
+		internal static readonly ParamValidator AnythingStartingWithText = new ParamValidator("[a-zA-Z].*");
+		internal static readonly ParamValidator IssueId = new ParamValidator(@"%0%-[0-9]+", Project);
+		internal static readonly ParamValidator IssueStatus = new ParamValidator("open|closed|all");
+		internal static readonly ParamValidator Iteration = new ParamValidator("^[0-9]+", true);
+		internal static readonly ParamValidator MultipleIssueId = new ParamValidator(@"(?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b)");
+		internal static readonly ParamValidator Order = new ParamValidator(@"\b0?[1-9]\b", true);
+		internal static readonly ParamValidator Peer = AnythingStartingWithText.AsOptional();
+		internal static readonly ParamValidator Type = new ParamValidator(@"type\s*=\s*(bug|task|improvement|b|t|i)\z", true);
+		internal static readonly ParamValidator UserName = new ParamValidator(@"([A-za-z](?:\s*[A-Za-z]*[0-9]*)*)");
 
 		public static ParamValidator Custom(string regex, bool optional)
 		{
@@ -45,7 +52,7 @@ namespace Binboo.Core.Commands
 			return new ParamValidator(_regex, true);
 		}
 
-		public virtual string Regex
+		public virtual string RegularExpression
 		{
 			get { return _regex; }
 		}
@@ -67,12 +74,17 @@ namespace Binboo.Core.Commands
 
 		//public static implicit operator string(ParamValidator validator)
 		//{
-		//    return validator.Regex;
+		//    return validator.RegularExpression;
 		//}
 
 		public override string ToString()
 		{
 			return "(" + _regex + "," + (_optional ? "optional" : "required") + ")";
+		}
+
+		public static ParamValidator From(IEnumerable<string> ids)
+		{
+			return new ParamValidator(ids.Aggregate("^$", (regex, id) => regex + "|" + id));
 		}
 
 		private ParamValidator(string regex, bool optional)
@@ -85,7 +97,7 @@ namespace Binboo.Core.Commands
 		{
 			for (int i = 0; i < validators.Length; i++)
 			{
-				_regex = System.Text.RegularExpressions.Regex.Replace(_regex, "%" + i + "%", validators[i].Regex);
+				_regex = System.Text.RegularExpressions.Regex.Replace(_regex, "%" + i + "%", validators[i].RegularExpression);
 			}
 		}
 

@@ -37,16 +37,16 @@ namespace Binboo.JiraIntegration
 			InitializeBase(types);
 		}
 
-		internal IssueType(string id, string description) : base(id, description)
-		{
-		}
-
 		static IssueType()
 		{
 			ToBeInitialized<IssueType>(it => Bug, "bug", Create);
 			ToBeInitialized<IssueType>(it => Task, "task", Create);
 			ToBeInitialized<IssueType>(it => NewFeature, "new feature", Create);
 			ToBeInitialized<IssueType>(it => Improvement, "improvement", Create);
+		}
+
+		private IssueType(string id, string description) : base(id, description)
+		{
 		}
 
 		private static object Create(string name, IEnumerable constants)

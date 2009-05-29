@@ -37,12 +37,9 @@ namespace Binboo.Core.Commands
 			get { return "ListProjects"; }
 		}
 
-		public override string Process(Context context)
+		protected override string ProcessCommand(Context context)
 		{
-			string[] args = context.Arguments;
-
-			string result = CheckParameters(args);
-			if (!string.IsNullOrEmpty(result)) return result;
+			CollectAndValidateArguments(context.Arguments);
 
 			return Run( delegate
 			            {

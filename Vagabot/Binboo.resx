@@ -160,8 +160,4 @@ Use: %cmd%</value>
     <value>Searchs for issues containing the text.
 Use:%cmd% text [all|*open|closed]</value>
   </data>
-  <data name="Show" xml:space="preserve">
-    <value>Displays the specified issue.
-Use: %cmd% &lt;ticket&gt;</value>
-  </data>
 </root>

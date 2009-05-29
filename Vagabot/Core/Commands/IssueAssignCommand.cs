@@ -22,7 +22,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -46,44 +46,37 @@ namespace Binboo.Core.Commands
 		/*
 		 * Assign <ticket #> <main developer> [<peer>] [<iteration>]
 		 */
-		public override string Process(Context context)
+		protected override string ProcessCommand(Context context)
 		{
-			ParamValidator[] validators = {
-			                              	ParamValidator.TicketNumber,
-			                              	ParamValidator.UserName,
-			                              	ParamValidator.Peer.AsOptional(),
-			                              	ParamValidator.Iteration.AsOptional(),
-			                              };
+			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments,
+			                                                     issueId => ParamValidator.IssueId,
+			                                                     toUser => ParamValidator.UserName,
+			                                                     peer => ParamValidator.Peer.AsOptional(),
+			                                                     iteration => ParamValidator.Iteration.AsOptional());
 
-			string result  = CheckParameters(context.Arguments, validators);
-
-			if (result != null) return result;
-
-			string assignee = ConfigServices.ResolveUser(context.Arguments[1], context);
+			string assignee = ConfigServices.ResolveUser(arguments["toUser"], context);
 			return Run(() => _jira.AssignIssue(
-										context.Arguments[0],
+										arguments["issueId"],
 										IssueField.Assignee <= assignee,
-										IssueField.CustomField(CustomFieldId.Peers) <= Peer(context.Arguments, NonOptionalCount(validators), context),
-										IterationFrom(context.Arguments, NonOptionalCount(validators))),
+										IssueField.CustomField(CustomFieldId.Peers) <= Peer(context, arguments["peer"]),
+										IterationFrom(arguments["iteration"])),
 										
 							String.Format("Successfuly assigned issue {0} to {1}", context.Arguments[0], assignee));
 		}
 
-		private IssueField IterationFrom(IEnumerable<string> args, int startIndex)
+		private IssueField IterationFrom(Argument iteration)
 		{
-			Match match = OptionalParameterOrNull(args, startIndex, ParamValidator.Iteration);
-			if (match != null)
+			if (iteration.IsPresent)
 			{
-				_lastestIterationUsed = Int32.Parse(match.Value);
+				_lastestIterationUsed = Int32.Parse(iteration);
 			}
 
 			return _lastestIterationUsed == -1 ? null : IssueField.CustomField(CustomFieldId.Iteration) <= _lastestIterationUsed.ToString();
 		}
 
-		private static string Peer(IEnumerable<String> args, int startIndex, Context context)
+		private static string Peer(Context context, Argument peer)
 		{
-			Match match = OptionalParameterOrNull(args, startIndex, ParamValidator.Peer);
-			return match == null ? NoOne : ConfigServices.ResolveUser(match.Value, context);
+			return peer.IsPresent ? ConfigServices.ResolveUser(peer, context) : NoOne ;
 		}
 	}
 }

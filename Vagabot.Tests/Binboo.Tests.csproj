@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Interop.SKYPE4COMLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Vagabot\obj\Debug\Interop.SKYPE4COMLib.dll</HintPath>
-    </Reference>
     <Reference Include="JiraSoapServiceService, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Vagabot\JiraIntegration\JiraWS\JiraSoapServiceService.dll</HintPath>
@@ -61,10 +57,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="Mocks\ChatMock.cs" />
     <Compile Include="Mocks\BotCommandMock.cs" />
     <Compile Include="Mocks\ChatMessageMock.cs" />
     <Compile Include="JiraCommandBaseTest.cs" />
+    <Compile Include="Mocks\JiraCommandMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mocks\SkypeMock.cs" />
     <Compile Include="Mocks\UserMock.cs" />
@@ -74,6 +72,16 @@
       <Project>{E154BA05-1592-44A6-9135-6A47C94DD5F8}</Project>
       <Name>Binboo</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="SKYPE4COMLib">
+      <Guid>{03282B5D-B38F-469D-849A-09B0A7F4881B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

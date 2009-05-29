@@ -87,15 +87,19 @@
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\Application.Debug.cs" />
+    <Compile Include="Core\Commands\Arguments\ArgumentCollector.cs" />
     <Compile Include="Core\CommandQueue.cs" />
+    <Compile Include="Core\Commands\Arguments\Argument.cs" />
     <Compile Include="Core\Commands\ButNotParamValidator.cs" />
     <Compile Include="Core\Commands\CloseIssueCommand.cs" />
     <Compile Include="Core\Commands\Context.cs" />
     <Compile Include="Core\Commands\Db4oIteration.cs" />
     <Compile Include="Core\Commands\ListProjectsCommand.cs" />
-    <Compile Include="Core\Commands\ParamValidator.cs" />
+    <Compile Include="Core\Commands\Arguments\ParamValidator.cs" />
     <Compile Include="Core\ConfigServices.cs" />
     <Compile Include="Core\Events\ErrorEventArgs.cs" />
+    <Compile Include="Core\Exceptions\InvalidCommandArgumentsException.cs" />
+    <Compile Include="Core\Util\ExtensionMethods.cs" />
     <Compile Include="JiraIntegration\CustomFieldId.cs" />
     <Compile Include="Core\Commands\FileIssueCommand.cs" />
     <Compile Include="Core\Application.cs" />

@@ -20,26 +20,29 @@
  * THE SOFTWARE.
  **/
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using Binboo.Core.Commands;
+using Binboo.Core.Commands.Arguments;
 using Binboo.Tests.Mocks;
 using NUnit.Framework;
 using Application=Binboo.Core.Application;
 
 namespace Binboo.Tests
 {
-	[TestFixture]
 	public class JiraCommandBaseTest
 	{
-		private Application _app;
-		private SkypeMock _mockSkype;
-		private ChatMock _chat;
+		protected Application _app;
+		protected SkypeMock _mockSkype;
+		protected ChatMock _chat;
+		protected IList<string> _errors = new List<string>();
 
 		[SetUp]
 		public void SetUp()
 		{
 			_app = new Application("test");
+			_app.Error += (sender, e) => _errors.Add(e.Message + "\r\n" + e.Details);
 
 			//var mockChat = new Mock<Chat>();
 			//mockChat.Expect(
@@ -56,43 +59,35 @@ namespace Binboo.Tests
 			_app.AttachToSkype();
 		}
 
-		[Test]
-		public void TestInvalidCommand()
+		//[Test]
+		//public void TestInvalidCommand()
+		//{
+		//    _mockSkype.SendMessage("adriano", "$test InvalidCommand");
+		//    Thread.Sleep(100);
+		//    Assert.AreEqual("Unknown command: InvalidCommand.", _chat.SentMessages.Single().Body);
+		//}
+		internal static string ArgumentEcho(Context context, IDictionary<string, Argument> args)
 		{
-			_mockSkype.SendMessage("adriano", "$test InvalidCommand");
-			Thread.Sleep(100);
-			Assert.AreEqual("Unknown command: InvalidCommand.", _chat.SentMessages.Single().Body);
+			var sb = new StringBuilder(50);
+			foreach (var arg in args)
+			{
+				sb.AppendFormat("{0}:", arg.Key);
+				foreach (var item in arg.Value.Values)
+				{
+					sb.AppendFormat("{{{0}}}", item);
+				}
+				sb.AppendLine();
+			}
+			return sb.ToString();
 		}
 
-		[Test]
-		public void TestSingleArgument()
+		protected void SendMessageAndAssertNoErrors(string user, string message)
 		{
-			BotCommandMock command = new BotCommandMock("IamACommand", context => context.Arguments[0]);
-			_app.AddCommand(command);
-
-			_mockSkype.SendMessage("adriano", "$test IamACommand yeah");
-			Assert.IsTrue(command.Wait(1000));
-			Assert.AreEqual("yeah", _chat.SentMessages.Single().Body);
-		}
-
-		[Test]
-		public void TestMultipleArguments()
-		{
-			var command = new BotCommandMock("IamACommand", context =>
-			                                                           	{
-																			var sb = new StringBuilder(50);
-			                                                           		foreach (var arg in context.Arguments)
-			                                                           		{
-			                                                           			sb.AppendLine(arg);
-			                                                           		}
-			                                                           		return sb.ToString();
-			                                                           	});
-
-			_app.AddCommand(command);
-
-			_mockSkype.SendMessage("adriano", "$test IamACommand arg#1 \"arg #2\" arg#3");
-			Assert.IsTrue(command.Wait(1000));
-			Assert.AreEqual("arg#1\r\narg #2\r\narg#3\r\n", _chat.SentMessages.Single().Body);
+			_mockSkype.SendMessage(user, message);
+			if (_errors.Count > 0)
+			{
+				Assert.Fail( _errors.Aggregate((acc, current) => acc + "\r\n" + current));
+			}
 		}
 	}
 }

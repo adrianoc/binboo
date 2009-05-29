@@ -38,7 +38,7 @@ namespace Binboo.JiraIntegration
 			InitializeBase(resolutions);
 		}
 
-		internal IssueResolution(string id, string description) : base(id, description)
+		private IssueResolution(string id, string description) : base(id, description)
 		{
 		}
 

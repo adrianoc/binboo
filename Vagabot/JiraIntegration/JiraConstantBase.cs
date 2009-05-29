@@ -42,9 +42,17 @@ namespace Binboo.JiraIntegration
 			get { return _id; }
 		}
 
-		public string Description
+		private string Description
 		{
 			get { return _description; }
+		}
+
+		public static IEnumerable<string> IDs()
+		{
+			foreach (var item in _idToConstantMap.Values)
+			{
+				yield return item.Description.ToLower();
+			}
 		}
 
 		public static D Parse(string friendlyName)
@@ -108,12 +116,12 @@ namespace Binboo.JiraIntegration
 			_initializationList = null;
 		}
 
-		protected static void ToBeInitialized<R>(Expression<Func<R, R>> tbi, ConstantInstantiator instantiator) where R : JiraConstantBase<JT, D>
+		protected static void ToBeInitialized<R>(Expression<Func<R, R>> tbi, Func<string, IEnumerable, object> instantiator) where R : JiraConstantBase<JT, D>
 		{
-			ToBeInitialized(tbi, MemberExpressionFor(tbi).Name, instantiator);
+			ToBeInitialized(tbi, MemberInfoFor(tbi).Name, instantiator);
 		}
 
-		protected static void ToBeInitialized<R>(Expression<Func<R, R>> tbi, string name, ConstantInstantiator instantiator) where R : JiraConstantBase<JT, D>
+		protected static void ToBeInitialized<R>(Expression<Func<R, R>> tbi, string name, Func<string, IEnumerable, object> instantiator) where R : JiraConstantBase<JT, D>
 		{
 			InitializationList().Add(name, ConstantInfoFor(name, tbi, instantiator));
 		}
@@ -128,14 +136,17 @@ namespace Binboo.JiraIntegration
 			return _initializationList;
 		}
 
-		private static ConstantInfo ConstantInfoFor<R>(string friendlyName, Expression<Func<R, R>> tbi, ConstantInstantiator instantiator)
+		private static ConstantInfo ConstantInfoFor<R>(string friendlyName, Expression<Func<R, R>> tbi, Func<string, IEnumerable, object> instantiator)
 		{
-			MemberInfo member = MemberExpressionFor(tbi);
-
-			return new ConstantInfo(friendlyName, member.ReflectedType.GetField(member.Name, BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public), instantiator);
+			return new ConstantInfo(friendlyName, FieldInfoFor(MemberInfoFor(tbi)), instantiator);
 		}
 
-		private static MemberInfo MemberExpressionFor<R>(Expression<Func<R, R>> tbi)
+		private static FieldInfo FieldInfoFor(MemberInfo member)
+		{
+			return member.ReflectedType.GetField(member.Name, BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public);
+		}
+
+		private static MemberInfo MemberInfoFor<R>(Expression<Func<R, R>> tbi)
 		{
 			MemberExpression me = (MemberExpression)tbi.Body;
 			return me.Member;
@@ -147,11 +158,9 @@ namespace Binboo.JiraIntegration
 		private static readonly IDictionary<string, D> _idToConstantMap = new Dictionary<string,  D>();
 		private static IDictionary<string, ConstantInfo> _initializationList;
 
-		protected delegate object ConstantInstantiator(string name, IEnumerable constants);
-
 		private class ConstantInfo
 		{
-			public ConstantInfo(string friendlyName, FieldInfo field, ConstantInstantiator instantiator)
+			public ConstantInfo(string friendlyName, FieldInfo field, Func<string, IEnumerable, object> instantiator)
 			{
 				_field = field;
 				_instantiator = instantiator;
@@ -164,7 +173,7 @@ namespace Binboo.JiraIntegration
 			}
 
 			private readonly FieldInfo _field;
-			private readonly ConstantInstantiator _instantiator;
+			private readonly Func<string, IEnumerable, object> _instantiator;
 			private readonly string _friendlyName;
 		}
 	}

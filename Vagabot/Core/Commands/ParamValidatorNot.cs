@@ -21,48 +21,35 @@
  **/
 
 using System.Collections.Generic;
-using System.Text;
-using Binboo.Core.Commands.Arguments;
-using Binboo.JiraIntegration;
+using System.Linq;
 
 namespace Binboo.Core.Commands
 {
-	internal class TaskDropperCommand : JiraCommandBase
+	internal class ParamValidatorNot : ParamValidator
 	{
-		public TaskDropperCommand(IJiraProxy proxy, string help) : base(proxy, help)
+		private readonly IEnumerable<ParamValidator> _ignored;
+		private readonly ParamValidator _parent;
+
+		internal ParamValidatorNot(ParamValidator parent, params ParamValidator[] ignored) : base(string.Empty)
 		{
+			_ignored = ignored;
+			_parent = parent;
 		}
 
-		public override string Id
+		public override bool IsMatch(string candidate)
 		{
-			get { return "Drop"; }
+			if (!_parent.IsMatch(candidate)) return false;
+			return !_ignored.Any(validator => validator.IsMatch(candidate));
 		}
 
-		protected override string ProcessCommand(Context context)
+		public override string RegularExpression
 		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comment => ParamValidator.Anything.AsOptional());
-			StringBuilder sb = new StringBuilder();
-			foreach (var issueId in arguments["issueId"].Values)
-			{
-				sb.AppendLine(DropTask(issueId, arguments["comment"]));
-			}
-			return sb.ToString();
+			get { return _parent.RegularExpression; }
 		}
 
-		private string DropTask(string ticket, string comment)
+		public override string ToString()
 		{
-			return Run(() => _jira.UpdateIssue(ticket.ToUpper(), comment, DropTaskFields()),
-						string.Format("Issue {0} dropped.", ticket));
-		}
-
-		private static IssueField[] DropTaskFields()
-		{
-			return new[]
-			       	{
-			       		IssueField.Assignee <= string.Empty,
-						IssueField.CustomField(CustomFieldId.Peers) <= string.Empty,
-						IssueField.CustomField(CustomFieldId.Iteration) <= string.Empty,
-			       	};
+			return _parent + _ignored.Aggregate(" Ignoring:", (acc, current) => acc + " " + current);
 		}
 	}
 }

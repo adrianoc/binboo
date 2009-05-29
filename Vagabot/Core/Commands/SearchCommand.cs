@@ -21,8 +21,10 @@
  **/
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -38,20 +40,17 @@ namespace Binboo.Core.Commands
 			get { return "Search"; }
 		}
 
-		public override string Process(Context context)
+		protected override string ProcessCommand(Context context)
 		{
-			string[] args = context.Arguments;
-
-			string ret = CheckParameters(args, ParamValidator.Anything, ParamValidator.IssueStatus.AsOptional());
-			if (ret != null) return ret;
+			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, lookFor => ParamValidator.Anything, status => ParamValidator.IssueStatus.AsOptional());
 
 			return Run(() =>
 			           	{
-			           		string status = OptionalParameterOrDefault(args, 1, ParamValidator.IssueStatus, "open");
-			           		var sb = new StringBuilder();
+			           		string status = OptionalArgumentOrDefault(arguments, "status", IssueStatus.Open);
 			           		
+							var sb = new StringBuilder();
 							int max = 0;
-			           		foreach (RemoteIssue issue in _jira.SearchIssues(args[0]).Where(candidate => status == "all" || candidate.status == IssueStatus.Parse(status).Id))
+			           		foreach (RemoteIssue issue in _jira.SearchIssues(arguments["lookFor"]).Where(candidate => status == "all" || candidate.status == IssueStatus.Parse(status).Id))
 			           		{
 			           			string issueMessage = IssueToResultString(issue);
 			           			max = Math.Max(max, issueMessage.Length);

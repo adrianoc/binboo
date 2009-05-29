@@ -22,19 +22,17 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Binboo.Core.Commands.Arguments;
 
 namespace Binboo.Core.Commands
 {
-	internal class HelpCommand : BotCommandBase
+	internal class HelpCommand : JiraCommandBase
 	{
-		public HelpCommand(string help) : base(help)
-		{
-		}
-
-		public HelpCommand(Application app, string help) : base(help)
+		public HelpCommand(Application app, string help) : base(null, help)
 		{
 			_app = app;
 		}
@@ -44,19 +42,23 @@ namespace Binboo.Core.Commands
 			get { return "Help"; }
 		}
 
-		public override string Process(Context context)
+		protected override string ProcessCommand(Context context)
 		{
-			IEnumerable commands = (context.Arguments.Length == 1) ? FindCommand(context.Arguments[0]) :_app.Commands;
-
+			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, cmd => ParamValidator.Anything.AsOptional());
 			var helpMsg = new StringBuilder("Command        Description" + Environment.NewLine + 
    	                                        "-------        -----------" + Environment.NewLine + Environment.NewLine);
 
-			foreach(IBotCommand command in commands)
+			foreach(IBotCommand command in HelpFor(arguments["cmd"]))
 			{
 				helpMsg.AppendFormat("{0,-15}{1}{2}{2}", command.Id, AddTabAtNewLine(command.Help), Environment.NewLine);
 			}
 
 			return helpMsg.ToString();
+		}
+
+		private IEnumerable HelpFor(Argument command)
+		{
+			return command.IsPresent ? FindCommand(command) : _app.Commands;
 		}
 
 		private IEnumerable FindCommand(string commandId)

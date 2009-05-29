@@ -21,6 +21,8 @@
  **/
 
 using System.Collections.Generic;
+using System.Linq;
+using Binboo.Core.Commands.Arguments;
 
 namespace Binboo.Core.Commands
 {
@@ -47,14 +49,14 @@ namespace Binboo.Core.Commands
 			return true;
 		}
 
-		public override string Regex
+		public override string RegularExpression
 		{
-			get { return _delegate.Regex; }
+			get { return _delegate.RegularExpression; }
 		}
 
 		public override string ToString()
 		{
-			return base.ToString();
+			return _delegate + _ignored.Aggregate(" Ignoring:", (acc, current) => acc + " " + current);
 		}
 	}
 }

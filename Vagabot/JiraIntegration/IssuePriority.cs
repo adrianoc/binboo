@@ -57,7 +57,7 @@ namespace Binboo.JiraIntegration
 			InitializeBase(priorities);
 		}
 
-		public IssuePriority(string id, string description) : base(id, description)
+		private IssuePriority(string id, string description) : base(id, description)
 		{
 		}
 

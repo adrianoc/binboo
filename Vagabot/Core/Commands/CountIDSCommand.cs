@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -39,17 +40,10 @@ namespace Binboo.Core.Commands
 			get { return "CountIDS"; }
 		}
 
-		public override string Process(Context context)
+		protected override string ProcessCommand(Context context)
 		{
-			string[] args = context.Arguments;
-
-			string result = CheckParameters(args, ParamValidator.IssueStatus.AsOptional());
-			return result ?? CalculateIDs(GetStatusOrDefault(args));
-		}
-
-		private static string GetStatusOrDefault(string[] args)
-		{
-			return args.Length == 1 ? args[0] : "all";
+			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, status => ParamValidator.IssueStatus.AsOptional());
+			return CalculateIDs(OptionalArgumentOrDefault(arguments, "status", "all"));
 		}
 
 		private string CalculateIDs(string status)
@@ -172,19 +166,16 @@ namespace Binboo.Core.Commands
 
 		private static RemoteCustomFieldValue GetCustomField(RemoteIssue issue, string fieldId)
 		{
-			int index = findIndex(issue.customFieldValues, fieldId);
+			int index = FindIndex(issue.customFieldValues, fieldId);
 			return index == -1 ? EmptyRemoteCustomFieldValue : issue.customFieldValues[index];
 		}
 
 		private static RemoteCustomFieldValue NewEmptyRemoteCustomFieldValue()
 		{
-			var rcfv = new RemoteCustomFieldValue();
-			rcfv.values = new string[0];
-
-			return rcfv;
+			return new RemoteCustomFieldValue { values = new string[0] };
 		}
 
-		private static int findIndex(RemoteCustomFieldValue[] customFields, string tbf)
+		private static int FindIndex(RemoteCustomFieldValue[] customFields, string tbf)
 		{
 			return Array.FindIndex(customFields, candidate => candidate.customfieldId == tbf);
 		}

@@ -21,6 +21,8 @@
  **/
 
 using System;
+using System.Collections.Generic;
+using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -36,23 +38,23 @@ namespace Binboo.Core.Commands
 			get { return "Close"; }
 		}
 
-		public override string Process(Context context)
+		protected override string ProcessCommand(Context context)
 		{
-			string[] args = context.Arguments;
-
-			string result = CheckParameters(args, ParamValidator.TicketNumber, ParamValidator.Anything, ParamValidator.Anything.AsOptional());
-			return result ?? 
-					CloseIssue(
-						args[0], 
-						args[1],
-						OptionalParameterOrDefault(args, 2, ParamValidator.Anything, string.Empty));
+			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, 
+																			issueId => ParamValidator.IssueId, 
+																			resolution => ParamValidator.From(IssueResolution.IDs()) , 
+																			comment => ParamValidator.Anything.AsOptional());
+			return CloseIssue(
+						arguments["issueId"],
+						OptionalArgumentOrDefault(arguments, "comment", string.Empty),
+						arguments["resolution"]);
 		}
 
-		private string CloseIssue(string ticket, string resolution, string description)
+		private string CloseIssue(string ticket, string comment, string resolution)
 		{
 			try
 			{
-				_jira.CloseIssue(ticket, description, IssueResolution.Parse(resolution));
+				_jira.CloseIssue(ticket, comment, IssueResolution.Parse(resolution));
 				return "OK";
 			}
 			catch(JiraProxyException jipe)

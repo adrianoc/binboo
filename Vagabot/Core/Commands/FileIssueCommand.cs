@@ -22,7 +22,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -38,42 +38,24 @@ namespace Binboo.Core.Commands
 			get { return "File"; }
 		}
 
-		public override string Process(Context context)
+		protected override string ProcessCommand(Context context)
 		{
-			ParamValidator[] validators = {
-			                              	ParamValidator.Project,
-			                              	ParamValidator.AnythingStartingWithText,
-			                              	ParamValidator.AnythingStartingWithText.AsOptional(),
-			                              	ParamValidator.Order,
-											ParamValidator.Type
-			                              };
-
-			var args = context.Arguments;
-			var ret = CheckParameters(args, validators);
-
-			if (ret != null) return ret;
-			
+			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments,
+			                                                     project => ParamValidator.Project,
+			                                                     summary => ParamValidator.AnythingStartingWithText,
+			                                                     description => ParamValidator.AnythingStartingWithText.ButNot(ParamValidator.Type).AsOptional(),
+			                                                     order => ParamValidator.Order,
+			                                                     type => ParamValidator.Type);
 			return Run(
 						() => _jira.FileIssue(
 									ConfigServices.IMUserToIssueTrackerUser(context.UserName),
-									args[0], 
-									args[1],
-									OptionalParameterOrDefault(args, NonOptionalCount(validators), ParamValidator.AnythingStartingWithText.ButNot(ParamValidator.Type), String.Empty),
-									IssueTypeOrDefault(args, NonOptionalCount(validators), IssueType.Bug),
-									OrderOrDefault(args, NonOptionalCount(validators), -1)),
+									arguments["project"], 
+									arguments["summary"],
+									OptionalArgumentOrDefault(arguments, "description", String.Empty),
+									OptionalArgumentOrDefault(arguments, "type", IssueType.Bug.Id),
+									OptionalArgumentOrDefault(arguments, "order", -1)),
+
 						issue => string.Format("Jira tiket created successfuly ({2}).{0}{0}{1}", Environment.NewLine, IssueToResultString(issue), UrlFor(issue)));
-		}
-
-		private static string IssueTypeOrDefault(IEnumerable<string> args, int startIndex, string @default)
-		{
-			Match match = OptionalParameterOrNull(args, startIndex, ParamValidator.Type);
-			return match == null ? @default : IssueType.Parse(match.Groups[1].Value).Id;
-		}
-
-		private static int OrderOrDefault(IEnumerable<string> args, int startIndex, int @default)
-		{
-			Match match = OptionalParameterOrNull(args, startIndex, ParamValidator.Order);
-			return match == null ? @default : Int32.Parse(match.Value);
 		}
 	}
 }

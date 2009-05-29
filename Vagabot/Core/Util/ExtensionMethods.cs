@@ -20,47 +20,15 @@
  * THE SOFTWARE.
  **/
 
-using System.Collections.Generic;
-using Binboo.Core.Commands.Arguments;
-using Binboo.JiraIntegration;
+using System.Text.RegularExpressions;
 
-namespace Binboo.Core.Commands
+namespace Binboo.Core.Util
 {
-	internal class IssueCommand : JiraCommandBase
+	internal static class ExtensionMethods
 	{
-		public IssueCommand(IJiraProxy proxy, string help) : base(proxy, help)
+		public static string Value(this Match match)
 		{
-		}
-
-		public override string Id
-		{
-			get
-			{
-				return "Issue";
-			}
-		}
-
-		protected override string ProcessCommand(Context context)
-		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comments => ParamValidator.Custom("comments", true));
-
-			bool showComments = OptionalArgumentOrDefault(arguments, "comments", false);
-			return Run(
-						() => _jira.GetIssue(arguments["issueId"]),
-						ri => FormatIssue(ri, showComments));
-
-		}
-
-		private string FormatIssue(RemoteIssue issue, bool showComments)
-		{
-			string issueDetails = Run(() => IssueToResultString(issue));
-
-			if (showComments)
-			{
-				issueDetails = issueDetails + Run(() => _jira.GetComments(issue.key));
-			}
-
-			return issueDetails + "\r\n" + UrlFor(issue);
+			return match.Groups.Count == 1 ? match.Value : match.Groups[1].Value;
 		}
 	}
 }

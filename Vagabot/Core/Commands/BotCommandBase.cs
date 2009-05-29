@@ -29,7 +29,7 @@ namespace Binboo.Core.Commands
 	{
 		public abstract string Id { get; }
 
-		public abstract string Process(Context args);
+		public abstract string Process(Context context);
 
 		protected BotCommandBase(string help)
 		{
