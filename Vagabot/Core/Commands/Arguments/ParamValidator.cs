@@ -29,16 +29,13 @@ namespace Binboo.Core.Commands.Arguments
 	{
 		internal static readonly ParamValidator Project = new ParamValidator("^[A-Za-z]{3,4}");
 
-		internal static readonly ParamValidator Anything = new ParamValidator("\"(?<param>[^\\r\\n]+)\"|"+ // Quoted string
-			                                                                    "(?<param>[^\\s\"]+)");    // Unquoted string
-
-		internal static readonly ParamValidator AnythingStartingWithText = new ParamValidator("[a-zA-Z].*");
+		internal static readonly ParamValidator Anything = new ParamValidator("\"(?<param>[^\\r\\n]+)\"|(?<param>[^\\s\"]+)");
 		internal static readonly ParamValidator IssueId = new ParamValidator(@"%0%-[0-9]+", Project);
 		internal static readonly ParamValidator IssueStatus = new ParamValidator("open|closed|all");
 		internal static readonly ParamValidator Iteration = new ParamValidator("^[0-9]+", true);
 		internal static readonly ParamValidator MultipleIssueId = new ParamValidator(@"(?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b)");
 		internal static readonly ParamValidator Order = new ParamValidator(@"\b0?[1-9]\b", true);
-		internal static readonly ParamValidator Peer = AnythingStartingWithText.AsOptional();
+		internal static readonly ParamValidator Peer = Anything.AsOptional();
 		internal static readonly ParamValidator Type = new ParamValidator(@"type\s*=\s*(bug|task|improvement|b|t|i)\z", true);
 		internal static readonly ParamValidator UserName = new ParamValidator(@"([A-za-z](?:\s*[A-Za-z]*[0-9]*)*)");
 
@@ -49,7 +46,7 @@ namespace Binboo.Core.Commands.Arguments
 
 		public ParamValidator AsOptional()
 		{
-			return new ParamValidator(_regex, true);
+			return new ParamValidator(RegularExpression, true);
 		}
 
 		public virtual string RegularExpression
@@ -72,10 +69,10 @@ namespace Binboo.Core.Commands.Arguments
 			return new ButNotParamValidator(this, ignored);
 		}
 
-		//public static implicit operator string(ParamValidator validator)
-		//{
-		//    return validator.RegularExpression;
-		//}
+		public static implicit operator string(ParamValidator validator)
+		{
+			return validator.RegularExpression;
+		}
 
 		public override string ToString()
 		{

@@ -23,6 +23,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -114,7 +115,15 @@ namespace Binboo.Core.Commands.Arguments
 
 		private static string ExtractingRegularExpressionFor(IEnumerable<ParamValidator> validators)
 		{
-			return validators.Aggregate("(?x-imsn:^$", (regex, validator) => regex + "|" + validator.RegularExpression) + ")";
+			string regularExpression = validators.Aggregate("(?x-imsn:^$", (regex, validator) => regex + "|" + validator.RegularExpression) + ")";
+			DumpRegularExpression(regularExpression);
+			return regularExpression;
+		}
+
+		[Conditional("DEBUG")]
+		private static void DumpRegularExpression(string expression)
+		{
+			Debug.WriteLine("Command Regular Expression :" + expression);
 		}
 
 		private void ValidateArgumentCount(ICollection matches)
