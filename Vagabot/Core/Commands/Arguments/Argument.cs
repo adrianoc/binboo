@@ -58,5 +58,10 @@ namespace Binboo.Core.Commands.Arguments
 			}
 		}
 
+		public override string ToString()
+		{
+			return Name + ": " + Value;
+		}
+
 	}
 }

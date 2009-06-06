@@ -42,7 +42,7 @@ namespace Binboo.Core.Commands
 			get { return "Help"; }
 		}
 
-		protected override string ProcessCommand(Context context)
+		protected override string ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, cmd => ParamValidator.Anything.AsOptional());
 			var helpMsg = new StringBuilder("Command        Description" + Environment.NewLine + 

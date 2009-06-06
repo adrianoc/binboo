@@ -38,7 +38,7 @@ namespace Binboo.Core.Commands
 			get { return "Close"; }
 		}
 
-		protected override string ProcessCommand(Context context)
+		protected override string ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, 
 																			issueId => ParamValidator.IssueId, 

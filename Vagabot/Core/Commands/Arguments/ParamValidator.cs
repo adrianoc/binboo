@@ -29,14 +29,15 @@ namespace Binboo.Core.Commands.Arguments
 	{
 		internal static readonly ParamValidator Project = new ParamValidator("^[A-Za-z]{3,4}");
 
-		internal static readonly ParamValidator Anything = new ParamValidator("\"(?<param>[^\\r\\n]+)\"|(?<param>[^\\s\"]+)");
+		internal static readonly ParamValidator Anything = new ParamValidator("\"(?<param>[^\\r\\n\"]+)\"|(?<param>[^\\s\"]+)");
+		internal static readonly ParamValidator AnythingStartingWithText = new ParamValidator("\"(?<param>[^\\s0-9\\r\\n\"]+)\"|(?<param>[^\\s0-9][^\\s\"]+)");
 		internal static readonly ParamValidator IssueId = new ParamValidator(@"%0%-[0-9]+", Project);
 		internal static readonly ParamValidator IssueStatus = new ParamValidator("open|closed|all");
 		internal static readonly ParamValidator Iteration = new ParamValidator("^[0-9]+", true);
 		internal static readonly ParamValidator MultipleIssueId = new ParamValidator(@"(?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b)");
 		internal static readonly ParamValidator Order = new ParamValidator(@"\b0?[1-9]\b", true);
 		internal static readonly ParamValidator Peer = Anything.AsOptional();
-		internal static readonly ParamValidator Type = new ParamValidator(@"type\s*=\s*(bug|task|improvement|b|t|i)\z", true);
+		internal static readonly ParamValidator Type = new ParamValidator(@"type\s*=\s*(?<param>bug|task|improvement|b|t|i)\z", true);
 		internal static readonly ParamValidator UserName = new ParamValidator(@"([A-za-z](?:\s*[A-Za-z]*[0-9]*)*)");
 
 		public static ParamValidator Custom(string regex, bool optional)
@@ -46,7 +47,7 @@ namespace Binboo.Core.Commands.Arguments
 
 		public ParamValidator AsOptional()
 		{
-			return new ParamValidator(RegularExpression, true);
+			return new DelegatingParamValidator(this, true);
 		}
 
 		public virtual string RegularExpression
@@ -84,7 +85,7 @@ namespace Binboo.Core.Commands.Arguments
 			return new ParamValidator(ids.Aggregate("^$", (regex, id) => regex + "|" + id));
 		}
 
-		private ParamValidator(string regex, bool optional)
+		protected ParamValidator(string regex, bool optional)
 		{
 			_regex = regex;
 			_optional = optional;
@@ -103,6 +104,6 @@ namespace Binboo.Core.Commands.Arguments
 		}
 
 		private readonly string _regex;
-		private readonly bool _optional;
+		protected readonly bool _optional;
 	}
 }

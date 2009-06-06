@@ -9,7 +9,7 @@ namespace Binboo.Tests.Mocks
 {
 	class JiraCommandMock : JiraCommandBase
 	{
-		public JiraCommandMock(string id, Func<Context, IDictionary<string, Argument>, string> returnProvider, params Expression<Func<int, ParamValidator>> []validators) : base(null, "Jira Command Mock")
+		public JiraCommandMock(string id, Func<IContext, IDictionary<string, Argument>, string> returnProvider, params Expression<Func<int, ParamValidator>> []validators) : base(null, "Jira Command Mock")
 		{
 			_id = id;
 			_returnProvider = returnProvider;
@@ -21,7 +21,7 @@ namespace Binboo.Tests.Mocks
 			get { return _id ?? "MockCommand"; }
 		}
 
-		protected override string ProcessCommand(Context ctx)
+		protected override string ProcessCommand(IContext ctx)
 		{
 			_called.Set();
 			_arguments = CollectAndValidateArguments(ctx.Arguments, _validators);
@@ -42,7 +42,7 @@ namespace Binboo.Tests.Mocks
 
 		private readonly Expression<Func<int, ParamValidator>>[] _validators;
 		private IDictionary<string, Argument> _arguments;
-		private readonly Func<Context, IDictionary<string, Argument>, string> _returnProvider;
+		private readonly Func<IContext, IDictionary<string, Argument>, string> _returnProvider;
 		private readonly string _id;
 	}
 }

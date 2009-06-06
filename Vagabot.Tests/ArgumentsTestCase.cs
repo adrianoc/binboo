@@ -21,8 +21,12 @@
  **/
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Tests.Mocks;
 using NUnit.Framework;
@@ -30,8 +34,13 @@ using NUnit.Framework;
 namespace Binboo.Tests
 {
 	[TestFixture]
-	public class ArgumentsTestCase : JiraCommandBaseTest
+	public class ArgumentsTestCase
 	{
+		protected Application _app;
+		protected SkypeMock _mockSkype;
+		protected ChatMock _chat;
+		protected IList<string> _errors = new List<string>();
+
 		[Test]
 		public void TestNoArguments()
 		{
@@ -126,6 +135,26 @@ namespace Binboo.Tests
 			Assert.IsTrue(_errors[0].Contains("Mixed"));
 		}
 
+		[Test]
+		public void TestMultipleQuotedString()
+		{
+			AssertArguments(
+					"$test IamACommand PROJ \"F Q S\" \"S Q S\"",
+					"a1:{PROJ}\r\na2:{F Q S}\r\na3:{S Q S}\r\n",
+					a1 => ParamValidator.Project,
+					a2 => ParamValidator.Anything,
+					a3 => ParamValidator.Anything);
+		}
+
+		[Test]
+		public void TestType()
+		{
+			AssertArguments(
+					"$test IamACommand type=task",
+					"type:{task}\r\n",
+					type => ParamValidator.Type);
+		}
+
 		private void AssertArguments(string message, string expected, params Expression<Func<int, ParamValidator>>[] validatorExpressions)
 		{
 			JiraCommandMock command = new JiraCommandMock("IamACommand", ArgumentEcho, validatorExpressions);
@@ -135,6 +164,42 @@ namespace Binboo.Tests
 			_mockSkype.SendMessage("adriano", message);
 			Assert.IsTrue(command.Wait(1000));
 			Assert.AreEqual(expected, _chat.SentMessages.Single().Body);
+		}
+
+		[SetUp]
+		public void SetUp()
+		{
+			_app = new Application("test");
+			_app.Error += (sender, e) => _errors.Add(e.Message + "\r\n" + e.Details);
+
+			_chat = new ChatMock(new UserMock("test", false));
+			_mockSkype = new SkypeMock(() => _chat);
+			_app.SetSkype(_mockSkype);
+			_app.AttachToSkype();
+		}
+
+		internal static string ArgumentEcho(IContext context, IDictionary<string, Argument> args)
+		{
+			var sb = new StringBuilder(50);
+			foreach (var arg in args)
+			{
+				sb.AppendFormat("{0}:", arg.Key);
+				foreach (var item in arg.Value.Values)
+				{
+					sb.AppendFormat("{{{0}}}", item);
+				}
+				sb.AppendLine();
+			}
+			return sb.ToString();
+		}
+
+		protected void SendMessageAndAssertNoErrors(string user, string message)
+		{
+			_mockSkype.SendMessage(user, message);
+			if (_errors.Count > 0)
+			{
+				Assert.Fail( _errors.Aggregate((acc, current) => acc + "\r\n" + current));
+			}
 		}
 	}
 }

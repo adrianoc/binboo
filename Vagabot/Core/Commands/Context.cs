@@ -22,7 +22,7 @@
 
 namespace Binboo.Core.Commands
 {
-	public class Context
+	public class Context : IContext
 	{
 		public Context(string userName, string args)
 		{

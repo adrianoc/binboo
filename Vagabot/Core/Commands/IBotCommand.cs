@@ -28,6 +28,6 @@ namespace Binboo.Core.Commands
 
 		string Id { get; }
 
-		string Process(Context context);
+		string Process(IContext context);
 	}
 }

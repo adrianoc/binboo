@@ -28,7 +28,7 @@ namespace Binboo.Tests.Mocks
 {
 	internal class BotCommandMock : IBotCommand
 	{
-		public BotCommandMock(string id, Func<Context, string> returnProvider)
+		public BotCommandMock(string id, Func<IContext, string> returnProvider)
 		{
 			_id = id;
 			_returnProvider = returnProvider;
@@ -44,7 +44,7 @@ namespace Binboo.Tests.Mocks
 			get { return _id; }
 		}
 
-		public string Process(Context context)
+		public string Process(IContext context)
 		{
 			_called.Set();
 			return _returnProvider(context);
@@ -57,6 +57,6 @@ namespace Binboo.Tests.Mocks
 
 		private readonly EventWaitHandle _called = new EventWaitHandle(false, EventResetMode.ManualReset);
 		private readonly string _id;
-		private readonly Func<Context, string> _returnProvider;
+		private readonly Func<IContext, string> _returnProvider;
 	}
 }

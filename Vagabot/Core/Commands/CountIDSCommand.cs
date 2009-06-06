@@ -40,7 +40,7 @@ namespace Binboo.Core.Commands
 			get { return "CountIDS"; }
 		}
 
-		protected override string ProcessCommand(Context context)
+		protected override string ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, status => ParamValidator.IssueStatus.AsOptional());
 			return CalculateIDs(OptionalArgumentOrDefault(arguments, "status", "all"));

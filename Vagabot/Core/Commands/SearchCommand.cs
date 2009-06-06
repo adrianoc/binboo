@@ -40,7 +40,7 @@ namespace Binboo.Core.Commands
 			get { return "Search"; }
 		}
 
-		protected override string ProcessCommand(Context context)
+		protected override string ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, lookFor => ParamValidator.Anything, status => ParamValidator.IssueStatus.AsOptional());
 

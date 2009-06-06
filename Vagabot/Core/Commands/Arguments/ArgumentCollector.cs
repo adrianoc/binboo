@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Text.RegularExpressions;
 using Binboo.Core.Exceptions;
 using Binboo.Core.Util;
@@ -59,12 +60,15 @@ namespace Binboo.Core.Commands.Arguments
 			ValidateArgumentCount(argumentMatches);
 
 			IDictionary<string, Argument> args = DefaultArgumentsFor(_validatorExpressions);
-			int i = 0;
-			foreach (Match match in argumentMatches)
+			for (int i=0, j = 0; i < _validators.Count && j < argumentMatches.Count; i++)
 			{
-				EnsureRequiredParameterIsPresent(i, match.Value);
-				SetArgumentValue(args, ArgumentNameFor(_validatorExpressions[i]), IsPresent(_validators[i], match.Value), match.Value(), match);
-				i++;
+				EnsureRequiredParameterIsPresent(i, argumentMatches[j].Value);
+				if (_validators[i].IsMatch(argumentMatches[j].Value))
+				{
+					Match argMatch = Regex.Match(argumentMatches[j].Value, _validators[i].RegularExpression);
+					SetArgumentValue(args, ArgumentNameFor(_validatorExpressions[i]), true, argMatch.Value(), argMatch);
+					j++;
+				}
 			}
 
 			return args;
@@ -132,19 +136,31 @@ namespace Binboo.Core.Commands.Arguments
 			if (matches.Count < requiredCount || matches.Count > _validators.Count)
 			{
 				throw new InvalidCommandArgumentsException(
-					string.Format("{0}: Invalid arguments count. Expected at least {1} and no more than {2}, got {3}{4}{4}{5}",
+					string.Format("{0}: Invalid arguments count. Expected at least {1} and no more than {2}, got {3}{4}{4}{5}{4}{4}{6}",
 								  _command.Id,
 								  requiredCount,
 								  _validators.Count,
 								  matches.Count,
 								  Environment.NewLine,
+								  MatchesToString(matches),
 								  _command.Help));
 			}
 		}
 
+		private string MatchesToString(ICollection matches)
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (Match match in matches)
+			{
+				sb.AppendFormat("{0}: {1}{2}", match.Index, match.Value, Environment.NewLine);
+			}
+
+			return sb.ToString();
+		}
+
 		private static bool IsPresent(ParamValidator validator, string value)
 		{
-			return Regex.IsMatch(value, validator.RegularExpression);
+			return validator.IsMatch(value);
 		}
 
 		private static IList<ParamValidator> ValidatorsFrom(IEnumerable<Expression<Func<int, ParamValidator>>> validatorExpressions)

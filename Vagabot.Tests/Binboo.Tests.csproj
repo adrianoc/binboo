@@ -38,7 +38,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Vagabot\JiraIntegration\JiraWS\JiraSoapServiceService.dll</HintPath>
     </Reference>
-    <Reference Include="Moq, Version=2.6.1014.1, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+    <Reference Include="Moq, Version=3.1.416.3, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\moq\Moq.dll</HintPath>
     </Reference>
@@ -57,12 +57,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Argument.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
+    <Compile Include="JiraCommandTestCaseBase.cs" />
     <Compile Include="Mocks\ChatMock.cs" />
     <Compile Include="Mocks\BotCommandMock.cs" />
     <Compile Include="Mocks\ChatMessageMock.cs" />
-    <Compile Include="JiraCommandBaseTest.cs" />
     <Compile Include="Mocks\JiraCommandMock.cs" />
+    <Compile Include="FileIssueTestCase.cs" />
+    <Compile Include="ParamValidatorTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mocks\SkypeMock.cs" />
     <Compile Include="Mocks\UserMock.cs" />

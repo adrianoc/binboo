@@ -37,7 +37,7 @@ namespace Binboo.Core.Commands
 			get { return "ListProjects"; }
 		}
 
-		protected override string ProcessCommand(Context context)
+		protected override string ProcessCommand(IContext context)
 		{
 			CollectAndValidateArguments(context.Arguments);
 

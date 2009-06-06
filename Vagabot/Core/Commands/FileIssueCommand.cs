@@ -38,18 +38,19 @@ namespace Binboo.Core.Commands
 			get { return "File"; }
 		}
 
-		protected override string ProcessCommand(Context context)
+		protected override string ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments,
 			                                                     project => ParamValidator.Project,
 			                                                     summary => ParamValidator.Anything,
-			                                                     description => ParamValidator.Anything.ButNot(ParamValidator.Type).AsOptional(),
+			                                                     description => ParamValidator.AnythingStartingWithText.ButNot(ParamValidator.Type).AsOptional(),
 			                                                     order => ParamValidator.Order,
 			                                                     type => ParamValidator.Type);
+
 			return Run(
 						() => _jira.FileIssue(
 									ConfigServices.IMUserToIssueTrackerUser(context.UserName),
-									arguments["project"], 
+									arguments["project"],
 									arguments["summary"],
 									OptionalArgumentOrDefault(arguments, "description", String.Empty),
 									OptionalArgumentOrDefault(arguments, "type", IssueType.Bug.Id),

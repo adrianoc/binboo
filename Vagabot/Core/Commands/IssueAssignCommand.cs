@@ -46,7 +46,7 @@ namespace Binboo.Core.Commands
 		/*
 		 * Assign <ticket #> <main developer> [<peer>] [<iteration>]
 		 */
-		protected override string ProcessCommand(Context context)
+		protected override string ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments,
 			                                                     issueId => ParamValidator.IssueId,
@@ -74,7 +74,7 @@ namespace Binboo.Core.Commands
 			return _lastestIterationUsed == -1 ? null : IssueField.CustomField(CustomFieldId.Iteration) <= _lastestIterationUsed.ToString();
 		}
 
-		private static string Peer(Context context, Argument peer)
+		private static string Peer(IContext context, Argument peer)
 		{
 			return peer.IsPresent ? ConfigServices.ResolveUser(peer, context) : NoOne ;
 		}

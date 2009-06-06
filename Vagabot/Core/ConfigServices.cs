@@ -180,7 +180,7 @@ namespace Binboo.Core
 			return Encoding.ASCII.GetString(data);
 		}			
 
-		public static string ResolveUser(string userName, Context context)
+		public static string ResolveUser(string userName, IContext context)
 		{
 			if (userName.ToLower() == "myself")
 			{

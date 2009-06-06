@@ -36,7 +36,7 @@ namespace Binboo.Core.Commands
 			_jira = jira;
 		}
 
-		public override sealed string Process(Context context)
+		public override sealed string Process(IContext context)
 		{
 			try
 			{
@@ -48,7 +48,7 @@ namespace Binboo.Core.Commands
 			}
 		}
 
-		protected abstract string ProcessCommand(Context context);
+		protected abstract string ProcessCommand(IContext context);
 		
 		protected static T OptionalArgumentOrDefault<T>(IDictionary<string, Argument> args, string argName, T defaultValue)
 		{
