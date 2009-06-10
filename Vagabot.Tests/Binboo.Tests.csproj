@@ -59,12 +59,14 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
-    <Compile Include="JiraCommandTestCaseBase.cs" />
+    <Compile Include="Commands\IssueCommandTestCase.cs" />
+    <Compile Include="Commands\IssueFormater.cs" />
+    <Compile Include="Commands\JiraCommandTestCaseBase.cs" />
     <Compile Include="Mocks\ChatMock.cs" />
     <Compile Include="Mocks\BotCommandMock.cs" />
     <Compile Include="Mocks\ChatMessageMock.cs" />
     <Compile Include="Mocks\JiraCommandMock.cs" />
-    <Compile Include="FileIssueTestCase.cs" />
+    <Compile Include="Commands\FileIssueTestCase.cs" />
     <Compile Include="ParamValidatorTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mocks\SkypeMock.cs" />

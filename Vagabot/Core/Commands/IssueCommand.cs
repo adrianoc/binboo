@@ -44,7 +44,7 @@ namespace Binboo.Core.Commands
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comments => ParamValidator.Custom("comments", true));
 
-			bool showComments = OptionalArgumentOrDefault(arguments, "comments", false);
+			bool showComments = IsPresent(arguments, "comments");
 			return Run(
 						() => _jira.GetIssue(arguments["issueId"]),
 						ri => FormatIssue(ri, showComments));
@@ -57,7 +57,7 @@ namespace Binboo.Core.Commands
 
 			if (showComments)
 			{
-				issueDetails = issueDetails + Run(() => _jira.GetComments(issue.key));
+				issueDetails = issueDetails + "\r\n" + Run(() => _jira.GetComments(issue.key));
 			}
 
 			return issueDetails + "\r\n" + UrlFor(issue);

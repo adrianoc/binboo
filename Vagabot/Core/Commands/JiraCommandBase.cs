@@ -61,6 +61,15 @@ namespace Binboo.Core.Commands
 			return defaultValue;
 		}
 
+		protected bool IsPresent(IDictionary<string, Argument> args, string argName)
+		{
+			if (!args.ContainsKey(argName))
+				return false;
+			
+			Argument argument = args[argName];
+			return argument.IsPresent;
+		}
+
 		protected static string Run(Func<string> command)
 		{
 			try
