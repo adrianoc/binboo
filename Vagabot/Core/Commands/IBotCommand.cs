@@ -27,7 +27,6 @@ namespace Binboo.Core.Commands
 		string Help { get; }
 
 		string Id { get; }
-
 		string Process(IContext context);
 	}
 }

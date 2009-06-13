@@ -34,31 +34,34 @@ namespace Binboo.Tests.Commands
 		public void TestRequiredArguments()
 		{
 			RemoteIssue issue = new RemoteIssue {key = "BTST-123", status="1", created = new DateTime(2009, 01, 05), summary = "summary"};
-			IssueCommand issueCommand = NewCommand<IssueCommand, RemoteIssue>(proxy => proxy.GetIssue("BTST-123"), issue);
+			var issueCommandMock = NewCommand<IssueCommand, RemoteIssue>(proxy => proxy.GetIssue("BTST-123"), issue);
 
 			Mock<IContext> contextMock = ContextMockFor(issue.key);
 
-			string result = issueCommand.Process(contextMock.Object);
+			string result = issueCommandMock.Process(contextMock.Object);
 			
 			Assert.AreEqual(ExpectedResultFor(issue), result);
+
+			issueCommandMock.Verify();
 		}
 
 		[Test]
 		public void TestComments()
 		{
 			RemoteIssue issue = new RemoteIssue { key = "BTST-123", status = "2", created = new DateTime(2009, 01, 05), summary = "summary" };
-			string comments = "some comments...";
-			IssueCommand issueCommand = NewCommand<IssueCommand>(
+			const string comments = "some comments...";
+			var commandMock = NewCommand<IssueCommand>(
 												mock => mock.Setup(proxy => proxy.GetIssue("BTST-123")).Returns(issue),
 												mock => mock.Setup(proxy => proxy.GetComments("BTST-123")).Returns(comments));
 
-			Mock<IContext> contextMock = ContextMockFor(issue.key + " comments");
+			Mock<IContext> contextMock = ContextMockFor(issue.key, "comments");
 
 			Assert.AreEqual(
 				ExpectedResultFor(issue, comments), 
-				issueCommand.Process(contextMock.Object));
+				commandMock.Process(contextMock.Object));
 
 			contextMock.VerifyAll();
+			commandMock.Verify();
 		}
 
 		protected string ExpectedResultFor(RemoteIssue issue)

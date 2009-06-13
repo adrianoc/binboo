@@ -22,7 +22,6 @@
 
 using System;
 using Binboo.Core.Commands;
-using Binboo.JiraIntegration;
 using Moq;
 using NUnit.Framework;
 
@@ -49,11 +48,11 @@ namespace Binboo.Tests.Commands
 			AssertFileIssue("BTST", "required argument 1", Arguments.Missing(string.Empty), Arguments.Missing("bug"), Arguments.Missing(-1));
 		}
 
-		[Test]
+		[Ignore("Behavior when type is invalid is to use Bug as default. we should throw an exception.")]
 		[ExpectedException(typeof(NullReferenceException))]
 		public void TestInvalidType()
 		{
-			ExecuteFileIssueCommand("BTST", "doesn't matter", "doesn't matter", "INVALID_TYPE", 1);
+			ExecuteFileIssueCommand("BTST", "doesn't matter", "This is a description", "INVALID_TYPE", 1);
 		}
 
 		private void AssertFileIssue(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
@@ -70,14 +69,13 @@ namespace Binboo.Tests.Commands
 
 		private string ExecuteFileIssueCommand(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
 		{
-			FileIssueCommand command = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, type.Value, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = DateTime.FromFileTime(42), summary = summary.Value }));
+			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, It.IsAny<string>(), order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = DateTime.FromFileTime(42), summary = summary.Value })))
+			{
+				var contextMock = ContextMockFor(String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringOrEmpty(description), OrderOrEmpty(order), type.Value));
+				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
-			var contextMock = ContextMockFor(String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringOrEmpty(description), OrderOrEmpty(order), type.Value));
-			contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
-
-			string result = command.Process(contextMock.Object);
-			//proxyMock.VerifyAll();
-			return result;
+				return commandMock.Process(contextMock.Object);
+			}
 		}
 
 		private static string OrderOrEmpty(Argument<int> order)

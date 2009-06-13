@@ -50,8 +50,8 @@ namespace Binboo.Core.Commands
 			return Run(
 						() => _jira.FileIssue(
 									ConfigServices.IMUserToIssueTrackerUser(context.UserName),
-									arguments["project"],
-									arguments["summary"],
+									arguments["project"].Value,
+									arguments["summary"].Value,
 									OptionalArgumentOrDefault(arguments, "description", String.Empty),
 									OptionalArgumentOrDefault(arguments, "type", IssueType.Bug.Id),
 									OptionalArgumentOrDefault(arguments, "order", -1)),

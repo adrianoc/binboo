@@ -117,6 +117,14 @@ namespace Binboo.Core.Commands
 			return String.Format("{0}/browse/{1}", ConfigServices.Server, issue.key);
 		}
 
-		protected readonly IJiraProxy _jira;
+		internal IJiraProxy Proxy
+		{
+			set
+			{
+				_jira = value;
+			}
+		}
+
+		protected IJiraProxy _jira;
 	}
 }

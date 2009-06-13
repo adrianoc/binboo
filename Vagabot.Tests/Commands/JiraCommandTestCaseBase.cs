@@ -21,6 +21,8 @@
  **/
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
@@ -47,41 +49,69 @@ namespace Binboo.Tests.Commands
 														new RemoteIssueType {id = "4", name="new feature"}, 
 													};
 
-		internal Mock<IJiraProxy> _jiraProxyMock;
+		private static readonly RemoteField[] _statuses = new[]
+		                                                  	{
+		                                                  		new RemoteField { id = "1", name = "peers" },
+		                                                  		new RemoteField { id = "2", name = "iteration" },
+		                                                  		new RemoteField { id = "3", name = "original ids estimate" },
+		                                                  		new RemoteField { id = "4", name = "order" },
+		                                                  	};
+
+
+		private Mock<IJiraProxy> _jiraProxyMock;
+		private static readonly IDictionary<Type, JiraCommandBase> _commands = new Dictionary<Type, JiraCommandBase>();
 
 		static JiraCommandTestCaseBase()
 		{
 			IssueType.Initialize(_issueTypes);
 			IssueStatus.Initialize(_issueStatus);
-			//CustomFieldId.Initialize(new RemoteField[] { });
+			CustomFieldId.Initialize(_statuses);
+
 			//IssueResolution.Initialize(new RemoteResolution[] {});
 			//IssuePriority.Initialize(new RemotePriority[] {});
 		}
 
-		protected Mock<IContext> ContextMockFor(string arguments)
+		protected Mock<IContext> ContextMockFor(params string[] arguments)
 		{
 			Mock<IContext> contextMock = new Mock<IContext>();
-			contextMock.Setup(context => context.Arguments).Returns(arguments);
+			contextMock.Setup(context => context.Arguments).Returns(ZipArguments(arguments));
 			return contextMock;
 		}
 
-		internal T NewCommand<T, R>(Expression<Func<IJiraProxy, R>> expectedMethodCall, R valueToReturn)
+		private string ZipArguments(string[] arguments)
+		{
+			return arguments.Aggregate("", (acc, current) => acc + " " + current).Substring(1);
+		}
+
+		internal CommandMock<T> NewCommand<T, R>(Expression<Func<IJiraProxy, R>> expectedMethodCall, R valueToReturn) where T : JiraCommandBase
 		{
 			_jiraProxyMock = new Mock<IJiraProxy>();
 			_jiraProxyMock.Setup(expectedMethodCall).Returns(valueToReturn);
 
-			return (T) Activator.CreateInstance(typeof(T), new object[] {_jiraProxyMock.Object, typeof(T).Name});
+			return new CommandMock<T>(FromCacheOrNew<T>(), _jiraProxyMock);
 		}
 
-		internal T NewCommand<T>(params Action<Mock<IJiraProxy>>[] mockSetups)
+		internal CommandMock<T> NewCommand<T>(params Action<Mock<IJiraProxy>>[] mockSetups) where T: JiraCommandBase
 		{
-			_jiraProxyMock = new Mock<IJiraProxy>();
+			_jiraProxyMock = new Mock<IJiraProxy>(MockBehavior.Strict);
 			foreach (var setup in mockSetups)
 			{
 				setup(_jiraProxyMock);
 			}
 
-			return (T)Activator.CreateInstance(typeof(T), new object[] { _jiraProxyMock.Object, typeof(T).Name });
+			return new CommandMock<T>(FromCacheOrNew<T>(), _jiraProxyMock);
+		}
+
+		private T FromCacheOrNew<T>() where T : JiraCommandBase
+		{
+			if (!_commands.ContainsKey(typeof (T)))
+			{
+				_commands[typeof (T)] = (T) Activator.CreateInstance(typeof (T), new object[] {_jiraProxyMock.Object, typeof (T).Name});
+			}
+
+			JiraCommandBase command = _commands[typeof (T)];
+			command.Proxy = _jiraProxyMock.Object;
+			return (T) command;
 		}
 	}
 }

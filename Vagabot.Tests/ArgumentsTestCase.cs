@@ -36,10 +36,10 @@ namespace Binboo.Tests
 	[TestFixture]
 	public class ArgumentsTestCase
 	{
-		protected Application _app;
-		protected SkypeMock _mockSkype;
-		protected ChatMock _chat;
-		protected IList<string> _errors = new List<string>();
+		private Application _app;
+		private SkypeMock _mockSkype;
+		private ChatMock _chat;
+		private readonly IList<string> _errors = new List<string>();
 
 		[Test]
 		public void TestNoArguments()
@@ -178,7 +178,7 @@ namespace Binboo.Tests
 			_app.AttachToSkype();
 		}
 
-		internal static string ArgumentEcho(IContext context, IDictionary<string, Argument> args)
+		private static string ArgumentEcho(IContext context, IDictionary<string, Argument> args)
 		{
 			var sb = new StringBuilder(50);
 			foreach (var arg in args)

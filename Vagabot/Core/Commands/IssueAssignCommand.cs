@@ -54,21 +54,21 @@ namespace Binboo.Core.Commands
 			                                                     peer => ParamValidator.Peer.AsOptional(),
 			                                                     iteration => ParamValidator.Iteration.AsOptional());
 
-			string assignee = ConfigServices.ResolveUser(arguments["toUser"], context);
+			string assignee = ConfigServices.ResolveUser(arguments["toUser"].Value, context);
 			return Run(() => _jira.AssignIssue(
-										arguments["issueId"],
+										arguments["issueId"].Value,
 										IssueField.Assignee <= assignee,
 										IssueField.CustomField(CustomFieldId.Peers) <= Peer(context, arguments["peer"]),
 										IterationFrom(arguments["iteration"])),
 										
-							String.Format("Successfuly assigned issue {0} to {1}", context.Arguments[0], assignee));
+							String.Format("Successfuly assigned issue {0} to {1}", arguments["issueId"].Value, assignee));
 		}
 
 		private IssueField IterationFrom(Argument iteration)
 		{
 			if (iteration.IsPresent)
 			{
-				_lastestIterationUsed = Int32.Parse(iteration);
+				_lastestIterationUsed = Int32.Parse(iteration.Value);
 			}
 
 			return _lastestIterationUsed == -1 ? null : IssueField.CustomField(CustomFieldId.Iteration) <= _lastestIterationUsed.ToString();
