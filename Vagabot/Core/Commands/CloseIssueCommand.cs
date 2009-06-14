@@ -40,14 +40,19 @@ namespace Binboo.Core.Commands
 
 		protected override string ProcessCommand(IContext context)
 		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, 
-																			issueId => ParamValidator.IssueId, 
-																			resolution => ParamValidator.From(IssueResolution.IDs()) , 
-																			comment => ParamValidator.Anything.AsOptional());
+			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context);
 			return CloseIssue(
 						arguments["issueId"],
 						OptionalArgumentOrDefault(arguments, "comment", string.Empty),
 						arguments["resolution"]);
+		}
+
+		private IDictionary<string, Argument> CollectAndValidateArguments(IContext context)
+		{
+			return CollectAndValidateArguments(context.Arguments, 
+			                                   issueId => ParamValidator.IssueId, 
+			                                   resolution => ParamValidator.From(IssueResolution.IDs()) , 
+			                                   comment => ParamValidator.Anything.AsOptional());
 		}
 
 		private string CloseIssue(string ticket, string comment, string resolution)

@@ -48,6 +48,7 @@ namespace Binboo.Tests.Commands
 			}
 		}
 
+		[Test]
 		public void TestIssueNotFound()
 		{
 			var issue = "TDC-002";
@@ -58,7 +59,7 @@ namespace Binboo.Tests.Commands
 											It.IsAny<string>(),
 											It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])),
 											It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])),
-											It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])))).Throws(new Exception())))
+											It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])))).Throws(new JiraProxyException("", new Exception("ddd")))))
 			{
 				var contextMock = ContextMockFor(issue);
 				Assert.AreEqual(string.Format("Issue {0} dropped.\r\n", issue), commandMock.Process(contextMock.Object));

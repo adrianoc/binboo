@@ -42,8 +42,12 @@ namespace Binboo.Core.Commands
 
 		protected override string ProcessCommand(IContext context)
 		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, status => ParamValidator.IssueStatus.AsOptional());
-			return CalculateIDs(OptionalArgumentOrDefault(arguments, "status", "all"));
+			return CalculateIDs(OptionalArgumentOrDefault(CollectArguments(context), "status", "all"));
+		}
+
+		private IDictionary<string, Argument> CollectArguments(IContext context)
+		{
+			return CollectAndValidateArguments(context.Arguments, status => ParamValidator.IssueStatus.AsOptional());
 		}
 
 		private string CalculateIDs(string status)
