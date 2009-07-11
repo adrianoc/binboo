@@ -58,6 +58,17 @@ namespace Binboo.Tests.Commands
 		                                                  	};
 
 
+		protected RemoteIssue[] _issues = new []
+		                                  	{
+		                                  		new RemoteIssue {key = "BTS-001", status = IssueStatus.Open, summary = "", assignee = "tetyana"}, 
+		                                  		new RemoteIssue {key = "BTS-002", status = IssueStatus.Open, summary = "", assignee = "shrek"}, 
+		                                  		new RemoteIssue {key = "BTS-003", status = IssueStatus.Closed, summary = "", assignee = "rodrigo"}, 
+		                                  		new RemoteIssue {key = "BTS-004", status = IssueStatus.Closed, summary = "", assignee = "adriano"}, 
+		                                  		new RemoteIssue {key = "BTS-005", status = IssueStatus.Resolved, summary = "", assignee = "carl"}, 
+		                                  		new RemoteIssue {key = "BTS-006", status = IssueStatus.ReOpened, summary = "", assignee = "patrick"}, 
+		                                  		new RemoteIssue {key = "BTS-007", status = IssueStatus.InProgress, summary = "", assignee = "anat"}, 
+		                                  	};
+
 		private Mock<IJiraProxy> _jiraProxyMock;
 		private static readonly IDictionary<Type, JiraCommandBase> _commands = new Dictionary<Type, JiraCommandBase>();
 

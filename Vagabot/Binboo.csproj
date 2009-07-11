@@ -117,6 +117,7 @@
     <Compile Include="JiraIntegration\ExtensionsHelper.cs" />
     <Compile Include="JiraIntegration\IJiraProxy.cs" />
     <Compile Include="JiraIntegration\IssueField.cs" />
+    <Compile Include="JiraIntegration\IssueFormater.cs" />
     <Compile Include="JiraIntegration\IssuePriority.cs" />
     <Compile Include="JiraIntegration\IssueResolution.cs" />
     <Compile Include="JiraIntegration\IssueStatus.cs" />

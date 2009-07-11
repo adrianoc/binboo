@@ -56,7 +56,7 @@ namespace Binboo.Core.Commands
 									OptionalArgumentOrDefault(arguments, "type", IssueType.Bug.Id),
 									OptionalArgumentOrDefault(arguments, "order", -1)),
 
-						issue => string.Format("Jira tiket created successfuly ({2}).{0}{0}{1}", Environment.NewLine, IssueToResultString(issue), UrlFor(issue)));
+						issue => string.Format("Jira tiket created successfuly ({2}).{0}{0}{1}", Environment.NewLine, issue.Format(), UrlFor(issue)));
 		}
 	}
 }

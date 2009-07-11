@@ -46,19 +46,19 @@ namespace Binboo.Core.Commands
 
 			return Run(() =>
 			           	{
-			           		string status = OptionalArgumentOrDefault(arguments, "status", IssueStatus.Open);
+			           		string status = OptionalArgumentOrDefault(arguments, "status", IssueStatus.Open.Description);
 			           		
 							var sb = new StringBuilder();
 							int max = 0;
 			           		foreach (RemoteIssue issue in _jira.SearchIssues(arguments["lookFor"]).Where(candidate => status == "all" || candidate.status == IssueStatus.Parse(status).Id))
 			           		{
-			           			string issueMessage = IssueToResultString(issue);
+			           			string issueMessage = issue.Format();
 			           			max = Math.Max(max, issueMessage.Length);
 
 			           			sb.AppendFormat("{0}{1}", issueMessage, Environment.NewLine);
 			           		}
-
-							sb.Insert(0, String.Format("Ticket     Status      Created             Sumary{0}{1}{0}", Environment.NewLine, new String('-', max)));
+							
+							sb.Insert(0, String.Format("Issue      Status      Created             Sumary{0}{1}{0}", Environment.NewLine, new String('-', max)));
 			           		return sb.ToString();
 			           	});
 		}

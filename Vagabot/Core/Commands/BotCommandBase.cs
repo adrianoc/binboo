@@ -21,7 +21,6 @@
  **/
 
 using System.Text.RegularExpressions;
-using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
 {
@@ -39,11 +38,6 @@ namespace Binboo.Core.Commands
 		public string Help
 		{
 			get { return _help; }
-		}
-
-		protected static string IssueToResultString(RemoteIssue issue)
-		{
-			return string.Format("{0,-11}{1,-12}{2,-20}{3}", issue.key, IssueStatus.FriendlyName(issue.status), issue.created, issue.summary);
 		}
 
 		private static string ReplaceCommand(string contents, string command)

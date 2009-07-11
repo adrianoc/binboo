@@ -42,7 +42,7 @@ namespace Binboo.JiraIntegration
 			get { return _id; }
 		}
 
-		private string Description
+		public string Description
 		{
 			get { return _description; }
 		}
@@ -59,7 +59,7 @@ namespace Binboo.JiraIntegration
 		{
 			foreach(D item in _idToConstantMap.Values)
 			{
-				if (item.Description.ToLower() == friendlyName) return item;
+				if (string.Compare(item.Description, friendlyName, true) == 0) return item;
 			}
 
 			throw new ArgumentException(string.Format("No constant found for name '{0}'",  friendlyName));

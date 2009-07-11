@@ -22,6 +22,7 @@
 
 using System;
 using Binboo.Core.Commands;
+using Binboo.JiraIntegration;
 using Moq;
 using NUnit.Framework;
 
@@ -64,19 +65,19 @@ namespace Binboo.Tests.Commands
 			commandMock.Verify();
 		}
 
-		protected string ExpectedResultFor(RemoteIssue issue)
+		private static string ExpectedResultFor(RemoteIssue issue)
 		{
 			return ExpectedResultFor(issue, string.Empty);
 		}
-		
-		protected string ExpectedResultFor(RemoteIssue issue, string comments)
+
+		private static string ExpectedResultFor(RemoteIssue issue, string comments)
 		{
 			if (!string.IsNullOrEmpty(comments))
 			{
 				comments = "\r\n" + comments;
 			}
 			
-			return string.Format("{0}{1}\r\nhttp://tracker.db4o.com/browse/{2}", IssueFormater.Format(issue), comments, issue.key);
+			return string.Format("{0}{1}\r\nhttp://tracker.db4o.com/browse/{2}", issue.Format(), comments, issue.key);
 		}
 	}
 }

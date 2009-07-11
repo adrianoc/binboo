@@ -20,30 +20,13 @@
  * THE SOFTWARE.
  **/
 
-using System;
-using Binboo.Core.Commands;
-
-namespace Binboo.Tests.Commands
+namespace Binboo.JiraIntegration
 {
-	internal class IssueFormater : BotCommandBase
+	public static class IssueFormater
 	{
-		public IssueFormater(string help) : base(help)
+		public static string Format(this RemoteIssue issue)
 		{
-		}
-
-		public override string Id
-		{
-			get { throw new NotImplementedException(); }
-		}
-
-		public override string Process(IContext context)
-		{
-			throw new NotImplementedException();
-		}
-
-		public static string Format(RemoteIssue issue)
-		{
-			return IssueToResultString(issue);
+			return string.Format("{0,-11}{1,-12}{2,-20}{3}", issue.key, IssueStatus.FriendlyName(issue.status), issue.created, issue.summary);
 		}
 	}
 }

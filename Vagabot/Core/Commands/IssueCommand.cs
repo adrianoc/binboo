@@ -53,7 +53,7 @@ namespace Binboo.Core.Commands
 
 		private string FormatIssue(RemoteIssue issue, bool showComments)
 		{
-			string issueDetails = Run(() => IssueToResultString(issue));
+			string issueDetails = Run(() => issue.Format());
 
 			if (showComments)
 			{

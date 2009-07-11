@@ -60,10 +60,10 @@
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
     <Compile Include="Commands\CommandMock.cs" />
+    <Compile Include="Commands\SearchCommandTestCase.cs" />
     <Compile Include="Commands\TaskDropperCommandTestCase.cs" />
     <Compile Include="Commands\IssueAssignCommandTestCase.cs" />
     <Compile Include="Commands\IssueCommandTestCase.cs" />
-    <Compile Include="Commands\IssueFormater.cs" />
     <Compile Include="Commands\JiraCommandTestCaseBase.cs" />
     <Compile Include="Mocks\ChatMock.cs" />
     <Compile Include="Mocks\BotCommandMock.cs" />
