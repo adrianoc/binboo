@@ -144,7 +144,11 @@ namespace Binboo
 				}
 				catch(Exception e)
 				{
-					MessageBox.Show("Unable to log user on. Have you copied config file from another machine?", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					if (MessageBox.Show("Unable to log user on. Have you copied config file from another machine?", "Error", MessageBoxButtons.OK | MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
+					{
+						SetJiraAccount(null, EventArgs.Empty);
+					}
+					
 					Environment.Exit(-1);
 				}
 			}

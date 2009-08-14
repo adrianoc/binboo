@@ -22,6 +22,7 @@
 
 using System;
 using Binboo.Core.Commands;
+using Binboo.JiraIntegration;
 using Moq;
 using NUnit.Framework;
 
@@ -69,7 +70,8 @@ namespace Binboo.Tests.Commands
 
 		private string ExecuteFileIssueCommand(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
 		{
-			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, It.IsAny<string>(), order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = DateTime.FromFileTime(42), summary = summary.Value })))
+			IssueType issueType = IssueType.Parse(type.Value);
+			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, issueType.Id, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = DateTime.FromFileTime(42), summary = summary.Value })))
 			{
 				var contextMock = ContextMockFor(String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringOrEmpty(description), OrderOrEmpty(order), type.Value));
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");

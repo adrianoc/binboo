@@ -168,7 +168,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="JiraIntegration\JiraWS\jirasoapservice-v2.wsdl" />
-    <None Include="JiraIntegration\JiraWS\output.config" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
