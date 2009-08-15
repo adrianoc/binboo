@@ -71,6 +71,17 @@ namespace Binboo.Tests
 		}
 
 		[Test]
+		public void TestInvalidMultipleItemsSeparatedByComma()
+		{
+			AssertArguments(
+					"$test IamACommand TEST-10, arg#2",
+					@"IamACommand: Argument index 0 (vale = 'TEST-10, ') is invalid (Validator: ((?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b),required)).",
+					a1 => ParamValidator.MultipleIssueId);
+		}
+
+
+
+		[Test]
 		public void TestSingleItemInMultipleItemsArg()
 		{
 			AssertArguments(
@@ -121,7 +132,7 @@ namespace Binboo.Tests
 		[Test]
 		public void TestMixedOptionalAndNonOptionalArgumentsThrows()
 		{
-			JiraCommandMock command = new JiraCommandMock("IamACommand", ArgumentEcho, 
+			var command = new JiraCommandMock("IamACommand", ArgumentEcho, 
 													a1 => ParamValidator.IssueId,
 													a2 => ParamValidator.IssueId.AsOptional(),
 													a3 => ParamValidator.IssueId);
@@ -157,7 +168,7 @@ namespace Binboo.Tests
 
 		private void AssertArguments(string message, string expected, params Expression<Func<int, ParamValidator>>[] validatorExpressions)
 		{
-			JiraCommandMock command = new JiraCommandMock("IamACommand", ArgumentEcho, validatorExpressions);
+			var command = new JiraCommandMock("IamACommand", ArgumentEcho, validatorExpressions);
 			_app.AddCommand(command);
 			_chat.Reset();
 
@@ -191,15 +202,6 @@ namespace Binboo.Tests
 				sb.AppendLine();
 			}
 			return sb.ToString();
-		}
-
-		protected void SendMessageAndAssertNoErrors(string user, string message)
-		{
-			_mockSkype.SendMessage(user, message);
-			if (_errors.Count > 0)
-			{
-				Assert.Fail( _errors.Aggregate((acc, current) => acc + "\r\n" + current));
-			}
 		}
 	}
 }

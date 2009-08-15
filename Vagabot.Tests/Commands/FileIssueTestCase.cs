@@ -23,7 +23,6 @@
 using System;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
-using Moq;
 using NUnit.Framework;
 
 namespace Binboo.Tests.Commands
@@ -59,7 +58,6 @@ namespace Binboo.Tests.Commands
 		private void AssertFileIssue(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
 		{
 			string result = ExecuteFileIssueCommand(project, summary, description, type, order);
-
 			string expectedResult = String.Format(@"Jira tiket created successfuly (http://tracker.db4o.com/browse/{0}-001).
 
 {0}-001   Open        31/12/1600 21:00:00 {1}", project.Value, summary.Value);

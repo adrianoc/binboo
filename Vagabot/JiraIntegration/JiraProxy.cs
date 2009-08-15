@@ -303,5 +303,9 @@ namespace Binboo.JiraIntegration
 		public JiraProxyException(string message, Exception inner) : base(message, inner)
 		{
 		}
+
+		public JiraProxyException(string message) : base(message)
+		{
+		}
 	}
 }

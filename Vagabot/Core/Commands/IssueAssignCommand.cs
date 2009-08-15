@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
 
@@ -44,24 +45,37 @@ namespace Binboo.Core.Commands
 		}
 
 		/*
-		 * Assign <ticket #> <main developer> [<peer>] [<iteration>]
+		 * Assign <ticket #(s)> <main developer> [<peer>] [<iteration>]
 		 */
 		protected override string ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments,
-			                                                     issueId => ParamValidator.IssueId,
+			                                                     issueId => ParamValidator.MultipleIssueId,
 			                                                     toUser => ParamValidator.UserName,
 			                                                     peer => ParamValidator.Peer.AsOptional(),
 			                                                     iteration => ParamValidator.Iteration.AsOptional());
+			
+			var assignee = ConfigServices.ResolveUser(arguments["toUser"].Value, context);
+			var peerField = IssueField.CustomField(CustomFieldId.Peers) <= Peer(context, arguments["peer"]);
 
-			string assignee = ConfigServices.ResolveUser(arguments["toUser"].Value, context);
+			StringBuilder sb = new StringBuilder();
+			foreach (var ticket in arguments["issueId"].Values)
+			{
+				sb.AppendLine(AssignIssue(ticket, assignee, peerField, IterationFrom(arguments["iteration"])));
+			}
+
+			return sb.Remove(sb.Length - 2, 2).ToString();
+		}
+
+		private string AssignIssue(string ticket, string assignee, IssueField peer, IssueField iteration)
+		{
 			return Run(() => _jira.AssignIssue(
-										arguments["issueId"].Value,
-										IssueField.Assignee <= assignee,
-										IssueField.CustomField(CustomFieldId.Peers) <= Peer(context, arguments["peer"]),
-										IterationFrom(arguments["iteration"])),
-										
-							String.Format("Successfuly assigned issue {0} to {1}", arguments["issueId"].Value, assignee));
+			                 	ticket,
+			                 	IssueField.Assignee <= assignee,
+			                 	peer,
+			                 	iteration),
+
+			           String.Format("Successfuly assigned issue {0} to {1}", ticket, assignee));
 		}
 
 		private IssueField IterationFrom(Argument iteration)
@@ -71,7 +85,7 @@ namespace Binboo.Core.Commands
 				_lastestIterationUsed = Int32.Parse(iteration.Value);
 			}
 
-			return _lastestIterationUsed == -1 ? null : IssueField.CustomField(CustomFieldId.Iteration) <= _lastestIterationUsed.ToString();
+			return _lastestIterationUsed == NoIteration ? null : IssueField.CustomField(CustomFieldId.Iteration) <= _lastestIterationUsed.ToString();
 		}
 
 		private static string Peer(IContext context, Argument peer)

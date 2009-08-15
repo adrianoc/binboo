@@ -40,8 +40,8 @@ namespace Binboo.Core.Commands
 
 		protected override string ProcessCommand(IContext context)
 		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comment => ParamValidator.Anything.AsOptional());
-			StringBuilder sb = new StringBuilder();
+			var arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comment => ParamValidator.Anything.AsOptional());
+			var sb = new StringBuilder();
 			foreach (var issueId in arguments["issueId"].Values)
 			{
 				sb.AppendLine(DropTask(issueId, arguments["comment"]));

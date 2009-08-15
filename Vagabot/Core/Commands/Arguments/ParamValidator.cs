@@ -33,7 +33,7 @@ namespace Binboo.Core.Commands.Arguments
 		internal static readonly ParamValidator AnythingStartingWithText = new ParamValidator("\"(?<param>[^0-9\\r\\n\"]+)\"|(?<param>[^\\s0-9][^\\s\"]+)");
 		internal static readonly ParamValidator IssueId = new ParamValidator(@"%0%-[0-9]+", Project);
 		internal static readonly ParamValidator IssueStatus = new ParamValidator("open|closed|all");
-		internal static readonly ParamValidator Iteration = new ParamValidator("\\s*(?<param>[0-9]+)", true);
+		internal static readonly ParamValidator Iteration = new ParamValidator("(?<param>[0-9]+)", true);
 		internal static readonly ParamValidator MultipleIssueId = new ParamValidator(@"(?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b)");
 		internal static readonly ParamValidator Order = new ParamValidator(@"\b0?[1-9]\b", true);
 		internal static readonly ParamValidator Peer = AnythingStartingWithText.AsOptional();
@@ -62,7 +62,8 @@ namespace Binboo.Core.Commands.Arguments
 
 		public virtual bool IsMatch(string candidate)
 		{
-			return System.Text.RegularExpressions.Regex.IsMatch(candidate, _regex);
+			var match = System.Text.RegularExpressions.Regex.Match(candidate, _regex);
+			return match.Success && match.Length == candidate.Trim().Length;
 		}
 
 		public ParamValidator ButNot(params ParamValidator[] ignored)
@@ -104,6 +105,6 @@ namespace Binboo.Core.Commands.Arguments
 		}
 
 		private readonly string _regex;
-		protected readonly bool _optional;
+		private readonly bool _optional;
 	}
 }

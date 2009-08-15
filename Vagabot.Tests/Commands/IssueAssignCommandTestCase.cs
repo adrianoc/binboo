@@ -21,6 +21,7 @@
  **/
 using System;
 using System.Linq.Expressions;
+using System.Text;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
 using Moq;
@@ -38,6 +39,18 @@ namespace Binboo.Tests.Commands
 		}
 
 		[Test]
+		public void TestBulkAssignment()
+		{
+			AssertIssueAssignment("PRJ-123, PRJ-124, PRJ-125", "binboo_test_user", "42", string.Empty);
+		}
+		
+		[Test]
+		public void TestBulkAssignmentWithInvalidIssue()
+		{
+			AssertIssueAssignment("PRJ-123, " +  NonExistingIssue + ", PRJ-125", "binboo_test_user", "42", string.Empty);
+		}
+
+		[Test]
 		public void TestFullArgumentLine()
 		{
 			AssertIssueAssignment("FAL-123", "binboo_fal", "12", "fal_peer");
@@ -52,33 +65,77 @@ namespace Binboo.Tests.Commands
 
 		private void AssertIssueAssignment(string ticket, string user, Expression<Predicate<IssueField>> iterationPredicate)
 		{
-			var commandMock = NewCommand<IssueAssignCommand>(
+			using (var commandMock = NewCommand<IssueAssignCommand>(
 				mock => mock.Setup(proxy => proxy.AssignIssue(
 												ticket,
 												It.Is<IssueField>(assigneeField => assigneeField.Id == IssueField.Assignee.Id),
 												It.Is<IssueField>(peerField => peerField.Id == CustomFieldId.Peers.Id),
 												It.Is(iterationPredicate)
-												)));
+												))))
+			{
 
-			IContext context = ContextMockFor(ticket, user).Object;
-			string result = commandMock.Process(context);
-			
-			Assert.AreEqual(string.Format("Successfuly assigned issue {0} to {1}", ticket, user), result);
-			commandMock.Verify();
+				IContext context = ContextMockFor(ticket, user).Object;
+				string result = commandMock.Process(context);
+
+				Assert.AreEqual(ExpectedAssignmentMessageFor(ticket, user), result);
+				commandMock.Verify();
+			}
+		}
+
+		private static string ExpectedAssignmentMessageFor(string ticketList, string user)
+		{
+			var sb = new StringBuilder();
+			foreach (var ticket in ticketList.Split(','))
+			{
+				var ticketWithNoSpaces = ticket.Trim();
+				if (NonExistingIssue == ticketWithNoSpaces)
+				{
+					sb.AppendFormat("Failed to asssign issue {0}\r\nFailed to get issue: {0}\r\n", ticketWithNoSpaces);
+				}
+				else
+				{
+					sb.AppendFormat("Successfuly assigned issue {0} to {1}\r\n", ticketWithNoSpaces, user);
+				}
+			}
+
+			return sb.Remove(sb.Length - 2, 2).ToString();
 		}
 
 		private void AssertIssueAssignment(string ticket, string user, string iteration, string peer)
 		{
-			CommandMock<IssueAssignCommand> commandMock = NewCommand<IssueAssignCommand>(
-													mock => mock.Setup(proxy => proxy.AssignIssue(
-																							ticket,
-																							It.Is<IssueField>(issueField => issueField.Id == IssueField.Assignee.Id),
-																							It.Is<IssueField>(p => p.Id == CustomFieldId.Peers.Id && (string.IsNullOrEmpty(peer) || p.Values[0] == peer)),
-																							It.Is<IssueField>(p => p == null || p.Id == CustomFieldId.Iteration.Id))));
+			CommandMock<IssueAssignCommand> commandMock = NewCommand<IssueAssignCommand>(MockSetupsFor(ticket, peer));
 
 			IContext context = ContextMockFor(ticket, user, peer, iteration).Object;
 			string result = commandMock.Process(context);
-			Assert.AreEqual(string.Format("Successfuly assigned issue {0} to {1}", ticket, user), result);
+			Assert.AreEqual(ExpectedAssignmentMessageFor(ticket, user), result);
 		}
+
+		private static Action<Mock<IJiraProxy>>[] MockSetupsFor(string ticket, string peer)
+		{
+			string[] ticketList = ticket.Split(',');
+			var setups = new Action<Mock<IJiraProxy>>[ticketList.Length];
+
+			for(int i =0; i < ticketList.Length; i++)
+			{
+				var currentTicket = ticketList[i].Trim();
+				setups[i] = mock =>
+				{
+					var setup = mock.Setup(proxy => proxy.AssignIssue(
+					                    	currentTicket,
+					                    	It.Is<IssueField>(issueField => issueField.Id == IssueField.Assignee.Id),
+					                    	It.Is<IssueField>(p => p.Id == CustomFieldId.Peers.Id && (string.IsNullOrEmpty(peer) || p.Values[0] == peer)),
+					                    	It.Is<IssueField>(p => p == null || p.Id == CustomFieldId.Iteration.Id)));
+
+					if (NonExistingIssue == currentTicket)
+					{
+						setup.Throws(new JiraProxyException("Failed to asssign issue " + NonExistingIssue, new JiraProxyException("Failed to get issue: " + NonExistingIssue)));
+					}
+				};
+			}
+
+			return setups;
+ 		}
+
+		private const string NonExistingIssue = "NON-666";
 	}
 }

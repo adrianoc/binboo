@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  **/
 using System;
+using System.Text;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
 using Moq;
@@ -33,25 +34,59 @@ namespace Binboo.Tests.Commands
 		[Test]
 		public void TestJustRequiredArguments()
 		{
-			var issue = "TDC-001";
-			using (var commandMock = NewCommand<TaskDropperCommand>(
-						mock => mock.Setup(
-							proxy => proxy.UpdateIssue(
-											issue, 
-                                            It.IsAny<string>(),
-											It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])),
-											It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])),
-											It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0]))))))
+			AssertDrop("TDC-001");
+		}
+
+		[Test]
+		public void TestBulkDrop()
+		{
+			AssertDrop("TBD-001, TBD-002");
+		}
+
+		private void AssertDrop(string issues)
+		{
+			using (var commandMock = NewCommand<TaskDropperCommand>(MocksFor(issues)))
 			{
-				var contextMock = ContextMockFor(issue);
-				Assert.AreEqual(string.Format("Issue {0} dropped.\r\n", issue), commandMock.Process(contextMock.Object));
+				var contextMock = ContextMockFor(issues);
+				Assert.AreEqual(ExpectedResponse(issues), commandMock.Process(contextMock.Object));
 			}
+		}
+
+		private static string ExpectedResponse(string issues)
+		{
+			var sb = new StringBuilder();
+			foreach (var issue in issues.Split(','))
+			{
+				sb.Append(string.Format("Issue {0} dropped.\r\n", issue.Trim()));
+			}
+			
+			return sb.ToString();
+		}
+
+		private static Action<Mock<IJiraProxy>>[] MocksFor(string issues)
+		{
+			var issuesArray = issues.Split(',');
+			var setups = new Action<Mock<IJiraProxy>>[issuesArray.Length];
+
+			for(int i = 0; i < issuesArray.Length; i++)
+			{
+				string issue = issuesArray[i].Trim();
+				setups[i] = mock => mock.Setup(
+										proxy => proxy.UpdateIssue(
+														issue,
+														It.IsAny<string>(),
+														It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])),
+														It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])),
+														It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0]))));
+			}
+
+			return setups;
 		}
 
 		[Test]
 		public void TestIssueNotFound()
 		{
-			var issue = "TDC-002";
+			const string issue = "TDC-002";
 			using (var commandMock = NewCommand<TaskDropperCommand>(
 						mock => mock.Setup(
 							proxy => proxy.UpdateIssue(
@@ -65,6 +100,5 @@ namespace Binboo.Tests.Commands
 				Assert.AreEqual(string.Format("{0}\r\nNot found\r\n", issue), commandMock.Process(contextMock.Object));
 			}
 		}
-
 	}
 }

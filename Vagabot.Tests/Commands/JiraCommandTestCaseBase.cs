@@ -84,12 +84,12 @@ namespace Binboo.Tests.Commands
 
 		protected Mock<IContext> ContextMockFor(params string[] arguments)
 		{
-			Mock<IContext> contextMock = new Mock<IContext>();
+			var contextMock = new Mock<IContext>();
 			contextMock.Setup(context => context.Arguments).Returns(ZipArguments(arguments));
 			return contextMock;
 		}
 
-		private string ZipArguments(string[] arguments)
+		private static string ZipArguments(string[] arguments)
 		{
 			return arguments.Aggregate("", (acc, current) => acc + " " + current).Substring(1);
 		}
