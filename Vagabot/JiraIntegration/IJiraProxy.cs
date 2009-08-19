@@ -32,7 +32,6 @@ namespace Binboo.JiraIntegration
 		RemoteIssue FileIssue(string reporter, string project, string summary, string description, string type, int order);
 		void CloseIssue(string ticket, string comment, IssueResolution resolution);
 		void AssignIssue(string ticket, IssueField assignee, IssueField peer, IssueField iteration);
-		void UpdateIssue(string ticketNumber, params IssueField[] fields);
 		void UpdateIssue(string ticketNumber, string comment, params IssueField[] fields);
 		void AddComment(string ticket, string comment);
 		string GetComments(string ticket);

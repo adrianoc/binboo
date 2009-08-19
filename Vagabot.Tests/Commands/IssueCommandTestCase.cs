@@ -34,20 +34,20 @@ namespace Binboo.Tests.Commands
 		[Test]
 		public void TestRequiredArguments()
 		{
-			RemoteIssue issue = new RemoteIssue {key = "BTST-123", status="1", created = new DateTime(2009, 01, 05), summary = "summary"};
-			var issueCommandMock = NewCommand<IssueCommand, RemoteIssue>(proxy => proxy.GetIssue("BTST-123"), issue);
+			var issue = new RemoteIssue {key = "BTST-123", status="1", created = new DateTime(2009, 01, 05), summary = "summary"};
+			using (var issueCommandMock = NewCommand<IssueCommand, RemoteIssue>(proxy => proxy.GetIssue("BTST-123"), issue))
+			{
 
-			Mock<IContext> contextMock = ContextMockFor(issue.key);
+				Mock<IContext> contextMock = ContextMockFor(issue.key);
 
-			Assert.AreEqual(ExpectedResultFor(issue), issueCommandMock.Process(contextMock.Object));
-
-			issueCommandMock.Verify();
+				Assert.AreEqual(ExpectedResultFor(issue), issueCommandMock.Process(contextMock.Object));
+			}
 		}
 
 		[Test]
 		public void TestComments()
 		{
-			RemoteIssue issue = new RemoteIssue { key = "BTST-123", status = "2", created = new DateTime(2009, 01, 05), summary = "summary" };
+			var issue = new RemoteIssue { key = "BTST-123", status = "2", created = new DateTime(2009, 01, 05), summary = "summary" };
 			const string comments = "some comments...";
 			var commandMock = NewCommand<IssueCommand>(
 												mock => mock.Setup(proxy => proxy.GetIssue("BTST-123")).Returns(issue),

@@ -62,7 +62,9 @@
     <Compile Include="Commands\CloseCommandTestCase.cs" />
     <Compile Include="Commands\CloseCommandTestCase.Helpers.cs" />
     <Compile Include="Commands\CommandMock.cs" />
+    <Compile Include="Commands\SetIterationCommandTestCase.cs" />
     <Compile Include="Commands\SearchCommandTestCase.cs" />
+    <Compile Include="Commands\SetIterationCommandTestCase.Helper.cs" />
     <Compile Include="Commands\TaskDropperCommandTestCase.cs" />
     <Compile Include="Commands\IssueAssignCommandTestCase.cs" />
     <Compile Include="Commands\IssueCommandTestCase.cs" />

@@ -150,11 +150,6 @@ namespace Binboo.JiraIntegration
 				string.Format("Issue {0} was closed but an error prevented the comment to be appended.", ticket));
 		}
 
-		public void UpdateIssue(string ticketNumber, params IssueField[] fields)
-		{
-			UpdateIssue(ticketNumber, string.Empty, fields);
-		}
-
 		public void UpdateIssue(string ticketNumber, string comment, params IssueField[] fields)
 		{
 			ValidateConnection();

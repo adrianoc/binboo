@@ -77,7 +77,7 @@ namespace Binboo.Tests
 		{
 			AssertArguments(
 					"$test IamACommand TEST-10, arg#2",
-					@"IamACommand: Argument index 0 (vale = 'TEST-10, ') is invalid (Validator: ((?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b),required)).",
+					"IamACommand: Unmached arguments: \r\n\r\nTEST-10, arg#2\r\n         ^^^^^",
 					a1 => ParamValidator.MultipleIssueId);
 		}
 
@@ -119,6 +119,16 @@ namespace Binboo.Tests
 					a2 => ParamValidator.Custom("arg\\#2", true));
 		}
 
+
+		[Test]
+		public void TestMoreActualArgumentsThanParameters()
+		{
+			AssertInvalidArgumentCount(
+					"$test IamACommand arg#1 arg#2 arg#3",
+					"IamACommand: Unmached arguments: \r\n\r\narg#1 arg#2 arg#3\r\n           ^^^^^^",
+					a1 => ParamValidator.Custom(@"arg\#1", false),
+					a2 => ParamValidator.Custom(@"arg\#2", false));
+		}
 
 		[Test]
 		public void TestLessActualArgumentsThanParameters()
@@ -166,6 +176,17 @@ namespace Binboo.Tests
 					"$test IamACommand type=task",
 					"type:{task}\r\n",
 					type => ParamValidator.Type);
+		}
+
+		private void AssertInvalidArgumentCount(string message, string expectedResult, params Expression<Func<int, ParamValidator>>[] validatorExpressions)
+		{
+			var command = new JiraCommandMock("IamACommand", ArgumentEcho, validatorExpressions);
+			_app.AddCommand(command);
+			_chat.Reset();
+
+			_mockSkype.SendMessage("adriano", message);
+			Assert.IsTrue(command.Wait(1000));
+			Assert.AreEqual(expectedResult, _chat.SentMessages.Single().Body);
 		}
 
 		private void AssertArguments(string message, string expected, params Expression<Func<int, ParamValidator>>[] validatorExpressions)

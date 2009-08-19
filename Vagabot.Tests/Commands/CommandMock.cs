@@ -28,8 +28,8 @@ namespace Binboo.Tests.Commands
 {
 	internal class CommandMock<T> : IDisposable where T : IBotCommand
 	{
-		private Mock<IJiraProxy> _mock;
-		private T _command;
+		private readonly Mock<IJiraProxy> _mock;
+		private readonly T _command;
 
 		public CommandMock(T command, Mock<IJiraProxy> mock)
 		{

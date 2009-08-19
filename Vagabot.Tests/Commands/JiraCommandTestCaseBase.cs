@@ -92,7 +92,7 @@ namespace Binboo.Tests.Commands
 
 		protected static Mock<IContext> ContextMockFor(params string[] arguments)
 		{
-			var contextMock = new Mock<IContext>();
+			var contextMock = new Mock<IContext>(MockBehavior.Strict);
 			contextMock.Setup(context => context.Arguments).Returns(ZipArguments(arguments));
 			return contextMock;
 		}
@@ -104,7 +104,7 @@ namespace Binboo.Tests.Commands
 
 		internal CommandMock<T> NewCommand<T, R>(Expression<Func<IJiraProxy, R>> expectedMethodCall, R valueToReturn) where T : JiraCommandBase
 		{
-			_jiraProxyMock = new Mock<IJiraProxy>();
+			_jiraProxyMock = new Mock<IJiraProxy>(MockBehavior.Strict);
 			_jiraProxyMock.Setup(expectedMethodCall).Returns(valueToReturn);
 
 			return new CommandMock<T>(FromCacheOrNew<T>(), _jiraProxyMock);

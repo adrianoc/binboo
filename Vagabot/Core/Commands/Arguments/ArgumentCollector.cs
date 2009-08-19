@@ -59,6 +59,8 @@ namespace Binboo.Core.Commands.Arguments
 
 			ValidateArgumentCount(argumentMatches);
 
+			ValidateUnMatchedArguments(argumentMatches, arguments);
+
 			IDictionary<string, Argument> args = DefaultArgumentsFor(_validatorExpressions);
 			for (int i=0, j = 0; i < _validators.Count && j < argumentMatches.Count; i++)
 			{
@@ -72,6 +74,39 @@ namespace Binboo.Core.Commands.Arguments
 			}
 
 			return args;
+		}
+
+		private void ValidateUnMatchedArguments(MatchCollection matches, string arguments)
+		{
+			if (HasUnmatchedArguments(matches, arguments))
+			{
+				throw new InvalidCommandArgumentsException(
+									string.Format("{1}: Unmached arguments: {0}{0}{2}{0}{3}", Environment.NewLine, _command.Id, arguments, UnmatchedArgumentsMarker(matches, arguments)));
+			}
+		}
+
+		private string UnmatchedArgumentsMarker(MatchCollection matches, string arguments)
+		{
+			Capture lastCapture = LastCaptureOf(matches);
+			int matchLength = lastCapture.Index + lastCapture.Length;
+			return new string(' ', matchLength) + new string('^', arguments.Length - matchLength);
+		}
+
+		private static bool HasUnmatchedArguments(MatchCollection matches, string arguments)
+		{
+			Capture lastCapture = LastCaptureOf(matches);
+			return HasUnmatchedArguments(lastCapture, arguments);
+		}
+
+		private static Capture LastCaptureOf(MatchCollection matches)
+		{
+			Match lastMatch = matches[matches.Count-1];
+			return lastMatch.Captures[lastMatch.Captures.Count -1];
+		}
+
+		private static bool HasUnmatchedArguments(Capture lastCapture, string arguments)
+		{
+			return (lastCapture.Index + lastCapture.Length) != arguments.Trim().Length;
 		}
 
 		private void ValidateValidatorsOrder()
@@ -121,6 +156,7 @@ namespace Binboo.Core.Commands.Arguments
 		{
 			string regularExpression = validators.Aggregate("(?x-imsn:^$", (regex, validator) => regex + "|" + validator.RegularExpression) + ")";
 			DumpRegularExpression(regularExpression);
+			
 			return regularExpression;
 		}
 
@@ -132,13 +168,12 @@ namespace Binboo.Core.Commands.Arguments
 
 		private void ValidateArgumentCount(ICollection matches)
 		{
-			int requiredCount = RequiredCount();
-			if (matches.Count < requiredCount || matches.Count > _validators.Count)
+			if (HasInvalidArgumentCount(matches, RequiredCount()))
 			{
 				throw new InvalidCommandArgumentsException(
 					string.Format("{0}: Invalid arguments count. Expected at least {1} and no more than {2}, got {3}{4}{4}{5}{4}{4}{6}",
 								  _command.Id,
-								  requiredCount,
+								  RequiredCount(),
 								  _validators.Count,
 								  matches.Count,
 								  Environment.NewLine,
@@ -147,9 +182,14 @@ namespace Binboo.Core.Commands.Arguments
 			}
 		}
 
-		private string MatchesToString(ICollection matches)
+		private bool HasInvalidArgumentCount(ICollection matches, int requiredCount)
 		{
-			StringBuilder sb = new StringBuilder();
+			return matches.Count < requiredCount || matches.Count > _validators.Count;
+		}
+
+		private static string MatchesToString(ICollection matches)
+		{
+			var sb = new StringBuilder();
 			foreach (Match match in matches)
 			{
 				sb.AppendFormat("{0}: {1}{2}", match.Index, match.Value, Environment.NewLine);
