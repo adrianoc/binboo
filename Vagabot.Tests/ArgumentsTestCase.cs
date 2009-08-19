@@ -25,11 +25,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Tests.Mocks;
+using Moq;
 using NUnit.Framework;
+using SKYPE4COMLib;
+using Application=Binboo.Core.Application;
 
 namespace Binboo.Tests
 {
@@ -183,10 +185,18 @@ namespace Binboo.Tests
 			_app = new Application("test");
 			_app.Error += (sender, e) => _errors.Add(e.Message + "\r\n" + e.Details);
 
-			_chat = new ChatMock(new UserMock("test", false));
+			_chat = new ChatMock(NewUserMock());
 			_mockSkype = new SkypeMock(() => _chat);
 			_app.SetSkype(_mockSkype);
 			_app.AttachToSkype();
+		}
+
+		private User NewUserMock()
+		{
+			var userMock = new Mock<User>();
+			userMock.Setup(user => user.IsBlocked).Returns(false);
+			userMock.Setup(user => user.Handle).Returns("test");
+			return userMock.Object;
 		}
 
 		private static string ArgumentEcho(IContext context, IDictionary<string, Argument> args)

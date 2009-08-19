@@ -20,8 +20,10 @@
  * THE SOFTWARE.
  **/
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Binboo.Core.Commands.Arguments
 {
@@ -62,8 +64,13 @@ namespace Binboo.Core.Commands.Arguments
 
 		public virtual bool IsMatch(string candidate)
 		{
-			var match = System.Text.RegularExpressions.Regex.Match(candidate, _regex);
-			return match.Success && match.Length == candidate.Trim().Length;
+			var match = Regex.Match(candidate, _regex);
+			return match.Success && match.Length == RemoveQuotes(candidate).Trim().Length;
+		}
+
+		private string RemoveQuotes(string candidate)
+		{
+			return candidate;
 		}
 
 		public ParamValidator ButNot(params ParamValidator[] ignored)
@@ -81,9 +88,14 @@ namespace Binboo.Core.Commands.Arguments
 			return "(" + _regex + "," + (_optional ? "optional" : "required") + ")";
 		}
 
-		public static ParamValidator From(IEnumerable<string> ids)
+		public static ParamValidator From(IEnumerable<string> names)
 		{
-			return new ParamValidator(ids.Aggregate("^$", (regex, id) => regex + "|" + id));
+			return new ParamValidator(names.Aggregate("^$", (regex, friendlyName) => regex + "|" + RegExpFor(friendlyName)));
+		}
+
+		private static string RegExpFor(string name)
+		{
+			return string.Format("\"{{0,1}}(?<param>{0})\"{{0,1}}", name);
 		}
 
 		protected ParamValidator(string regex, bool optional)

@@ -20,13 +20,36 @@
  * THE SOFTWARE.
  **/
 
-namespace Binboo.JiraIntegration
+using System;
+using Binboo.Core.Commands;
+using Binboo.JiraIntegration;
+using Moq;
+using NUnit.Framework;
+
+namespace Binboo.Tests.Commands
 {
-	public static class IssueFormater
+	public partial class CloseCommandTestCase
 	{
-		public static string Format(this RemoteIssue issue)
+		private void AssertClose(string ticket, IssueResolution resolution)
 		{
-			return string.Format("{0,-11}{1,-12}{2,-20}{3}", issue.key, IssueStatus.FriendlyNameFor(issue.status), issue.created, issue.summary);
+			AssertClose(ticket, resolution, String.Empty);
+		}
+
+		private void AssertClose(string ticket, IssueResolution resolution, string comment)
+		{
+			string noQuotesComment = StripQuotes(comment);
+			using (var commandMock = NewCommand<CloseIssueCommand>(proxyMock => proxyMock.Setup(p => p.CloseIssue(ticket, It.Is<String>(remmark => remmark == noQuotesComment), resolution))))
+			{
+				var contextMock = ContextMockFor(String.Format("{0} \"{1}\"{2}", ticket, resolution.Description.ToLower(), String.IsNullOrEmpty(comment) ? "" : (" " + comment)));
+				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
+
+				Assert.AreEqual("OK", commandMock.Process(contextMock.Object));
+			}
+		}
+
+		private static string StripQuotes(string comment)
+		{
+			return comment.Replace("\"", "");
 		}
 	}
 }

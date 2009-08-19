@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<binboo>
+  <active refid="unit-test" />
+  <jira id="unit-test">
+    <user name="john doe" password="blabla" />
+    <endpoint value="http://sei.la.com" />
+    <im-user-mapping>
+      <user skypeName="susan" jiraName="Susan Murphy" />
+      <user skypeName="link" jiraName="The Missing Link" />
+      <user skypeName="bob" jiraName="B.O.B" />
+    </im-user-mapping>
+  </jira>
+</binboo>

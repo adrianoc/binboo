@@ -32,7 +32,7 @@ namespace Binboo.Tests.Commands
 {
 	public class JiraCommandTestCaseBase
 	{
-		private static readonly RemoteStatus[] _issueStatus = 
+		private static readonly RemoteStatus[] IssueStatus = 
 												{
 													new RemoteStatus {id="1", name = "open"}, 
 		                                            new RemoteStatus {id="2", name = "closed"}, 
@@ -41,7 +41,7 @@ namespace Binboo.Tests.Commands
 													new RemoteStatus {id="5", name = "reopened"}, 
 												};
 
-		private static readonly RemoteIssueType[] _issueTypes = 
+		private static readonly RemoteIssueType[] IssueTypes = 
 													{
 														new RemoteIssueType {id = "1", name="bug"}, 
 														new RemoteIssueType {id = "2", name="task"}, 
@@ -49,7 +49,7 @@ namespace Binboo.Tests.Commands
 														new RemoteIssueType {id = "4", name="new feature"}, 
 													};
 
-		private static readonly RemoteField[] _statuses = new[]
+		private static readonly RemoteField[] Statuses = new[]
 		                                                  	{
 		                                                  		new RemoteField { id = "1", name = "peers" },
 		                                                  		new RemoteField { id = "2", name = "iteration" },
@@ -60,36 +60,44 @@ namespace Binboo.Tests.Commands
 
 		protected RemoteIssue[] _issues = new []
 		                                  	{
-		                                  		new RemoteIssue {key = "BTS-001", status = IssueStatus.Open, summary = "", assignee = "tetyana"}, 
-		                                  		new RemoteIssue {key = "BTS-002", status = IssueStatus.Open, summary = "", assignee = "shrek"}, 
-		                                  		new RemoteIssue {key = "BTS-003", status = IssueStatus.Closed, summary = "", assignee = "rodrigo"}, 
-		                                  		new RemoteIssue {key = "BTS-004", status = IssueStatus.Closed, summary = "", assignee = "adriano"}, 
-		                                  		new RemoteIssue {key = "BTS-005", status = IssueStatus.Resolved, summary = "", assignee = "carl"}, 
-		                                  		new RemoteIssue {key = "BTS-006", status = IssueStatus.ReOpened, summary = "", assignee = "patrick"}, 
-		                                  		new RemoteIssue {key = "BTS-007", status = IssueStatus.InProgress, summary = "", assignee = "anat"}, 
+		                                  		new RemoteIssue {key = "BTS-001", status = JiraIntegration.IssueStatus.Open, summary = "", assignee = "tetyana"}, 
+		                                  		new RemoteIssue {key = "BTS-002", status = JiraIntegration.IssueStatus.Open, summary = "", assignee = "shrek"}, 
+		                                  		new RemoteIssue {key = "BTS-003", status = JiraIntegration.IssueStatus.Closed, summary = "", assignee = "rodrigo"}, 
+		                                  		new RemoteIssue {key = "BTS-004", status = JiraIntegration.IssueStatus.Closed, summary = "", assignee = "adriano"}, 
+		                                  		new RemoteIssue {key = "BTS-005", status = JiraIntegration.IssueStatus.Resolved, summary = "", assignee = "carl"}, 
+		                                  		new RemoteIssue {key = "BTS-006", status = JiraIntegration.IssueStatus.ReOpened, summary = "", assignee = "patrick"}, 
+		                                  		new RemoteIssue {key = "BTS-007", status = JiraIntegration.IssueStatus.InProgress, summary = "", assignee = "anat"}, 
 		                                  	};
 
+		private static readonly RemoteResolution [] Resolutions = new []
+		                                           	{
+		                                           		new RemoteResolution {id="1", description = "fixed", name="Fixed"},
+		                                           		new RemoteResolution {id="2", description = "won't fix", name="Won't Fix"},
+		                                           		new RemoteResolution {id="3", description = "duplicate", name="Duplicate"},
+		                                           		new RemoteResolution {id="4", description = "incomplete", name="Incomplete"},
+		                                           		new RemoteResolution {id="5", description = "cannot reproduce", name="Cannot Reproduce"},
+													};
+
 		private Mock<IJiraProxy> _jiraProxyMock;
-		private static readonly IDictionary<Type, JiraCommandBase> _commands = new Dictionary<Type, JiraCommandBase>();
+		private static readonly IDictionary<Type, JiraCommandBase> Commands = new Dictionary<Type, JiraCommandBase>();
 
 		static JiraCommandTestCaseBase()
 		{
-			IssueType.Initialize(_issueTypes);
-			IssueStatus.Initialize(_issueStatus);
-			CustomFieldId.Initialize(_statuses);
-
-			//IssueResolution.Initialize(new RemoteResolution[] {});
+			IssueType.Initialize(IssueTypes);
+			JiraIntegration.IssueStatus.Initialize(IssueStatus);
+			CustomFieldId.Initialize(Statuses);
+			IssueResolution.Initialize(Resolutions);
 			//IssuePriority.Initialize(new RemotePriority[] {});
 		}
 
-		protected Mock<IContext> ContextMockFor(params string[] arguments)
+		protected static Mock<IContext> ContextMockFor(params string[] arguments)
 		{
 			var contextMock = new Mock<IContext>();
 			contextMock.Setup(context => context.Arguments).Returns(ZipArguments(arguments));
 			return contextMock;
 		}
 
-		private static string ZipArguments(string[] arguments)
+		private static string ZipArguments(IEnumerable<string> arguments)
 		{
 			return arguments.Aggregate("", (acc, current) => acc + " " + current).Substring(1);
 		}
@@ -115,12 +123,12 @@ namespace Binboo.Tests.Commands
 
 		private T FromCacheOrNew<T>() where T : JiraCommandBase
 		{
-			if (!_commands.ContainsKey(typeof (T)))
+			if (!Commands.ContainsKey(typeof (T)))
 			{
-				_commands[typeof (T)] = (T) Activator.CreateInstance(typeof (T), new object[] {_jiraProxyMock.Object, typeof (T).Name});
+				Commands[typeof (T)] = (T) Activator.CreateInstance(typeof (T), new object[] {_jiraProxyMock.Object, typeof (T).Name});
 			}
 
-			JiraCommandBase command = _commands[typeof (T)];
+			JiraCommandBase command = Commands[typeof (T)];
 			command.Proxy = _jiraProxyMock.Object;
 			return (T) command;
 		}

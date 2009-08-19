@@ -82,7 +82,7 @@ namespace Binboo.Core.Commands
 							{
 								float estimate = GetEstimatedIds(issue.Item);
 								idsForDev += estimate;
-								sb.AppendFormat("{0,-13}{1,-12} {2,4}{3}", issue.Item.key, IssueStatus.FriendlyName(issue.Item.status), estimate, Environment.NewLine);
+								sb.AppendFormat("{0,-13}{1,-12} {2,4}{3}", issue.Item.key, IssueStatus.FriendlyNameFor(issue.Item.status), estimate, Environment.NewLine);
 							}
 							sb.AppendFormat("{1}{0,30}{1}", idsForDev, Environment.NewLine);
 						}

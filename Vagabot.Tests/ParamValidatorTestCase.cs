@@ -53,5 +53,24 @@ namespace Binboo.Tests
 			Assert.IsFalse(string.IsNullOrEmpty(optional.RegularExpression));
 		}
 
+		[Test]
+		public void TestFromList()
+		{
+			const string value1 = "Value1";
+			const string one = "Value One";
+
+			ParamValidator fromList = ParamValidator.From(new [] {value1, one});
+
+			Assert.IsTrue(fromList.IsMatch(value1));
+			Assert.IsTrue(fromList.IsMatch(one));
+
+			Assert.IsTrue(fromList.IsMatch(Quote(value1)));
+			Assert.IsTrue(fromList.IsMatch(Quote(one)));
+		}
+
+		private static string Quote(string str)
+		{
+			return "\"" + str + "\"";
+		}
 	}
 }

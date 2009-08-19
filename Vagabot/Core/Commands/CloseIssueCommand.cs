@@ -51,7 +51,7 @@ namespace Binboo.Core.Commands
 		{
 			return CollectAndValidateArguments(context.Arguments, 
 			                                   issueId => ParamValidator.IssueId, 
-			                                   resolution => ParamValidator.From(IssueResolution.IDs()) , 
+			                                   resolution => ParamValidator.From(IssueResolution.FriendlyNames()) , 
 			                                   comment => ParamValidator.Anything.AsOptional());
 		}
 

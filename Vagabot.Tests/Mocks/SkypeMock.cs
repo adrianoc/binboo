@@ -21,6 +21,7 @@
  **/
 
 using System;
+using Moq;
 using SKYPE4COMLib;
 
 namespace Binboo.Tests.Mocks
@@ -50,13 +51,22 @@ namespace Binboo.Tests.Mocks
 
 		public ChatMessage SendMessage(string Username, string Text)
 		{
-			ChatMessageMock message = new ChatMessageMock(new UserMock(Username, false), Text, _chatRetriever());
+			var message = new ChatMessageMock(NewUserMock(Username), Text, _chatRetriever());
 			if (null != MessageStatus)
 			{
 				MessageStatus(message, TChatMessageStatus.cmsReceived);
 			}
 
 			return message;
+		}
+
+		private static User NewUserMock(string username)
+		{
+			var userMock = new Mock<User>();
+			userMock.Setup(user => user.IsBlocked).Returns(false);
+			userMock.Setup(user => user.Handle).Returns(username);
+
+			return userMock.Object;
 		}
 
 		public void SendCommand(Command pCommand)
@@ -235,7 +245,7 @@ namespace Binboo.Tests.Mocks
 
 		public ChatCollection MissedChats
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public ChatCollection RecentChats

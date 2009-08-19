@@ -47,7 +47,7 @@ namespace Binboo.JiraIntegration
 			get { return _description; }
 		}
 
-		public static IEnumerable<string> IDs()
+		public static IEnumerable<string> FriendlyNames()
 		{
 			foreach (var item in _idToConstantMap.Values)
 			{
@@ -65,7 +65,7 @@ namespace Binboo.JiraIntegration
 			throw new ArgumentException(string.Format("No constant found for name '{0}'",  friendlyName));
 		}
 
-		public static string FriendlyName(string id)
+		public static string FriendlyNameFor(string id)
 		{
 			if (!_idToConstantMap.ContainsKey(id))
 			{

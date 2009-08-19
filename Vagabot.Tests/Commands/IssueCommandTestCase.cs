@@ -39,9 +39,7 @@ namespace Binboo.Tests.Commands
 
 			Mock<IContext> contextMock = ContextMockFor(issue.key);
 
-			string result = issueCommandMock.Process(contextMock.Object);
-			
-			Assert.AreEqual(ExpectedResultFor(issue), result);
+			Assert.AreEqual(ExpectedResultFor(issue), issueCommandMock.Process(contextMock.Object));
 
 			issueCommandMock.Verify();
 		}
@@ -65,6 +63,21 @@ namespace Binboo.Tests.Commands
 			commandMock.Verify();
 		}
 
+		[Test]
+		public void TestNonExistingIssue()
+		{
+			RemoteIssue issue = new RemoteIssue { key = "BTST-123", status = "2", created = new DateTime(2009, 01, 05), summary = "summary" };
+			var commandMock = NewCommand<IssueCommand>(mock => mock.Setup(proxy => proxy.GetIssue("BTST-123")).Throws(new JiraProxyException("Failed to get issue: " + issue.key, new Exception(""))));
+
+			Mock<IContext> contextMock = ContextMockFor(issue.key);
+
+			Assert.AreEqual("Failed to get issue: " + issue.key + "\r\n", commandMock.Process(contextMock.Object));
+
+			contextMock.VerifyAll();
+			commandMock.Verify();
+		}
+
+
 		private static string ExpectedResultFor(RemoteIssue issue)
 		{
 			return ExpectedResultFor(issue, string.Empty);
@@ -77,7 +90,7 @@ namespace Binboo.Tests.Commands
 				comments = "\r\n" + comments;
 			}
 			
-			return string.Format("{0}{1}\r\nhttp://tracker.db4o.com/browse/{2}", issue.Format(), comments, issue.key);
+			return string.Format("{0}{1}\r\nhttp://sei.la.com/browse/{2}", issue.Format(), comments, issue.key);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,44 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
-using System;
-using System.Threading;
+using Binboo.Core;
 using Binboo.Core.Commands;
+using NUnit.Framework;
 
-namespace Binboo.Tests.Mocks
+namespace Binboo.Tests.Core
 {
-	internal class BotCommandMock : IBotCommand
+	[TestFixture]
+	public class ConfigServicesTestCase
 	{
-		public BotCommandMock(string id, Func<IContext, string> returnProvider)
+		[Test]
+		public void TestUserMapping()
 		{
-			_id = id;
-			_returnProvider = returnProvider;
+			Assert.AreEqual("Susan Murphy", ConfigServices.IMUserToIssueTrackerUser("susan"));
+			Assert.AreEqual("B.O.B", ConfigServices.ResolveUser("myself", new Context("bob", "")));
 		}
-
-		public string Help
-		{
-			get { throw new System.NotImplementedException(); }
-		}
-
-		public string Id
-		{
-			get { return _id; }
-		}
-
-		public string Process(IContext context)
-		{
-			_called.Set();
-			return _returnProvider(context);
-		}
-
-		public bool Wait(int timeout)
-		{
-			return _called.WaitOne(timeout);
-		}
-
-		private readonly EventWaitHandle _called = new EventWaitHandle(false, EventResetMode.ManualReset);
-		private readonly string _id;
-		private readonly Func<IContext, string> _returnProvider;
 	}
 }

@@ -29,9 +29,9 @@ namespace Binboo.Tests.Mocks
 	public class ChatMock : Chat
 	{
 		private readonly IList<ChatMessage> _messages = new List<ChatMessage>();
-		private readonly UserMock _user;
+		private readonly User _user;
 
-		public ChatMock(UserMock user)
+		public ChatMock(User user)
 		{
 			_user = user;
 		}
