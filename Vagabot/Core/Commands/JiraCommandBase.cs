@@ -52,22 +52,8 @@ namespace Binboo.Core.Commands
 		
 		protected static T OptionalArgumentOrDefault<T>(IDictionary<string, Argument> args, string argName, T defaultValue)
 		{
-			if (args.ContainsKey(argName))
-			{
-				Argument argument = args[argName];
-				return argument.IsPresent ? (T) Convert.ChangeType(argument.Value, typeof (T)) : defaultValue;
-			}
-
-			return defaultValue;
-		}
-
-		protected bool IsPresent(IDictionary<string, Argument> args, string argName)
-		{
-			if (!args.ContainsKey(argName))
-				return false;
-			
 			Argument argument = args[argName];
-			return argument.IsPresent;
+			return argument.IsPresent ? (T) Convert.ChangeType(argument.Value, typeof (T)) : defaultValue;
 		}
 
 		protected static string Run(Func<string> command)

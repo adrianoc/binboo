@@ -44,17 +44,15 @@ namespace Binboo.Core.Commands
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comments => ParamValidator.Custom("comments", true));
 
-			bool showComments = IsPresent(arguments, "comments");
 			return Run(
 						() => _jira.GetIssue(arguments["issueId"]),
-						ri => FormatIssue(ri, showComments));
+						ri => FormatIssue(ri, arguments["comments"].IsPresent));
 
 		}
 
 		private string FormatIssue(RemoteIssue issue, bool showComments)
 		{
 			string issueDetails = Run(() => issue.Format());
-
 			if (showComments)
 			{
 				issueDetails = issueDetails + "\r\n" + Run(() => _jira.GetComments(issue.key));

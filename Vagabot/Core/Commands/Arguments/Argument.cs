@@ -31,7 +31,6 @@ namespace Binboo.Core.Commands.Arguments
 		internal string Name { private get; set; }
 		internal string Value { get; set; }
 		internal Match ArgMatch { private get; set; }
-		internal bool IsMultipleMatch { get { return ArgMatch.Captures.Count > 0; } }
 
 		public static implicit operator string(Argument arg)
 		{
