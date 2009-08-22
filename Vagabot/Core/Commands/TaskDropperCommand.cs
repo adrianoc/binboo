@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  **/
 
-using System.Collections.Generic;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
