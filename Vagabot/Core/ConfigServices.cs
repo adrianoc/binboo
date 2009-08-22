@@ -180,14 +180,14 @@ namespace Binboo.Core
 			return Encoding.ASCII.GetString(data);
 		}			
 
-		public static string ResolveUser(string userName, IContext context)
+		public static string ResolveUser(string userName, string IMUserName)
 		{
 			if (userName.ToLower() == "myself")
 			{
-				userName = IMUserToIssueTrackerUser(context.UserName);
+				userName = IMUserToIssueTrackerUser(IMUserName);
 				if (String.IsNullOrEmpty(userName))
 				{
-					throw new ArgumentException(String.Format("Unable to map skype user name '{0}' to jira user name. Check configuration file.", context.UserName));
+					throw new ArgumentException(String.Format("Unable to map skype user name '{0}' to jira user name. Check configuration file.", IMUserName));
 				}
 			}
 			else
