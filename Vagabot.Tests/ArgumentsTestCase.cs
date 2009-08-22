@@ -77,11 +77,19 @@ namespace Binboo.Tests
 		{
 			AssertArguments(
 					"$test IamACommand TEST-10, arg#2",
-					"IamACommand: Unmached arguments: \r\n\r\nTEST-10, arg#2\r\n         ^^^^^",
+					"IamACommand: Unmached arguments: \r\n\r\nTEST-10, arg#2\r\n       ^^^^^^^",
 					a1 => ParamValidator.MultipleIssueId);
 		}
 
-
+		[Test]
+		public void TestMissingCommaBetweenMultipleItems()
+		{
+			AssertArguments(
+					"$test IamACommand TEST-10 TEST-20 8",
+					"IamACommand: Invalid arguments count. Expected at least 1 and no more than 2, got 3\r\n\r\n0: TEST-10\r\n8: TEST-20\r\n16: 8\r\n\r\n\r\nJira Command Mock",
+					a1 => ParamValidator.MultipleIssueId,
+					a2 => ParamValidator.Order);
+		}
 
 		[Test]
 		public void TestSingleItemInMultipleItemsArg()
