@@ -91,7 +91,7 @@ namespace Binboo.JiraIntegration
 		{
 			ValidateConnection();
 			RemoteIssue issue = CreateIssue(reporter, project.ToUpper(), summary, description, type, order, IssuePriority.Major);
-
+			
 			return Run( () => _client.Item.createIssue(_loginToken, issue),
 						string.Format("Failed to file issue '{0}' for project {1}.", summary, issue.project));
 		}

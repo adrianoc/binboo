@@ -28,7 +28,6 @@ namespace Binboo.Core.Util
 	{
 		public static string Value(this Match match)
 		{
-			//return match.Groups.Count == 1 ? match.Value : match.Groups[1].Value;
 			Group param = match.Groups["param"];
 			return param.Value.Length == 0 ? match.Value : param.Value;
 		}
