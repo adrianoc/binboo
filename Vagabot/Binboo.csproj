@@ -96,7 +96,7 @@
     <Compile Include="Core\Commands\Context.cs" />
     <Compile Include="Core\Commands\Db4oIteration.cs" />
     <Compile Include="Core\Commands\IContext.cs" />
-    <Compile Include="Core\Commands\SetIterationCommand.cs" />
+    <Compile Include="Core\Commands\SetOrderCommand.cs" />
     <Compile Include="Core\Commands\ListProjectsCommand.cs" />
     <Compile Include="Core\Commands\Arguments\ParamValidator.cs" />
     <Compile Include="Core\ConfigServices.cs" />

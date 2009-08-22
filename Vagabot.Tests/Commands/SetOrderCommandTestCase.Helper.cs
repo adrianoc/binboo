@@ -29,37 +29,37 @@ using NUnit.Framework;
 
 namespace Binboo.Tests.Commands
 {
-	public partial class SetIterationCommandTestCase
+	public partial class SetOrderCommandTestCase
 	{
 		private void AssertInvalidArguments(string expectedMessage, params string[] arguments)
 		{
 			var jiraProxyMock = new Mock<IJiraProxy>();
-			var commandMock = new CommandMock<SetIterationCommand>(new SetIterationCommand(jiraProxyMock.Object, "Help"), jiraProxyMock);
-			var contextMock = ContextMockFor(arguments);
+			var commandMock = new CommandMock<SetOrderCommand>(new SetOrderCommand(jiraProxyMock.Object, "Help"), jiraProxyMock);
+			var contextMock = ContextMockFor("some-user", arguments);
 			Assert.AreEqual(expectedMessage, commandMock.Process(contextMock.Object));
 		}
 
-		private void AssertSetIteration(string issues, int iteration)
+		private void AssertSetOrder(string issues, int order)
 		{
-			using (var commandMock = NewCommand<SetIterationCommand>(SetupProxyCalls(issues, iteration)))
+			using (var commandMock = NewCommand<SetOrderCommand>(SetupProxyCalls(issues, order)))
 			{
-				var contextMock = ContextMockFor(issues, iteration.ToString());
+				var contextMock = ContextMockFor("setorder-user", issues, order.ToString());
 
-				Assert.AreEqual(ExpectedMessage(issues), commandMock.Process(contextMock.Object));
+				Assert.AreEqual(ExpectedMessage(issues, order), commandMock.Process(contextMock.Object));
 			}
 		}
 
-		private static string ExpectedMessage(string commaSeparatedIssues)
+		private static string ExpectedMessage(string commaSeparatedIssues, int order)
 		{
 			var sb = new StringBuilder();
 			foreach (var issue in commaSeparatedIssues.Split(','))
 			{
-				sb.AppendLine(string.Format("Iteration set for issue '{0}'.", issue.Trim()));
+				sb.AppendLine(string.Format("Order set to {0} for issue '{1}'.", order, issue.Trim()));
 			}
 			return sb.ToString();
 		}
 
-		private static Action<Mock<IJiraProxy>>[] SetupProxyCalls(string commaSeparatedIssues, int iteration)
+		private static Action<Mock<IJiraProxy>>[] SetupProxyCalls(string commaSeparatedIssues, int order)
 		{
 			var issues = commaSeparatedIssues.Split(',');
 			var setups = new Action<Mock<IJiraProxy>>[issues.Length];
@@ -70,7 +70,7 @@ namespace Binboo.Tests.Commands
 				setups[i] = mock => mock.Setup(jira => jira.UpdateIssue(
 																It.Is<string>(ci => ci == currentIssue),
 																It.IsAny<string>(),
-																It.Is<IssueField[]>(fields => fields.Length == 1 && fields[0].Values[0] == iteration.ToString())));
+																It.Is<IssueField[]>(fields => fields.Length == 1 && fields[0].Values[0] == order.ToString())));
 
 			}
 

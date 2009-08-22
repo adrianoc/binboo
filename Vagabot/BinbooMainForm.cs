@@ -131,7 +131,7 @@ namespace Binboo
 				AddCommand(new IssueAssignCommand(JiraProxy(), Binboo.Assign)).
 				AddCommand(new TaskDropperCommand(JiraProxy(), Binboo.Drop)).
 				AddCommand(new ListProjectsCommand(JiraProxy(), Binboo.ListProjects)).
-				AddCommand(new SetIterationCommand(JiraProxy(), Binboo.SetIteration));
+				AddCommand(new SetOrderCommand(JiraProxy(), Binboo.SetOrder));
 		}
 
 		private JiraProxy _jira;

@@ -165,12 +165,12 @@ namespace Binboo {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sets the ireation for one or more issues
-        ///Use: %cmd% &lt;ticket#&gt; iteration.
+        ///   Looks up a localized string similar to Sets the order for one or more issues
+        ///Use: %cmd% &lt;ticket#&gt; order.
         /// </summary>
-        internal static string SetIteration {
+        internal static string SetOrder {
             get {
-                return ResourceManager.GetString("SetIteration", resourceCulture);
+                return ResourceManager.GetString("SetOrder", resourceCulture);
             }
         }
     }

@@ -25,33 +25,33 @@ using NUnit.Framework;
 namespace Binboo.Tests.Commands
 {
 	[TestFixture]
-	public partial class SetIterationCommandTestCase : JiraCommandTestCaseBase
+	public partial class SetOrderCommandTestCase : JiraCommandTestCaseBase
 	{
 		[Test]
 		public void TestSimple()
 		{
-			AssertSetIteration("ITBS-001", 42);
+			AssertSetOrder("ITBS-001", 2);
 		}
 
 		[Test]
 		public void TestBulkSetIteration()
 		{
-			AssertSetIteration("ITBS-001, ITBS-002, ITBS-003", 42);
+			AssertSetOrder("ITBS-001, ITBS-002, ITBS-003", 2);
 		}
 
 		[Test]
 		public void TestTooManyArguments()
 		{
 			AssertInvalidArguments(
-				"SetIteration: Unmached arguments: \r\n\r\nITBS-005 42 ** NOT EXPECTED **\r\n           ^^^^^^^^^^^^^^^^^^^",
-				"ITBS-005", "42", "** NOT EXPECTED **");
+				"SetOrder: Unmached arguments: \r\n\r\nITBS-005 4 ** NOT EXPECTED **\r\n          ^^^^^^^^^^^^^^^^^^^",
+				"ITBS-005", "4", "** NOT EXPECTED **");
 		}
 		
 		[Test]
-		public void TestInvalidIteration()
+		public void TestInvalidOrder()
 		{
 			AssertInvalidArguments(
-				"SetIteration: Unmached arguments: \r\n\r\nITBS-005 fortytwo\r\n         ^^^^^^^^",
+				"SetOrder: Unmached arguments: \r\n\r\nITBS-005 fortytwo\r\n        ^^^^^^^^^",
 				"ITBS-005", "fortytwo");
 		}
 		
@@ -59,7 +59,7 @@ namespace Binboo.Tests.Commands
 		public void TestInvalidIssueInBulkOperation()
 		{
 			AssertInvalidArguments(
-				@"SetIteration: Argument index 0 (vale = 'ITBS-005, ') is invalid (Validator: ((?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b),required)).",
+				"SetOrder: Unmached arguments: \r\n\r\nITBS-005, WHAT? 42\r\n        ^^^^^^^^^^",
 				"ITBS-005, WHAT?", "42");
 		}
 
@@ -67,7 +67,7 @@ namespace Binboo.Tests.Commands
 		public void TestInvalidIssue()
 		{
 			AssertInvalidArguments(
-				@"SetIteration: Argument index 0 (vale = '42') is invalid (Validator: ((?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b),required)).",
+				"SetOrder: Invalid arguments count. Expected at least 1 and no more than 2, got 0\r\n\r\n\r\n\r\nHelp",
 				"WHAT?", "42");
 		}
 	}
