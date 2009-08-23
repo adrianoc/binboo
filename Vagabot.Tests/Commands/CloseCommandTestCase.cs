@@ -70,7 +70,7 @@ namespace Binboo.Tests.Commands
 		{
 			using (var commandMock = NewCommand<CloseIssueCommand>())
 			{
-				var contextMock = ContextMockFor("TBC-009", "non-existing-resolution");
+				var contextMock = ContextMockFor(UserName, "TBC-009", "non-existing-resolution");
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
 				StringAssert.Contains("Close: Argument index 1 (vale = 'non-existing-resolution') is invalid", commandMock.Process(contextMock.Object));
@@ -82,11 +82,13 @@ namespace Binboo.Tests.Commands
 		{
 			using (var commandMock = NewCommand<CloseIssueCommand>(mock => mock.Setup(proxy => proxy.CloseIssue("TBC-010", It.IsAny<String>(), It.IsAny<IssueResolution>())).Throws(new JiraProxyException("Failed to close issue: TBC-010", new Exception()))))
 			{
-				var contextMock = ContextMockFor("TBC-010", "fixed");
+				var contextMock = ContextMockFor(UserName, "TBC-010", "fixed");
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
 				Assert.AreEqual("Failed to close issue: TBC-010\r\nException of type 'System.Exception' was thrown.", commandMock.Process(contextMock.Object));
 			}
 		}
+		
+		private const string UserName = "closing-user";
 	}
 }

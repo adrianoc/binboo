@@ -45,8 +45,7 @@ namespace Binboo.Tests.Commands
 		{
 			var commandMock = NewCommand<SearchCommand>(mock => mock.Setup(proxy => proxy.SearchIssues(args[0])).Returns(_issues));
 
-			Mock<IContext> contextMock = ContextMockFor(args);
-
+			Mock<IContext> contextMock = ContextMockFor("some-user", args);
 			
 			string status = (args.Length == 2) ? args[1] : "open";
 
@@ -61,7 +60,6 @@ namespace Binboo.Tests.Commands
 			expected = string.Format("Issue      Status      Created             Sumary{0}{1}{2}{0}", Environment.NewLine, new String('-', max), expected);
 			Assert.AreEqual(expected, commandMock.Process(contextMock.Object));
 
-			contextMock.VerifyAll();
 			commandMock.Verify();
 		}
 

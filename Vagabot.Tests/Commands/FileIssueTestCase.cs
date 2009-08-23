@@ -71,7 +71,7 @@ namespace Binboo.Tests.Commands
 			IssueType issueType = IssueType.Parse(type.Value);
 			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, issueType.Id, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = DateTime.FromFileTime(42), summary = summary.Value })))
 			{
-				var contextMock = ContextMockFor(String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringOrEmpty(description), OrderOrEmpty(order), type.Value));
+				var contextMock = ContextMockFor("creator", String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringOrEmpty(description), OrderOrEmpty(order), type.Value));
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
 				return commandMock.Process(contextMock.Object);

@@ -40,7 +40,7 @@ namespace Binboo.Tests.Commands
 			string noQuotesComment = StripQuotes(comment);
 			using (var commandMock = NewCommand<CloseIssueCommand>(proxyMock => proxyMock.Setup(p => p.CloseIssue(ticket, It.Is<String>(remmark => remmark == noQuotesComment), resolution))))
 			{
-				var contextMock = ContextMockFor(String.Format("{0} \"{1}\"{2}", ticket, resolution.Description.ToLower(), String.IsNullOrEmpty(comment) ? "" : (" " + comment)));
+				var contextMock = ContextMockFor("closing-user", String.Format("{0} \"{1}\"{2}", ticket, resolution.Description.ToLower(), String.IsNullOrEmpty(comment) ? "" : (" " + comment)));
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
 				Assert.AreEqual("OK", commandMock.Process(contextMock.Object));
