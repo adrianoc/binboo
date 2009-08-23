@@ -19,20 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using Binboo.Core;
 using Binboo.Core.Commands;
 using NUnit.Framework;
 
-namespace Binboo.Tests.Core
+namespace Binboo.Tests.Commands
 {
 	[TestFixture]
-	public class ConfigServicesTestCase
+	public class ListProjectsCommandTestCase : JiraCommandTestCaseBase
 	{
 		[Test]
-		public void TestUserMapping()
+		public void Test()
 		{
-			Assert.AreEqual("Susan Murphy", ConfigServices.IMUserToIssueTrackerUser("susan"));
-			Assert.AreEqual("B.O.B", ConfigServices.ResolveUser("myself", "bob"));
+			using(var commandMock = NewCommand<ListProjectsCommand>(mock => mock.Setup(proxy => proxy.GetProjectList()).Returns(_projects)))
+			{
+				var contextMock = ContextMockFor("list-user");
+				var result = commandMock.Process(contextMock.Object);
+				StringAssert.Contains("OK", result);
+			}
 		}
+
+		private RemoteProject[] _projects = new []
+		                                    	{
+		                                    		new RemoteProject {key="P1", lead = "P1 lead", description = "P1 description"}, 
+													new RemoteProject {key="P2", lead = "P2 lead", description = "P2 description"}, 
+												};
 	}
 }

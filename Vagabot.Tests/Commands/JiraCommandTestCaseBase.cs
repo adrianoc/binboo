@@ -90,16 +90,18 @@ namespace Binboo.Tests.Commands
 			//IssuePriority.Initialize(new RemotePriority[] {});
 		}
 
-		protected static Mock<IContext> ContextMockFor(params string[] arguments)
+		protected static Mock<IContext> ContextMockFor(string userName, params string[] arguments)
 		{
-			var contextMock = new Mock<IContext>(MockBehavior.Strict);
+			var contextMock = new Mock<IContext>();
 			contextMock.Setup(context => context.Arguments).Returns(ZipArguments(arguments));
+			contextMock.Setup(context => context.UserName).Returns(userName);
+			
 			return contextMock;
 		}
 
-		private static string ZipArguments(IEnumerable<string> arguments)
+		private static string ZipArguments(string[] arguments)
 		{
-			return arguments.Aggregate("", (acc, current) => acc + " " + current).Substring(1);
+			return arguments.Length > 0 ? arguments.Aggregate("", (acc, current) => acc + " " + current).Substring(1) : "";
 		}
 
 		internal CommandMock<T> NewCommand<T, R>(Expression<Func<IJiraProxy, R>> expectedMethodCall, R valueToReturn) where T : JiraCommandBase
@@ -119,6 +121,14 @@ namespace Binboo.Tests.Commands
 			}
 
 			return new CommandMock<T>(FromCacheOrNew<T>(), _jiraProxyMock);
+		}
+
+		internal void Reset<T>()
+		{
+			if (Commands.ContainsKey(typeof(T)))
+			{
+				Commands.Remove(typeof(T));
+			}
 		}
 
 		private T FromCacheOrNew<T>() where T : JiraCommandBase

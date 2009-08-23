@@ -85,7 +85,7 @@ namespace Binboo.Core.Commands.Arguments
 			}
 		}
 
-		private string UnmatchedArgumentsMarker(MatchCollection matches, string arguments)
+		private static string UnmatchedArgumentsMarker(MatchCollection matches, string arguments)
 		{
 			Capture lastCapture = LastCaptureOf(matches);
 			int matchLength = lastCapture.Index + lastCapture.Length;
@@ -100,12 +100,15 @@ namespace Binboo.Core.Commands.Arguments
 
 		private static Capture LastCaptureOf(MatchCollection matches)
 		{
+			if (matches.Count == 0) return null;
+
 			Match lastMatch = matches[matches.Count-1];
 			return lastMatch.Captures[lastMatch.Captures.Count -1];
 		}
 
 		private static bool HasUnmatchedArguments(Capture lastCapture, string arguments)
 		{
+			if (lastCapture == null) return arguments.Trim().Length > 0;
 			return (lastCapture.Index + lastCapture.Length) != arguments.Trim().Length;
 		}
 
@@ -154,7 +157,7 @@ namespace Binboo.Core.Commands.Arguments
 
 		private static string ExtractingRegularExpressionFor(IEnumerable<ParamValidator> validators)
 		{
-			string regularExpression = validators.Aggregate("(?x-imsn:^$", (regex, validator) => regex + "|" + validator.RegularExpression) + ")";
+			string regularExpression = validators.Aggregate("(?x-imsn:^(?<=.)$", (regex, validator) => regex + "|" + validator.RegularExpression) + ")";
 			DumpRegularExpression(regularExpression);
 			
 			return regularExpression;
