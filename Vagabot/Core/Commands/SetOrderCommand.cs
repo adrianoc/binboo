@@ -20,36 +20,44 @@
  * THE SOFTWARE.
  **/
 
-using System.Collections.Generic;
-using System.Linq;
+using System;
+using System.Text;
+using Binboo.Core.Commands.Arguments;
+using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
 {
-	internal class ParamValidatorNot : ParamValidator
+	internal class SetOrderCommand : JiraCommandBase
 	{
-		private readonly IEnumerable<ParamValidator> _ignored;
-		private readonly ParamValidator _parent;
-
-		internal ParamValidatorNot(ParamValidator parent, params ParamValidator[] ignored) : base(string.Empty)
+		public SetOrderCommand(IJiraProxy jira, string help) : base(jira, help)
 		{
-			_ignored = ignored;
-			_parent = parent;
 		}
 
-		public override bool IsMatch(string candidate)
+		public override string Id
 		{
-			if (!_parent.IsMatch(candidate)) return false;
-			return !_ignored.Any(validator => validator.IsMatch(candidate));
+			get { return "SetOrder"; }
 		}
 
-		public override string RegularExpression
+		protected override string ProcessCommand(IContext context)
 		{
-			get { return _parent.RegularExpression; }
+			var arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, order => ParamValidator.Order);
+			var sb = new StringBuilder();
+			
+			foreach (var issue in arguments["issueId"].Values)
+			{
+				string currentIssue = issue;
+				Argument order = arguments["order"];
+				sb.AppendLine(Run(
+				              	() => _jira.UpdateIssue(currentIssue, String.Empty, NewOrder(order)),
+				              	string.Format("Order set to {0} for issue '{1}'.", order.Value, currentIssue)));
+			}
+
+			return sb.ToString();
 		}
 
-		public override string ToString()
+		private static IssueField NewOrder(Argument order)
 		{
-			return _parent + _ignored.Aggregate(" Ignoring:", (acc, current) => acc + " " + current);
+			return IssueField.CustomField(CustomFieldId.Order) <= order.Value;
 		}
 	}
 }

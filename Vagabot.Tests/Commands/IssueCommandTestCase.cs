@@ -38,7 +38,7 @@ namespace Binboo.Tests.Commands
 			using (var issueCommandMock = NewCommand<IssueCommand, RemoteIssue>(proxy => proxy.GetIssue("BTST-123"), issue))
 			{
 
-				Mock<IContext> contextMock = ContextMockFor(issue.key);
+				Mock<IContext> contextMock = ContextMockFor("issue-user", issue.key);
 
 				Assert.AreEqual(ExpectedResultFor(issue), issueCommandMock.Process(contextMock.Object));
 			}
@@ -53,13 +53,12 @@ namespace Binboo.Tests.Commands
 												mock => mock.Setup(proxy => proxy.GetIssue("BTST-123")).Returns(issue),
 												mock => mock.Setup(proxy => proxy.GetComments("BTST-123")).Returns(comments));
 
-			Mock<IContext> contextMock = ContextMockFor(issue.key, "comments");
+			Mock<IContext> contextMock = ContextMockFor("issue-user", issue.key, "comments");
 
 			Assert.AreEqual(
 				ExpectedResultFor(issue, comments), 
 				commandMock.Process(contextMock.Object));
 
-			contextMock.VerifyAll();
 			commandMock.Verify();
 		}
 
@@ -67,16 +66,14 @@ namespace Binboo.Tests.Commands
 		public void TestNonExistingIssue()
 		{
 			RemoteIssue issue = new RemoteIssue { key = "BTST-123", status = "2", created = new DateTime(2009, 01, 05), summary = "summary" };
-			var commandMock = NewCommand<IssueCommand>(mock => mock.Setup(proxy => proxy.GetIssue("BTST-123")).Throws(new JiraProxyException("Failed to get issue: " + issue.key, new Exception(""))));
+			using (var commandMock = NewCommand<IssueCommand>(mock => mock.Setup(proxy => proxy.GetIssue("BTST-123")).Throws(new JiraProxyException("Failed to get issue: " + issue.key, new Exception("")))))
+			{
 
-			Mock<IContext> contextMock = ContextMockFor(issue.key);
+				Mock<IContext> contextMock = ContextMockFor("issue-user", issue.key);
 
-			Assert.AreEqual("Failed to get issue: " + issue.key + "\r\n", commandMock.Process(contextMock.Object));
-
-			contextMock.VerifyAll();
-			commandMock.Verify();
+				Assert.AreEqual("Failed to get issue: " + issue.key + "\r\n\r\n", commandMock.Process(contextMock.Object));
+			}
 		}
-
 
 		private static string ExpectedResultFor(RemoteIssue issue)
 		{
@@ -90,7 +87,7 @@ namespace Binboo.Tests.Commands
 				comments = "\r\n" + comments;
 			}
 			
-			return string.Format("{0}{1}\r\nhttp://sei.la.com/browse/{2}", issue.Format(), comments, issue.key);
+			return string.Format("{0}{1}\r\nhttp://sei.la.com/browse/{2}\r\n", issue.Format(), comments, issue.key);
 		}
 	}
 }
