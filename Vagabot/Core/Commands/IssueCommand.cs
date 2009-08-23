@@ -21,6 +21,7 @@
  **/
 
 using System.Collections.Generic;
+using System.Text;
 using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
 
@@ -44,10 +45,16 @@ namespace Binboo.Core.Commands
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comments => ParamValidator.Custom("comments", true));
 
-			return Run(
-						() => _jira.GetIssue(arguments["issueId"]),
-						ri => FormatIssue(ri, arguments["comments"].IsPresent));
+			var sb = new StringBuilder();
+			foreach (var issue in arguments["issueId"].Values)
+			{
+				var currentIssue = issue;
+				sb.AppendLine(Run(  () => _jira.GetIssue(currentIssue),
+									ri => FormatIssue(ri, arguments["comments"].IsPresent))
+							 );
+			}
 
+			return sb.ToString();
 		}
 
 		private string FormatIssue(RemoteIssue issue, bool showComments)

@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  **/
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -36,11 +35,11 @@ namespace Binboo.Core.Commands.Arguments
 		internal static readonly ParamValidator IssueId = new ParamValidator(@"%0%-[0-9]+", Project);
 		internal static readonly ParamValidator IssueStatus = new ParamValidator("open|closed|all");
 		internal static readonly ParamValidator Iteration = new ParamValidator("(?<param>[0-9]+)", true);
-		internal static readonly ParamValidator MultipleIssueId = new ParamValidator(@"(?<issues>(?:\b(?<param>[A-Za-z]{1,4}-[0-9]{1,4})\s*,?\s*)+\b)");
+		internal static readonly ParamValidator MultipleIssueId = new ParamValidator(@"(?<issues>(?<param>[A-Za-z]{1,4}-[0-9]{1,4})(\s*,\s*(?<param>[A-Za-z]{1,4}-[0-9]{1,4}))*)");
 		internal static readonly ParamValidator Order = new ParamValidator(@"\b0?[1-9]\b", true);
 		internal static readonly ParamValidator Peer = AnythingStartingWithText.AsOptional();
 		internal static readonly ParamValidator Type = new ParamValidator(@"type\s*=\s*(?<param>bug|task|improvement|b|t|i|.*)\z", true);
-		internal static readonly ParamValidator UserName = new ParamValidator(@"\s*(?<param>[A-za-z][A-Za-z_]*[0-9]*)");
+		internal static readonly ParamValidator UserName = new ParamValidator(@"\s*(?<param>[A-za-z][A-Za-z_]*[0-9]*)", true);
 
 		public static ParamValidator Custom(string regex, bool optional)
 		{
@@ -65,7 +64,7 @@ namespace Binboo.Core.Commands.Arguments
 		public virtual bool IsMatch(string candidate)
 		{
 			var match = Regex.Match(candidate, _regex);
-			return match.Success && match.Length == RemoveQuotes(candidate).Trim().Length;
+			return match.Success && match.Value.Trim().Length == RemoveQuotes(candidate).Trim().Length;
 		}
 
 		private string RemoveQuotes(string candidate)
@@ -108,7 +107,7 @@ namespace Binboo.Core.Commands.Arguments
 		{
 			for (int i = 0; i < validators.Length; i++)
 			{
-				_regex = System.Text.RegularExpressions.Regex.Replace(_regex, "%" + i + "%", validators[i].RegularExpression);
+				_regex = Regex.Replace(_regex, "%" + i + "%", validators[i].RegularExpression);
 			}
 		}
 
