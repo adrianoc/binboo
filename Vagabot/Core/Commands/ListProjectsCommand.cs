@@ -49,7 +49,7 @@ namespace Binboo.Core.Commands
 								projects.AppendFormat("{0,-5}{1,-15}{2,-30}{3}", project.key, project.lead, project.description, Environment.NewLine);
 							}
 
-			            	return context.UserName + " : " + projects;
+			            	return "OK\r\n" + projects;
 						});
 		}
 	}
