@@ -155,6 +155,15 @@ namespace Binboo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose pairs randomically.
+        /// </summary>
+        internal static string Pairs {
+            get {
+                return ResourceManager.GetString("Pairs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Searchs for issues containing the text.
         ///Use:%cmd% text [all|*open|closed].
         /// </summary>

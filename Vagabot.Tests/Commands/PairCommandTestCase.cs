@@ -19,25 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using Binboo.Core;
+
+using Binboo.Core.Commands;
 using NUnit.Framework;
 
-namespace Binboo.Tests.Core
+namespace Binboo.Tests.Commands
 {
 	[TestFixture]
-	public class ConfigServicesTestCase
+	public partial class PairCommandTestCase : JiraCommandTestCaseBase
 	{
 		[Test]
-		public void TestUserMapping()
+		public void TestPairsAreValid()
 		{
-			Assert.AreEqual("Susan Murphy", ConfigServices.IMUserToIssueTrackerUser("susan"));
-			Assert.AreEqual("BOB", ConfigServices.ResolveUser("myself", "bob"));
-		}
-
-		[Test]
-		public void TestPairingUsers()
-		{
-			CollectionAssert.AreEquivalent(new[] { "Susan Murphy", "BOB", "Frank Abagnale Jr.", "Carl Hanratty" }, ConfigServices.PairingUsers);
+			using (var commandMock = NewCommand<PairsCommand>())
+			{
+				var contextMock = ContextMockFor("pairs-user");
+				AssertPairsAreValid(ExpectedMessageRegExp(), commandMock.Process(contextMock.Object));
+			}
 		}
 	}
 }

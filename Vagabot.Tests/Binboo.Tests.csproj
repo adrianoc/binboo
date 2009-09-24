@@ -64,6 +64,7 @@
     <Compile Include="Commands\CommandMock.cs" />
     <Compile Include="Commands\IssueAssignCommandTestCase.Helper.cs" />
     <Compile Include="Commands\ListProjectsCommandTestCase.cs" />
+    <Compile Include="Commands\PairCommandTestCase.cs" />
     <Compile Include="Commands\SetOrderCommandTestCase.cs" />
     <Compile Include="Commands\SearchCommandTestCase.cs" />
     <Compile Include="Commands\SetOrderCommandTestCase.Helper.cs" />
@@ -100,6 +101,9 @@
     <Content Include="Binboo.config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\PairCommandTestCase.Helper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

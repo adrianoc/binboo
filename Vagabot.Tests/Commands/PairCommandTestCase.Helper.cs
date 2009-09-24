@@ -19,25 +19,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Binboo.Core;
 using NUnit.Framework;
 
-namespace Binboo.Tests.Core
+namespace Binboo.Tests.Commands
 {
-	[TestFixture]
-	public class ConfigServicesTestCase
+	partial class PairCommandTestCase
 	{
-		[Test]
-		public void TestUserMapping()
+		private static void AssertPairsAreValid(string expectedMessageRegExp, string actual)
 		{
-			Assert.AreEqual("Susan Murphy", ConfigServices.IMUserToIssueTrackerUser("susan"));
-			Assert.AreEqual("BOB", ConfigServices.ResolveUser("myself", "bob"));
+			MatchCollection matches = Regex.Matches(actual, expectedMessageRegExp);
+			CollectionAssert.AreEquivalent(ConfigServices.PairingUsers.Select(userName => FirstName(userName)), DevNamesFrom(matches[0].Groups));
 		}
 
-		[Test]
-		public void TestPairingUsers()
+		private static string FirstName(string fullName)
 		{
-			CollectionAssert.AreEquivalent(new[] { "Susan Murphy", "BOB", "Frank Abagnale Jr.", "Carl Hanratty" }, ConfigServices.PairingUsers);
+			int spaceIndex = fullName.IndexOf(' ');
+			return spaceIndex > 0 ? fullName.Substring(0, spaceIndex) : fullName;
+		}
+
+		private static IEnumerable<string> DevNamesFrom(GroupCollection groups)
+		{
+			int skip = 1;
+			foreach (Group @group in groups)
+			{
+				if (skip > 0)
+				{
+					skip--;
+					continue;
+				}
+				yield return @group.Value;
+			}
+		}
+
+		private static string ExpectedMessageRegExp()
+		{
+			return @"Pairs: \[(.*[^,]), (.*[^,])\], \[(.*[^,]), (.*[^,])\]";
 		}
 	}
 }

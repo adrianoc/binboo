@@ -21,11 +21,11 @@
  **/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Binboo.Core.Commands;
 using TCL.Cryptography;
 
 namespace Binboo.Core
@@ -90,6 +90,59 @@ namespace Binboo.Core
 			}
 		}
 
+		public static string ResolveUser(string userName, string IMUserName)
+		{
+			if (userName.ToLower() == "myself")
+			{
+				userName = IMUserToIssueTrackerUser(IMUserName);
+				if (String.IsNullOrEmpty(userName))
+				{
+					throw new ArgumentException(String.Format("Unable to map skype user name '{0}' to jira user name. Check configuration file.", IMUserName));
+				}
+			}
+			else
+			{
+				string mappedUser = MatchIssueTrackerUser(userName);
+				if (!String.IsNullOrEmpty(mappedUser)) return mappedUser;
+			}
+						
+			return userName;
+		}
+
+		public static IEnumerable<string> PairingUsers
+		{
+			get
+			{
+				foreach (XmlNode userNode in FindPairingUsers())
+				{
+					yield return userNode.Attributes["jiraName"].Value;
+				}
+			}
+		}
+
+		private static XmlNodeList FindPairingUsers()
+		{
+			return FindConfigItems(UserNodeMappingXPath + "[@pair='true']");
+		}
+
+		private static string MatchIssueTrackerUser(string partOfName)
+		{
+			EnsureConfigIsLoaded();
+
+			XmlNodeList users = FindConfigItems(UserNodeMappingXPath + "/@jiraName");
+			if (users == null || users.Count == 0) return String.Empty;
+
+			foreach (XmlNode user in users)
+			{
+				if (Regex.IsMatch(user.Value, partOfName, RegexOptions.IgnoreCase))
+				{
+					return user.Value;
+				}
+			}
+
+			return String.Empty;
+		}
+
 		private static void SaveConfig()
 		{
 			_config.Save(ConfigFilePath());
@@ -134,10 +187,10 @@ namespace Binboo.Core
 				FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(ConfigFilePath()), Path.GetFileName(ConfigFilePath()));
 
 				FileSystemEventHandler configChangedHandler = delegate
-				                                              	{
-				                                              		watcher = null;
-				                                              		_config = null;
-				                                              	};
+				{
+					watcher = null;
+					_config = null;
+				};
 
 				watcher.Changed += configChangedHandler;
 				watcher.NotifyFilter = NotifyFilters.LastWrite;
@@ -178,43 +231,6 @@ namespace Binboo.Core
 		private static string ToString(byte[] data)
 		{
 			return Encoding.ASCII.GetString(data);
-		}			
-
-		public static string ResolveUser(string userName, string IMUserName)
-		{
-			if (userName.ToLower() == "myself")
-			{
-				userName = IMUserToIssueTrackerUser(IMUserName);
-				if (String.IsNullOrEmpty(userName))
-				{
-					throw new ArgumentException(String.Format("Unable to map skype user name '{0}' to jira user name. Check configuration file.", IMUserName));
-				}
-			}
-			else
-			{
-				string mappedUser = MatchIssueTrackerUser(userName);
-				if (!String.IsNullOrEmpty(mappedUser)) return mappedUser;
-			}
-						
-			return userName;
-		}
-
-		private static string MatchIssueTrackerUser(string partOfName)
-		{
-			EnsureConfigIsLoaded();
-
-			XmlNodeList users = FindConfigItems(UserNodeMappingXPath + "/@jiraName");
-			if (users == null || users.Count == 0) return String.Empty;
-
-			foreach (XmlNode user in users)
-			{
-				if (Regex.IsMatch(user.Value, partOfName, RegexOptions.IgnoreCase))
-				{
-					return user.Value;
-				}
-			}
-
-			return String.Empty;
 		}
 
 		private static XmlDocument _config;

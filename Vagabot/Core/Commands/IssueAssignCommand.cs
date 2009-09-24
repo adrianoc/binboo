@@ -54,7 +54,7 @@ namespace Binboo.Core.Commands
 			Assignees assignees = ResolveAssignees(context, arguments["toUser"], arguments["peer"]);
 			if (assignees == null) return string.Format("Failed to assign issue {0}; assignee not informed and no previous assignment found for user '{1}'", CommaSeparated(arguments["issueId"].Values), context.UserName);
 
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			foreach (var ticket in arguments["issueId"].Values)
 			{
 				sb.AppendLine(AssignIssue(ticket, assignees.Assignee, assignees.Peer, IterationFrom(arguments["iteration"])));
