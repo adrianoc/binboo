@@ -44,7 +44,6 @@ namespace Binboo.Core.Commands
 			IEnumerator<string> randomUsers = Random(ConfigServices.PairingUsers);
 			StringBuilder msg = new StringBuilder("Pairs: ");
 
-
 			string pair = NextPair(randomUsers);
 			while (null != pair)
 			{
@@ -79,15 +78,15 @@ namespace Binboo.Core.Commands
 				{
 					i++;
 					alreadyReturned.Add(next);
-					yield return FirstName(items[next]);
+					yield return DevNameFor(items[next]);
 				}
 			}
 		}
 
-		private static string FirstName(string fullName)
+		private static string DevNameFor(string jiraName)
 		{
-			int spaceIndex = fullName.IndexOf(' ');
-			return spaceIndex > 0 ? fullName.Substring(0, spaceIndex) : fullName;
+			int separatorIndex = jiraName.IndexOfAny(new[] {' ', '@'});
+			return separatorIndex > 0 ? jiraName.Substring(0, separatorIndex) : jiraName;
 		}
 	}
 }

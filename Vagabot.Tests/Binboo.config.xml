@@ -8,9 +8,8 @@
       <user skypeName="susan" jiraName="Susan Murphy" pair ="true" />
 	  <user skypeName="link" jiraName="The Missing Link" />
 	  <user skypeName="bob" jiraName="BOB"  pair="true" />
-
 	  <user skypeName="frank" jiraName="Frank Abagnale Jr." pair="true" />
-	  <user skypeName="carl" jiraName="Carl Hanratty" pair="true" />
+	  <user skypeName="carl" jiraName="carl@hanratty.com" pair="true" />
 	</im-user-mapping>
   </jira>
 </binboo>

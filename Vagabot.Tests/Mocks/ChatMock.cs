@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using SKYPE4COMLib;
 
 namespace Binboo.Tests.Mocks
@@ -29,6 +30,8 @@ namespace Binboo.Tests.Mocks
 	public class ChatMock : Chat
 	{
 		private readonly IList<ChatMessage> _messages = new List<ChatMessage>();
+		private readonly EventWaitHandle _messageEvent = new EventWaitHandle(false, EventResetMode.ManualReset);
+
 		private readonly User _user;
 
 		public ChatMock(User user)
@@ -36,17 +39,40 @@ namespace Binboo.Tests.Mocks
 			_user = user;
 		}
 
-		public void OpenWindow()
-		{
-			throw new System.NotImplementedException();
-		}
-
 		public ChatMessage SendMessage(string messageText)
 		{
 			ChatMessage msg = new ChatMessageMock(_user, messageText, this);
+
 			_messages.Add(msg);
+			_messageEvent.Set();
 
 			return msg;
+		}
+
+		public IEnumerable<ChatMessage> SentMessages
+		{
+			get
+			{
+				return _messages;
+			}
+		}
+
+		public bool WaitForMessages(int timeout)
+		{
+			bool ret = _messageEvent.WaitOne(timeout);
+			_messageEvent.Reset();
+
+			return ret;
+		}
+
+		public void Reset()
+		{
+			_messages.Clear();
+		}
+
+		public void OpenWindow()
+		{
+			throw new System.NotImplementedException();
 		}
 
 		public void Leave()
@@ -242,16 +268,6 @@ namespace Binboo.Tests.Mocks
 		public TChatMyStatus MyStatus
 		{
 			get { throw new System.NotImplementedException(); }
-		}
-
-		public IEnumerable<ChatMessage> SentMessages
-		{
-			get { return _messages; }
-		}
-
-		public void Reset()
-		{
-			_messages.Clear();
 		}
 	}
 }

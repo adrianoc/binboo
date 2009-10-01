@@ -20,12 +20,10 @@
  * THE SOFTWARE.
  **/
 
-//TODO: Configure report ids (early progress report/early priority queue)
-//TODO: Add the user name in every operation that changes JIRA (add a comment?)
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -78,7 +76,7 @@ namespace Binboo.Core
 			
 			events.MessageStatus += ProcessMessage;
 			events.AttachmentStatus += ProcessAttachmentStatus;
-			events.CallStatus += events_CallStatus;
+			events.CallStatus += CallStatusChanged;
 
 			try
 			{
@@ -90,17 +88,21 @@ namespace Binboo.Core
 			}
 		}
 
-		void events_CallStatus(Call call, TCallStatus status)
+		private void CallStatusChanged(Call pcall, TCallStatus status)
 		{
-			DumpCall("CallStatus", call);
-			System.Diagnostics.Debug.WriteLine("Status: " + status);
+			//if (status == TCallStatus.clsInProgress)
+			//{
+			//    pcall.set_OutputDevice(TCallIoDeviceType.callIoDeviceTypeFile, "c:\\temp\\output.wav");
+			//    pcall.set_CaptureMicDevice(TCallIoDeviceType.callIoDeviceTypeFile, "c:\\temp\\output-mic.wav");
+			//}
 		}
 
+		[Conditional("DEBUG")]
 		private void DumpCall(string status, ICall pCall)
 		{
-			return;
+			ICall x;
 
-			System.Diagnostics.Debug.WriteLine(
+			Debug.WriteLine(
 				String.Format(
 					"----------------------\r\nCall: {0}\r\n"+
 					"Conference: {1}\r\n"+
@@ -123,7 +125,7 @@ namespace Binboo.Core
 			{
 				foreach (IParticipant participant in pCall.Participants)
 				{
-					System.Diagnostics.Debug.WriteLine("Participant: " + participant.DisplayName);
+					Debug.WriteLine("Participant: " + participant.DisplayName);
 				}
 			}
 
@@ -135,7 +137,7 @@ namespace Binboo.Core
 					{
 						foreach (ICall call in conference.ActiveCalls)
 						{
-							System.Diagnostics.Debug.WriteLine("Participant: " + call.PartnerDisplayName);
+							Debug.WriteLine("Participant: " + call.PartnerDisplayName);
 						}
 					}
 				}
@@ -153,10 +155,6 @@ namespace Binboo.Core
 			{
 				RaiseQuitEvent();
 			}
-			//else if (status == TAttachmentStatus.apiAttachPendingAuthorization)
-			//{
-			//    Debug.WriteLine("Waiting for autorization...");
-			//}
 		}
 
 		private bool Closing(TAttachmentStatus status)
@@ -168,8 +166,7 @@ namespace Binboo.Core
 		{
 			if (IsVagabotCommand(message) && IsComplete(status))
 			{
-				//EnqueueCommand(message);
-				ProcessCommand(message);
+				EnqueueCommand(message);
 			}
 		}
 

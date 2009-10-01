@@ -49,9 +49,9 @@ namespace Binboo.Tests.Mocks
 			throw new System.NotImplementedException();
 		}
 
-		public ChatMessage SendMessage(string Username, string Text)
+		public ChatMessage SendMessage(string username, string text)
 		{
-			var message = new ChatMessageMock(NewUserMock(Username), Text, _chatRetriever());
+			var message = new ChatMessageMock(NewUserMock(username), text, _chatRetriever());
 			if (null != MessageStatus)
 			{
 				MessageStatus(message, TChatMessageStatus.cmsReceived);

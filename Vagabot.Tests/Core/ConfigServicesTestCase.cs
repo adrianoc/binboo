@@ -37,7 +37,7 @@ namespace Binboo.Tests.Core
 		[Test]
 		public void TestPairingUsers()
 		{
-			CollectionAssert.AreEquivalent(new[] { "Susan Murphy", "BOB", "Frank Abagnale Jr.", "Carl Hanratty" }, ConfigServices.PairingUsers);
+			CollectionAssert.AreEquivalent(new[] { "Susan Murphy", "BOB", "Frank Abagnale Jr.", "carl@hanratty.com" }, ConfigServices.PairingUsers);
 		}
 	}
 }

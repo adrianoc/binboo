@@ -43,6 +43,26 @@ namespace Binboo.Tests
 		private ChatMock _chat;
 		private readonly IList<string> _errors = new List<string>();
 
+		[SetUp]
+		public void SetUp()
+		{
+			_app = new Application("test");
+			_app.Error += (sender, e) => _errors.Add(e.Message + "\r\n" + e.Details);
+
+			_chat = new ChatMock(NewUserMock());
+			_mockSkype = new SkypeMock(() => _chat);
+			_app.SetSkype(_mockSkype);
+			_app.AttachToSkype();
+		}
+
+		private User NewUserMock()
+		{
+			var userMock = new Mock<User>();
+			userMock.Setup(user => user.IsBlocked).Returns(false);
+			userMock.Setup(user => user.Handle).Returns("test");
+			return userMock.Object;
+		}
+
 		[Test]
 		public void TestNoArguments()
 		{
@@ -161,7 +181,7 @@ namespace Binboo.Tests
 			_chat.Reset();
 
 			_mockSkype.SendMessage("adriano", "$test IamACommand x y z");
-			command.Wait(500);
+			_chat.WaitForMessages(1000);
 			Assert.AreEqual(1, _errors.Count, _errors.Aggregate((acc, err) => acc + "\r\n" + err));
 			Assert.IsTrue(_errors[0].Contains("Mixed"));
 		}
@@ -193,7 +213,7 @@ namespace Binboo.Tests
 			_chat.Reset();
 
 			_mockSkype.SendMessage("adriano", message);
-			Assert.IsTrue(command.Wait(1000));
+			Assert.IsTrue(_chat.WaitForMessages(1000));
 			Assert.AreEqual(expectedResult, _chat.SentMessages.Single().Body);
 		}
 
@@ -204,31 +224,11 @@ namespace Binboo.Tests
 			_chat.Reset();
 
 			_mockSkype.SendMessage("adriano", message);
-			Assert.IsTrue(command.Wait(1000));
+			Assert.IsTrue(_chat.WaitForMessages(10000));
 			Assert.AreEqual(expected, _chat.SentMessages.Single().Body);
 		}
 
-		[SetUp]
-		public void SetUp()
-		{
-			_app = new Application("test");
-			_app.Error += (sender, e) => _errors.Add(e.Message + "\r\n" + e.Details);
-
-			_chat = new ChatMock(NewUserMock());
-			_mockSkype = new SkypeMock(() => _chat);
-			_app.SetSkype(_mockSkype);
-			_app.AttachToSkype();
-		}
-
-		private User NewUserMock()
-		{
-			var userMock = new Mock<User>();
-			userMock.Setup(user => user.IsBlocked).Returns(false);
-			userMock.Setup(user => user.Handle).Returns("test");
-			return userMock.Object;
-		}
-
-		private static string ArgumentEcho(IContext context, IDictionary<string, Argument> args)
+        private static string ArgumentEcho(IContext context, IDictionary<string, Argument> args)
 		{
 			var sb = new StringBuilder(50);
 			foreach (var arg in args)

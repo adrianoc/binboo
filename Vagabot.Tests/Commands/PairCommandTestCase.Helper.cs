@@ -33,13 +33,13 @@ namespace Binboo.Tests.Commands
 		private static void AssertPairsAreValid(string expectedMessageRegExp, string actual)
 		{
 			MatchCollection matches = Regex.Matches(actual, expectedMessageRegExp);
-			CollectionAssert.AreEquivalent(ConfigServices.PairingUsers.Select(userName => FirstName(userName)), DevNamesFrom(matches[0].Groups));
+			CollectionAssert.AreEquivalent(ConfigServices.PairingUsers.Select(userName => FirstUsableName(userName)), DevNamesFrom(matches[0].Groups));
 		}
 
-		private static string FirstName(string fullName)
+		private static string FirstUsableName(string jiraName)
 		{
-			int spaceIndex = fullName.IndexOf(' ');
-			return spaceIndex > 0 ? fullName.Substring(0, spaceIndex) : fullName;
+			int separatorIndex = jiraName.IndexOfAny(new[] {' ', '@'});
+			return separatorIndex > 0 ? jiraName.Substring(0, separatorIndex) : jiraName;
 		}
 
 		private static IEnumerable<string> DevNamesFrom(GroupCollection groups)
