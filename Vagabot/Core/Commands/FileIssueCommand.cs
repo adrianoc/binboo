@@ -44,7 +44,7 @@ namespace Binboo.Core.Commands
 			                                                     project => ParamValidator.Project,
 			                                                     summary => ParamValidator.Anything,
 			                                                     description => ParamValidator.AnythingStartingWithText.ButNot(ParamValidator.Type).AsOptional(),
-			                                                     order => ParamValidator.Order,
+			                                                     order => ParamValidator.Order.AsOptional(),
 			                                                     type => ParamValidator.Type);
 
 			return Run(

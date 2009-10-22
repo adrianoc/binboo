@@ -108,7 +108,7 @@ namespace Binboo.Tests
 					"$test IamACommand TEST-10 TEST-20 8",
 					"IamACommand: Invalid arguments count. Expected at least 1 and no more than 2, got 3\r\n\r\n0: TEST-10\r\n8: TEST-20\r\n16: 8\r\n\r\n\r\nJira Command Mock",
 					a1 => ParamValidator.MultipleIssueId,
-					a2 => ParamValidator.Order);
+					a2 => ParamValidator.Order.AsOptional());
 		}
 
 		[Test]

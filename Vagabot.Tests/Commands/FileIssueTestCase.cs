@@ -43,6 +43,12 @@ namespace Binboo.Tests.Commands
 		}
 
 		[Test]
+		public void TestQuotedDescription()
+		{
+			AssertFileIssue("BTST", "doesn't matter", "This is a 'quoted' description", "improvement", 1);
+		}
+
+		[Test]
 		public void TestJustRequiredArguments()
 		{
 			AssertFileIssue("BTST", "required argument 1", Arguments.Missing(string.Empty), Arguments.Missing("bug"), Arguments.Missing(-1));
@@ -60,7 +66,7 @@ namespace Binboo.Tests.Commands
 			string result = ExecuteFileIssueCommand(project, summary, description, type, order);
 			string expectedResult = String.Format(@"Jira tiket created successfuly (http://sei.la.com/browse/{0}-001).
 
-{0}-001   Open        31/12/1600 21:00:00 {1}", project.Value, summary.Value);
+{0}-001   Open        {1} {2}", project.Value, CreationDate, summary.Value);
 
 			Assert.AreEqual(expectedResult, result);
 
@@ -69,7 +75,7 @@ namespace Binboo.Tests.Commands
 		private string ExecuteFileIssueCommand(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
 		{
 			IssueType issueType = IssueType.Parse(type.Value);
-			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, issueType.Id, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = DateTime.FromFileTime(42), summary = summary.Value })))
+			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, issueType.Id, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = CreationDate, summary = summary.Value })))
 			{
 				var contextMock = ContextMockFor("creator", String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringOrEmpty(description), OrderOrEmpty(order), type.Value));
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
@@ -87,5 +93,7 @@ namespace Binboo.Tests.Commands
 		{
 			return str.IsPresent ? "\"" + str.Value + "\"" : string.Empty;
 		}
+		
+		private readonly DateTime CreationDate = DateTime.FromFileTime(42);
 	}
 }

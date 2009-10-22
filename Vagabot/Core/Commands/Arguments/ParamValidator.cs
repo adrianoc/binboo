@@ -36,7 +36,7 @@ namespace Binboo.Core.Commands.Arguments
 		internal static readonly ParamValidator IssueStatus = new ParamValidator("open|closed|all");
 		internal static readonly ParamValidator Iteration = new ParamValidator("(?<param>[0-9]+)", true);
 		internal static readonly ParamValidator MultipleIssueId = new ParamValidator(@"(?<issues>(?<param>[A-Za-z]{1,4}-[0-9]{1,4})(\s*,\s*(?<param>[A-Za-z]{1,4}-[0-9]{1,4}))*)");
-		internal static readonly ParamValidator Order = new ParamValidator(@"\b0?[1-9]\b", true);
+		internal static readonly ParamValidator Order = new ParamValidator(@"\b0?[1-9]\b");
 		internal static readonly ParamValidator Peer = AnythingStartingWithText.AsOptional();
 		internal static readonly ParamValidator Type = new ParamValidator(@"type\s*=\s*(?<param>bug|task|improvement|b|t|i|.*)\z", true);
 		internal static readonly ParamValidator UserName = new ParamValidator(@"\s*(?<param>[A-za-z][A-Za-z_]*[0-9]*)", true);

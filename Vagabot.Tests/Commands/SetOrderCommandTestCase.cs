@@ -46,12 +46,20 @@ namespace Binboo.Tests.Commands
 				"SetOrder: Unmached arguments: \r\n\r\nITBS-005 4 ** NOT EXPECTED **\r\n          ^^^^^^^^^^^^^^^^^^^",
 				"ITBS-005", "4", "** NOT EXPECTED **");
 		}
+
+		[Test]
+		public void TestMissingOrder()
+		{
+			AssertInvalidArguments(
+				"SetOrder: Invalid arguments count. Expected at least 2 and no more than 2, got 1\r\n\r\n0: ITBS-005\r\n\r\n\r\nHelp",
+				"ITBS-005");
+		}
 		
 		[Test]
 		public void TestInvalidOrder()
 		{
 			AssertInvalidArguments(
-				"SetOrder: Unmached arguments: \r\n\r\nITBS-005 fortytwo\r\n        ^^^^^^^^^",
+				"SetOrder: Invalid arguments count. Expected at least 2 and no more than 2, got 1\r\n\r\n0: ITBS-005\r\n\r\n\r\nHelp",
 				"ITBS-005", "fortytwo");
 		}
 		
@@ -59,7 +67,7 @@ namespace Binboo.Tests.Commands
 		public void TestInvalidIssueInBulkOperation()
 		{
 			AssertInvalidArguments(
-				"SetOrder: Unmached arguments: \r\n\r\nITBS-005, WHAT? 42\r\n        ^^^^^^^^^^",
+				"SetOrder: Invalid arguments count. Expected at least 2 and no more than 2, got 1\r\n\r\n0: ITBS-005\r\n\r\n\r\nHelp",
 				"ITBS-005, WHAT?", "42");
 		}
 
@@ -67,7 +75,7 @@ namespace Binboo.Tests.Commands
 		public void TestInvalidIssue()
 		{
 			AssertInvalidArguments(
-				"SetOrder: Invalid arguments count. Expected at least 1 and no more than 2, got 0\r\n\r\n\r\n\r\nHelp",
+				"SetOrder: Invalid arguments count. Expected at least 2 and no more than 2, got 0\r\n\r\n\r\n\r\nHelp",
 				"WHAT?", "42");
 		}
 	}
