@@ -31,7 +31,7 @@ namespace Binboo.Core.Commands.Arguments
 		internal static readonly ParamValidator Project = new ParamValidator("^[A-Za-z]{3,4}");
 
 		internal static readonly ParamValidator Anything = new ParamValidator("\"(?<param>[^\\r\\n\"]+)\"|(?<param>[^\\s\"]+)");
-		internal static readonly ParamValidator AnythingStartingWithText = new ParamValidator("\"(?<param>[^0-9\\r\\n\"]+)\"|(?<param>[^\\s0-9][^\\s\"]+)");
+		internal static readonly ParamValidator AnythingStartingWithText = new ParamValidator("\"(?<param>[A-Za-z][^\"]+)\"|(?<param>[^0-9\\s\r\n\"]+)");
 		internal static readonly ParamValidator IssueId = new ParamValidator(@"%0%-[0-9]+", Project);
 		internal static readonly ParamValidator IssueStatus = new ParamValidator("open|closed|all");
 		internal static readonly ParamValidator Iteration = new ParamValidator("(?<param>[0-9]+)", true);
