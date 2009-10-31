@@ -68,6 +68,24 @@ namespace Binboo.Tests
 			Assert.IsTrue(fromList.IsMatch(Quote(one)));
 		}
 
+		[Test]
+		public void TestAnythingStatingWithText()
+		{
+			AssertAnythingStartingWithText("UperCase");
+			AssertAnythingStartingWithText("lowerCase");
+			AssertAnythingStartingWithText("\"lower Case, quoted \"");
+			AssertAnythingStartingWithText("\"Uper Case, quoted \"");
+			AssertAnythingStartingWithText("\"with multiple\r\nlines between text\"");
+			AssertAnythingStartingWithText("\"with numbers in between 1 text\"");
+			AssertAnythingStartingWithText("\"with numbers \r\nand new lines\"");
+			AssertAnythingStartingWithText("\"with numbers in the end: 2\"");
+		}
+
+		private static void AssertAnythingStartingWithText(string candidate)
+		{
+			Assert.IsTrue(ParamValidator.AnythingStartingWithText.IsMatch(candidate), candidate);
+		}
+
 		private static string Quote(string str)
 		{
 			return "\"" + str + "\"";

@@ -77,7 +77,7 @@ namespace Binboo.Tests.Commands
 			IssueType issueType = IssueType.Parse(type.Value);
 			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, issueType.Id, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = CreationDate, summary = summary.Value })))
 			{
-				var contextMock = ContextMockFor("creator", String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringOrEmpty(description), OrderOrEmpty(order), type.Value));
+				var contextMock = ContextMockFor("creator", String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringIfRequiredOrEmpty(description), OrderOrEmpty(order), type.Value));
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
 				return commandMock.Process(contextMock.Object);
@@ -89,9 +89,10 @@ namespace Binboo.Tests.Commands
 			return order.IsPresent ? order.Value.ToString() : string.Empty;
 		}
 
-		private static string QuotedStringOrEmpty(Argument<string> str)
+		private static string QuotedStringIfRequiredOrEmpty(Argument<string> str)
 		{
-			return str.IsPresent ? "\"" + str.Value + "\"" : string.Empty;
+			if (!str.IsPresent) return string.Empty;
+			return str.Value.IndexOf(' ') >= 0 ? "\"" + str.Value + "\"" : str.Value;
 		}
 		
 		private readonly DateTime CreationDate = DateTime.FromFileTime(42);
