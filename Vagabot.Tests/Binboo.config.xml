@@ -5,8 +5,8 @@
     <user name="john doe" password="blabla" />
     <endpoint value="http://sei.la.com" />
     <im-user-mapping>
-      <user skypeName="susan" jiraName="Susan Murphy" pair ="true" />
-	  <user skypeName="link" jiraName="The Missing Link" />
+      <user skypeName="susan" jiraName="Susan Murphy" pair ="true"/>
+	  <user skypeName="link" jiraName="The Lost Link" alias="the.lost.LINK"/>
 	  <user skypeName="bob" jiraName="BOB"  pair="true" />
 	  <user skypeName="frank" jiraName="Frank Abagnale Jr." pair="true" />
 	  <user skypeName="carl" jiraName="carl@hanratty.com" pair="true" />

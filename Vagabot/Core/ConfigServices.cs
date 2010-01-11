@@ -102,7 +102,7 @@ namespace Binboo.Core
 			}
 			else
 			{
-				string mappedUser = MatchIssueTrackerUser(userName);
+				string mappedUser = UserNameForAlias(userName);
 				if (!String.IsNullOrEmpty(mappedUser)) return mappedUser;
 			}
 						
@@ -115,9 +115,17 @@ namespace Binboo.Core
 			{
 				foreach (XmlNode userNode in FindPairingUsers())
 				{
-					yield return userNode.Attributes["jiraName"].Value;
+					yield return IssueTrackerUserNameOrAlias(userNode);
 				}
 			}
+		}
+
+		private static string IssueTrackerUserNameOrAlias(XmlNode userNode)
+		{
+			XmlNode userNameNode = userNode.Attributes.GetNamedItem(AliasAttributeName) ??
+			                       userNode.Attributes[UserNameAttributeName];
+
+			return userNameNode.Value;
 		}
 
 		private static XmlNodeList FindPairingUsers()
@@ -125,22 +133,14 @@ namespace Binboo.Core
 			return FindConfigItems(UserNodeMappingXPath + "[@pair='true']");
 		}
 
-		private static string MatchIssueTrackerUser(string partOfName)
+		private static string UserNameForAlias(string userName)
 		{
 			EnsureConfigIsLoaded();
 
-			XmlNodeList users = FindConfigItems(UserNodeMappingXPath + "/@jiraName");
-			if (users == null || users.Count == 0) return String.Empty;
+			XmlNodeList users = FindConfigItems(string.Format("{0}[translate(@{1},'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = '{2}']", UserNodeMappingXPath, AliasAttributeName, userName.ToLower()));
+			if (users.Count == 0) return userName;
 
-			foreach (XmlNode user in users)
-			{
-				if (Regex.IsMatch(user.Value, partOfName, RegexOptions.IgnoreCase))
-				{
-					return user.Value;
-				}
-			}
-
-			return String.Empty;
+			return users[0].Attributes[UserNameAttributeName].Value;
 		}
 
 		private static void SaveConfig()
@@ -183,9 +183,8 @@ namespace Binboo.Core
 			{
 				_config = new XmlDocument();
 				_config.Load(ConfigFilePath());
-
-				FileSystemWatcher watcher = new FileSystemWatcher(Path.GetDirectoryName(ConfigFilePath()), Path.GetFileName(ConfigFilePath()));
-
+				
+				var watcher = new FileSystemWatcher(Path.GetDirectoryName(ConfigFilePath()), Path.GetFileName(ConfigFilePath()));
 				FileSystemEventHandler configChangedHandler = delegate
 				{
 					watcher = null;
@@ -210,7 +209,7 @@ namespace Binboo.Core
 
 		private static string NameMappingXPathFor(string name)
 		{
-			return String.Format("{0}[@skypeName='{1}']/@jiraName", UserNodeMappingXPath, name);
+			return String.Format("{0}[@skypeName='{1}']/@{2}", UserNodeMappingXPath, name, UserNameAttributeName);
 		}
 
 		private static byte[] Decrypt(byte[] data)
@@ -234,6 +233,8 @@ namespace Binboo.Core
 		}
 
 		private static XmlDocument _config;
+		private const string UserNameAttributeName = "jiraName";
+		private const string AliasAttributeName= "alias";
 		private const string UserNodeMappingXPath = "//binboo/jira/im-user-mapping/user";
 	}
 }

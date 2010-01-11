@@ -28,9 +28,14 @@ namespace Binboo.Tests.Core
 	public class ConfigServicesTestCase
 	{
 		[Test]
-		public void TestUserMapping()
+		public void TestIMUserMapping()
 		{
 			Assert.AreEqual("Susan Murphy", ConfigServices.IMUserToIssueTrackerUser("susan"));
+		}
+		
+		[Test]
+		public void TestMyselfIsMappedBasedOnSkypeUserName()
+		{
 			Assert.AreEqual("BOB", ConfigServices.ResolveUser("myself", "bob"));
 		}
 
@@ -38,6 +43,24 @@ namespace Binboo.Tests.Core
 		public void TestPairingUsers()
 		{
 			CollectionAssert.AreEquivalent(new[] { "Susan Murphy", "BOB", "Frank Abagnale Jr.", "carl@hanratty.com" }, ConfigServices.PairingUsers);
+		}
+
+		[Test]
+		public void TestAlias()
+		{
+			Assert.AreEqual("The Lost Link", ConfigServices.ResolveUser("the.lost.link", "doesn't matter"));
+		}
+
+		[Test]
+		public void TestAliasIsCaseInsensitive()
+		{
+			Assert.AreEqual("The Lost Link", ConfigServices.ResolveUser("The.Lost.link", "doesn't matter"));
+		}
+		
+		[Test]
+		public void TestJiraNameIsReturnedIfNoAliasMatches()
+		{
+			Assert.AreEqual("carl@hanratty.com", ConfigServices.ResolveUser("carl@hanratty.com", "doesn't matter"));
 		}
 	}
 }
