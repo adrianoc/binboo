@@ -42,7 +42,7 @@ namespace Binboo.Core.Commands
 		protected override string ProcessCommand(IContext context)
 		{
 			IEnumerator<string> randomUsers = Random(ConfigServices.PairingUsers);
-			StringBuilder msg = new StringBuilder("Pairs: ");
+			var msg = new StringBuilder("Pairs: ");
 
 			string pair = NextPair(randomUsers);
 			while (null != pair)
