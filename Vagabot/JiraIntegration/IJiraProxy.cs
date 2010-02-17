@@ -37,5 +37,8 @@ namespace Binboo.JiraIntegration
 		void UpdateIssue(string ticketNumber, string comment, params IssueField[] fields);
 		void AddComment(string ticket, string comment);
 		string GetComments(string ticket);
+		
+		void CreateLink(string source, string target, string linkDescription);
+		void DeleteLink(string ticket, string linkName);
 	}
 }

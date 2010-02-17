@@ -49,6 +49,8 @@
   <ItemGroup>
     <Compile Include="Cryptography\DPAPI.cs" />
     <Compile Include="Cryptography\Interop.cs" />
+    <Compile Include="Net\HttpClient.cs" />
+    <Compile Include="Net\HttpMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

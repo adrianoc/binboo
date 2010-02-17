@@ -22,10 +22,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.ServiceModel;
 using System.Text;
 using Binboo.Core;
+using TCL.Net.Net;
 
 namespace Binboo.JiraIntegration
 {
@@ -207,6 +210,31 @@ namespace Binboo.JiraIntegration
 			}
 
 			return sb.ToString();
+		}
+
+		public void CreateLink(string source, string target, string linkDescription)
+		{
+			RemoteIssue sourceIssue = GetIssue(source);
+			var jiraLink = new HttpClient(""); //HttpWebRequest jiraLink = (HttpWebRequest)WebRequest.Create("http://192.168.56.101:8080/secure/LinkExistingIssue.jspa");
+			//                        //jiraLink.CookieContainer = cookieContainer;
+			//                        // jiraLink.UserAgent = "binboo";
+
+			jiraLink.Method = HttpMethod.Post;
+			//                // jiraLink.ContentType = "application/x-www-form-urlencoded";
+
+			//jiraLink.Variables["linkDesk"] = linkDescription;
+			//jiraLink.Variables["linkKey"] = target;
+			//jiraLink.Variables["id"] = sourceIssue.id;
+			//jiraLink.Variables["Link"] = "Link";
+			////jiraLink.ContentLength = 79;
+
+			////Write("linkDesc=Duplicates&linkKey=BTT-7%2C+&comment=&commentLevel=&id=10000&Link=Link");
+			//jiraLink.Send();
+		}
+
+		public void DeleteLink(string ticket, string linkName)
+		{
+			throw new NotImplementedException();
 		}
 
 		private static string Normalize(string ticketNumber)
