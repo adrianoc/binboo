@@ -95,6 +95,7 @@
     <Compile Include="Core\Commands\CloseIssueCommand.cs" />
     <Compile Include="Core\Commands\Context.cs" />
     <Compile Include="Core\Commands\Db4oIteration.cs" />
+    <Compile Include="Core\Commands\EstimateCommand.cs" />
     <Compile Include="Core\Commands\IContext.cs" />
     <Compile Include="Core\Commands\PairsCommand.cs" />
     <Compile Include="Core\Commands\SetOrderCommand.cs" />

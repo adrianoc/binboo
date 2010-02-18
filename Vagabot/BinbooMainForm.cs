@@ -123,6 +123,7 @@ namespace Binboo
 		{
 			_controler.
 				AddCommand(new FileIssueCommand(JiraProxy(), Binboo.File)).
+				AddCommand(new EstimateCommand(JiraProxy(), Binboo.Estimate)).
 				AddCommand(new CloseIssueCommand(JiraProxy(), Binboo.Close)).
 				AddCommand(new SearchCommand(JiraProxy(), Binboo.Search)).
 				AddCommand(new CountIDSCommand(JiraProxy(), Binboo.CountIDS)).

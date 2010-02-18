@@ -137,6 +137,10 @@ Use: %cmd% [*all|open|closed]</value>
     <value>Drop the task for the current iteration by reseting assignee/peer/iteration in the correspondent ticket.
 Use: %cmd% [&lt;comment&gt;]</value>
   </data>
+  <data name="Estimate" xml:space="preserve">
+    <value>Sets issue's estimation in IDS
+Use:%cmd% &lt;issue-list&gt; &lt;estimation&gt;</value>
+  </data>
   <data name="File" xml:space="preserve">
     <value>Files a new issue into jira system. 
 Use: %cmd% &lt;project&gt; &lt;summary&gt; [description] [&lt;order&gt;] [type=*bug|task|improvement]</value>

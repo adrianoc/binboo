@@ -40,6 +40,7 @@ namespace Binboo.Core.Commands.Arguments
 		internal static readonly ParamValidator Peer = AnythingStartingWithText.AsOptional();
 		internal static readonly ParamValidator Type = new ParamValidator(@"type\s*=\s*(?<param>bug|task|improvement|b|t|i|.*)\z", true);
 		internal static readonly ParamValidator UserName = new ParamValidator(@"\s*(?<param>[A-za-z][A-Za-z_]*[0-9]*)", true);
+		internal static readonly ParamValidator Estimation = new ParamValidator(@"[0-9]+");
 
 		public static ParamValidator Custom(string regex, bool optional)
 		{

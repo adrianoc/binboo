@@ -103,6 +103,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\EstimateCommandTestCase.cs" />
     <Compile Include="Commands\PairCommandTestCase.Helper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

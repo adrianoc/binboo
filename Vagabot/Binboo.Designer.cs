@@ -108,6 +108,16 @@ namespace Binboo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sets issue&apos;s estimation in IDS
+        ///Use:%cmd% &lt;issue-list&gt; &lt;estimation&gt;.
+        /// </summary>
+        internal static string Estimate {
+            get {
+                return ResourceManager.GetString("Estimate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Files a new issue into jira system. 
         ///Use: %cmd% &lt;project&gt; &lt;summary&gt; [description] [&lt;order&gt;] [type=*bug|task|improvement].
         /// </summary>
