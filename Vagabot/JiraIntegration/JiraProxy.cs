@@ -120,7 +120,7 @@ namespace Binboo.JiraIntegration
 			"Failed to asssign issue " + ticket);			
 		}
 
-		public void CloseIssue(string ticket, string comment, IssueResolution resolution)
+		public void ResolveIssue(string ticket, string comment, IssueResolution resolution, RemoteVersion[] fixedInVersion)
 		{
 			ValidateConnection();
 			ticket = Normalize(ticket);
@@ -128,25 +128,26 @@ namespace Binboo.JiraIntegration
 			Run(delegate
 			    {
 			    	RemoteIssue issue = GetIssue(ticket);
-					string actionId = ActionIdFor(ticket, "Close");
+					string actionId = ActionIdFor(ticket, "Resolve");
 
 					RemoteFieldValue[] fields = CollectChangedFields(
-													IssueField.Status <= IssueStatus.Closed,
+													IssueField.Status <= IssueStatus.Resolved,
 													IssueField.Assignee <= issue.assignee,
 													IssueField.CustomField(CustomFieldId.Iteration) <= issue.CustomFieldValue(CustomFieldId.Iteration),
 													IssueField.CustomField(CustomFieldId.Peers) <= issue.CustomFieldValue(CustomFieldId.Peers),
 													IssueField.CustomField(CustomFieldId.OriginalIDsEstimate) <= issue.CustomFieldValue(CustomFieldId.OriginalIDsEstimate),
-													IssueField.Resolution <= resolution);
+													IssueField.Resolution <= resolution,
+													IssueField.FixedInVersion <= fixedInVersion.Select(version => version.id).ToArray());
 
 			    	return _client.Item.progressWorkflowAction(_loginToken, ticket, actionId, fields);
 				},
 				
-				"Failed to close issue " + ticket);
+				"Failed to resolve issue " + ticket);
 
 			AddComment(
 				ticket, 
 				comment,
-				string.Format("Issue {0} was closed but an error prevented the comment to be appended.", ticket));
+				string.Format("Issue {0} was resolved but an error prevented the comment to be appended.", ticket));
 		}
 
 		public void UpdateIssue(string ticketNumber, string comment, params IssueField[] fields)

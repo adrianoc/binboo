@@ -70,16 +70,6 @@ namespace Binboo {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to Closes an issue.
-        ///Use: %cmd% &lt;ticket #&gt;  fixed|won&apos;t fix|incomplete|cannot reproduce  [comment].
-        /// </summary>
-        internal static string Close {
-            get {
-                return ResourceManager.GetString("Close", resourceCulture);
-            }
-        }
-        
         internal static System.Drawing.Icon Connected {
             get {
                 object obj = ResourceManager.GetObject("Connected", resourceCulture);
@@ -170,6 +160,16 @@ namespace Binboo {
         internal static string Pairs {
             get {
                 return ResourceManager.GetString("Pairs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Marks issues as resolved.
+        ///Use: %cmd% &lt;ticket #&gt;  fixed|won&apos;t fix|incomplete|cannot reproduce  [comment].
+        /// </summary>
+        internal static string Resolve {
+            get {
+                return ResourceManager.GetString("Resolve", resourceCulture);
             }
         }
         

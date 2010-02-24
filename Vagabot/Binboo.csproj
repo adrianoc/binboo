@@ -92,7 +92,7 @@
     <Compile Include="Core\Commands\Arguments\Argument.cs" />
     <Compile Include="Core\Commands\Arguments\ButNotParamValidator.cs" />
     <Compile Include="Core\Commands\Arguments\DelegatingParamValidator.cs" />
-    <Compile Include="Core\Commands\CloseIssueCommand.cs" />
+    <Compile Include="Core\Commands\ResolveIssueCommand.cs" />
     <Compile Include="Core\Commands\Context.cs" />
     <Compile Include="Core\Commands\Db4oIteration.cs" />
     <Compile Include="Core\Commands\EstimateCommand.cs" />

@@ -121,10 +121,6 @@
     <value>Assigns an issue to a specific developer
 use: %cmd% &lt;ticket #&gt; &lt;main developer&gt;| myself [&lt;peer&gt;| myself] [&lt;iteration&gt;]</value>
   </data>
-  <data name="Close" xml:space="preserve">
-    <value>Closes an issue.
-Use: %cmd% &lt;ticket #&gt;  fixed|won't fix|incomplete|cannot reproduce  [comment]</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Connected" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ipodcast1.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -162,6 +158,10 @@ Use: %cmd%</value>
   </data>
   <data name="Pairs" xml:space="preserve">
     <value>Choose pairs randomically</value>
+  </data>
+  <data name="Resolve" xml:space="preserve">
+    <value>Marks issues as resolved.
+Use: %cmd% &lt;ticket #&gt;  fixed|won't fix|incomplete|cannot reproduce  [comment]</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Searchs for issues containing the text.

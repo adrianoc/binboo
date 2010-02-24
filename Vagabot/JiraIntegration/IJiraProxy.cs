@@ -30,7 +30,7 @@ namespace Binboo.JiraIntegration
 		RemoteIssue[] IssuesForFilter(string filterId);
 		RemoteIssue GetIssue(string ticket);
 		RemoteIssue FileIssue(string reporter, string project, string summary, string description, string type, int order);
-		void CloseIssue(string ticket, string comment, IssueResolution resolution);
+		void ResolveIssue(string ticket, string comment, IssueResolution resolution, RemoteVersion[] fixedInVersions);
 		void AssignIssue(string ticket, IssueField assignee, IssueField peer, IssueField iteration);
 		void UpdateIssue(string ticketNumber, string comment, params IssueField[] fields);
 		void AddComment(string ticket, string comment);

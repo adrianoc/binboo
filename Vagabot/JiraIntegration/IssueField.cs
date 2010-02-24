@@ -35,6 +35,7 @@ namespace Binboo.JiraIntegration
 		internal static IssueField Reporter = FieldName((RemoteIssue r) => r.reporter);
 		internal static IssueField Status = FieldName((RemoteIssue r) => r.status);
 		internal static IssueField Resolution = FieldName((RemoteIssue r) => r.resolution);
+		internal static IssueField FixedInVersion = FieldName((RemoteIssue r) => r.fixVersions);
 		
 		public static IssueField operator<=(IssueField field, string[] values)
 		{

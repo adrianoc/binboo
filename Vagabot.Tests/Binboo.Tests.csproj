@@ -59,8 +59,8 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentsTestCase.cs" />
-    <Compile Include="Commands\CloseCommandTestCase.cs" />
-    <Compile Include="Commands\CloseCommandTestCase.Helpers.cs" />
+    <Compile Include="Commands\ResolveCommandTestCase.cs" />
+    <Compile Include="Commands\ResolveCommandTestCase.Helpers.cs" />
     <Compile Include="Commands\CommandMock.cs" />
     <Compile Include="Commands\IssueAssignCommandTestCase.Helper.cs" />
     <Compile Include="Commands\ListProjectsCommandTestCase.cs" />
