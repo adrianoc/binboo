@@ -21,6 +21,7 @@
  **/
 
 using System;
+using System.Linq;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
 using Moq;
@@ -59,7 +60,7 @@ namespace Binboo.Tests.Commands
 												ticket, 
 												It.Is<String>(remmark => remmark == noQuotesComment), 
 												resolution, 
-												It.Is<RemoteVersion[]>(versions => fixedInVersions.Length > 0)));
+												It.Is<RemoteVersion[]>(versions => versions.Any( version => fixedInVersions.Split(',').Contains(version.name)))));
 		}
 
 		private static string StripQuotes(string comment)

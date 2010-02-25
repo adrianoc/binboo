@@ -90,12 +90,16 @@ namespace Binboo.Tests.Commands
 		}
 
 		[Test]
-		public void TestFixedVersion()
+		public void TestSingleFixedVersion()
 		{
 			AssertResolve("TBC-002", IssueResolution.Fixed, "1.1", "1.1");
-			AssertResolve("TBC-002", IssueResolution.Fixed, "1.2", "1.2");
-			AssertResolve("TBC-002", IssueResolution.Fixed, "1.3", "1.3");
 			AssertResolve("TBC-002", IssueResolution.Fixed, "\"Non existing version.\"", "7.12");
+		}
+		
+		[Test]
+		public void TestMultipleFixedVersion()
+		{
+			AssertResolve("TBC-002", IssueResolution.Fixed, "", "1.1, 1.2, 1.3");
 		}
 		
 		private const string UserName = "resolving-user";
