@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Binboo.Core.Commands.Arguments;
 using Binboo.JiraIntegration;
 
@@ -41,10 +42,11 @@ namespace Binboo.Core.Commands
 		protected override string ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context);
-			return CloseIssue(
+			return ResolveIssue(
 						arguments["issueId"],
 						OptionalArgumentOrDefault(arguments, "comment", string.Empty),
-						arguments["resolution"]);
+						arguments["resolution"],
+						arguments["fixedInVersion"]);
 		}
 
 		private IDictionary<string, Argument> CollectAndValidateArguments(IContext context)
@@ -52,20 +54,34 @@ namespace Binboo.Core.Commands
 			return CollectAndValidateArguments(context.Arguments, 
 			                                   issueId => ParamValidator.IssueId, 
 			                                   resolution => ParamValidator.From(IssueResolution.FriendlyNames()), 
-											   //fixedInVersion => ParamValidator.Version,
+											   fixedInVersion => ParamValidator.Version.AsOptional(),
 			                                   comment => ParamValidator.Anything.AsOptional());
 		}
 
-		private string CloseIssue(string ticket, string comment, string resolution)
+		private string ResolveIssue(string ticket, string comment, string resolution, Argument fixedInVersions)
 		{
 			try
 			{
-				_jira.ResolveIssue(ticket, comment, IssueResolution.Parse(resolution), new RemoteVersion[0]);
+				var versions = EnumerableFrom(fixedInVersions).ToList();
+				_jira.ResolveIssue(ticket, comment, IssueResolution.Parse(resolution), versions);
 				return "OK";
 			}
 			catch(JiraProxyException jipe)
 			{
 				return jipe.Message + Environment.NewLine + jipe.InnerException.Message;
+			}
+		}
+
+		private IEnumerable<string> EnumerableFrom(Argument fixedInVersions)
+		{
+			if (!fixedInVersions.IsPresent)
+			{
+				yield break;
+			}
+
+			foreach (var version in fixedInVersions.Values)
+			{
+				yield return version;
 			}
 		}
 	}

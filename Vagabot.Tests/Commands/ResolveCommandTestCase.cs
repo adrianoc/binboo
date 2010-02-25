@@ -80,7 +80,7 @@ namespace Binboo.Tests.Commands
 		[Test]
 		public void TestNonExistingIssue()
 		{
-			using (var commandMock = NewCommand<ResolveIssueCommand>(mock => mock.Setup(proxy => proxy.ResolveIssue("TBC-010", It.IsAny<String>(), It.IsAny<IssueResolution>(), It.IsAny<RemoteVersion[]>())).Throws(new JiraProxyException("Failed to resolve issue: TBC-010", new Exception()))))
+			using (var commandMock = NewCommand<ResolveIssueCommand>(mock => mock.Setup(proxy => proxy.ResolveIssue("TBC-010", It.IsAny<String>(), It.IsAny<IssueResolution>(), It.IsAny<string[]>())).Throws(new JiraProxyException("Failed to resolve issue: TBC-010", new Exception()))))
 			{
 				var contextMock = ContextMockFor(UserName, "TBC-010", "fixed");
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
@@ -92,14 +92,14 @@ namespace Binboo.Tests.Commands
 		[Test]
 		public void TestSingleFixedVersion()
 		{
-			AssertResolve("TBC-002", IssueResolution.Fixed, "1.1", "1.1");
-			AssertResolve("TBC-002", IssueResolution.Fixed, "\"Non existing version.\"", "7.12");
+			AssertResolve("TBC-002", IssueResolution.Fixed, "version 1.1", "versions = 1.1");
+			//AssertResolve("TBC-002", IssueResolution.Fixed, "\"Non existing version.\"", "7.12");
 		}
 		
 		[Test]
 		public void TestMultipleFixedVersion()
 		{
-			AssertResolve("TBC-002", IssueResolution.Fixed, "", "1.1, 1.2, 1.3");
+			AssertResolve("TBC-002", IssueResolution.Fixed, "", "versions = 1.1, 1.2, 1.3");
 		}
 		
 		private const string UserName = "resolving-user";

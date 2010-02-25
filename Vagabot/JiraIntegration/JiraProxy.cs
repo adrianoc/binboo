@@ -120,7 +120,7 @@ namespace Binboo.JiraIntegration
 			"Failed to asssign issue " + ticket);			
 		}
 
-		public void ResolveIssue(string ticket, string comment, IssueResolution resolution, RemoteVersion[] fixedInVersion)
+		public void ResolveIssue(string ticket, string comment, IssueResolution resolution, IEnumerable<string> fixedInVersion)
 		{
 			ValidateConnection();
 			ticket = Normalize(ticket);
@@ -130,6 +130,8 @@ namespace Binboo.JiraIntegration
 			    	RemoteIssue issue = GetIssue(ticket);
 					string actionId = ActionIdFor(ticket, "Resolve");
 
+			    	string[] fixedInVersionIds = RemoteVersionIdsFor(issue.project, fixedInVersion);
+				
 					RemoteFieldValue[] fields = CollectChangedFields(
 													IssueField.Status <= IssueStatus.Resolved,
 													IssueField.Assignee <= issue.assignee,
@@ -137,7 +139,7 @@ namespace Binboo.JiraIntegration
 													IssueField.CustomField(CustomFieldId.Peers) <= issue.CustomFieldValue(CustomFieldId.Peers),
 													IssueField.CustomField(CustomFieldId.OriginalIDsEstimate) <= issue.CustomFieldValue(CustomFieldId.OriginalIDsEstimate),
 													IssueField.Resolution <= resolution,
-													IssueField.FixedInVersion <= fixedInVersion.Select(version => version.id).ToArray());
+													IssueField.FixedInVersion <= fixedInVersionIds);
 
 			    	return _client.Item.progressWorkflowAction(_loginToken, ticket, actionId, fields);
 				},
@@ -148,6 +150,12 @@ namespace Binboo.JiraIntegration
 				ticket, 
 				comment,
 				string.Format("Issue {0} was resolved but an error prevented the comment to be appended.", ticket));
+		}
+
+		private string[] RemoteVersionIdsFor(string project, IEnumerable<string> versions)
+		{
+			RemoteVersion[] remoteVersions = _client.Item.getVersions(_loginToken, project);
+			return remoteVersions.Where(version => versions.Contains(version.name)).Select(version => version.id).ToArray();
 		}
 
 		public void UpdateIssue(string ticketNumber, string comment, params IssueField[] fields)

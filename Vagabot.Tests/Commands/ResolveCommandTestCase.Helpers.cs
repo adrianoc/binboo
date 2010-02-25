@@ -21,6 +21,7 @@
  **/
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
@@ -46,7 +47,7 @@ namespace Binboo.Tests.Commands
 			string noQuotesComment = StripQuotes(comment);
 			using (var commandMock = NewCommand<ResolveIssueCommand>(ExpectedMethodCalls(ticket, noQuotesComment, resolution, fixedInVersions)))
 			{
-				var contextMock = ContextMockFor("resolving-user", String.Format("{0} \"{1}\"{2}", ticket, resolution.Description.ToLower(), String.IsNullOrEmpty(comment) ? "" : (" " + comment)));
+				var contextMock = ContextMockFor("resolving-user", String.Format("{0} \"{1}\"{2} {3}", ticket, resolution.Description.ToLower(), fixedInVersions, String.IsNullOrEmpty(comment) ? "" : (" " + comment)));
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
 				Assert.AreEqual("OK", commandMock.Process(contextMock.Object));
@@ -59,8 +60,14 @@ namespace Binboo.Tests.Commands
 									p => p.ResolveIssue(
 												ticket, 
 												It.Is<String>(remmark => remmark == noQuotesComment), 
-												resolution, 
-												It.Is<RemoteVersion[]>(versions => versions.Any( version => fixedInVersions.Split(',').Contains(version.name)))));
+												resolution,
+												It.IsAny<IEnumerable<string>>()
+												//It.Is<IEnumerable<string>>(
+												//    versions => string.IsNullOrEmpty(fixedInVersions)
+												//                    ? true
+												//                    : versions.Any(version => fixedInVersions.Split(',').Contains(version)))
+										)
+								);
 		}
 
 		private static string StripQuotes(string comment)
