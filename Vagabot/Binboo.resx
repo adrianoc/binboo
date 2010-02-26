@@ -161,7 +161,7 @@ Use: %cmd%</value>
   </data>
   <data name="Resolve" xml:space="preserve">
     <value>Marks issues as resolved.
-Use: %cmd% &lt;ticket #&gt;  fixed|won't fix|incomplete|cannot reproduce  [comment]</value>
+Use: %cmd% &lt;ticket #&gt;  fixed|won't fix|incomplete|cannot reproduce  [versions=v1, v2, ..., vn] [comment]</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Searchs for issues containing the text.

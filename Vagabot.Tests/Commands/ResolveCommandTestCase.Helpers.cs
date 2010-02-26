@@ -61,11 +61,10 @@ namespace Binboo.Tests.Commands
 												ticket, 
 												It.Is<String>(remmark => remmark == noQuotesComment), 
 												resolution,
-												It.IsAny<IEnumerable<string>>()
-												//It.Is<IEnumerable<string>>(
-												//    versions => string.IsNullOrEmpty(fixedInVersions)
-												//                    ? true
-												//                    : versions.Any(version => fixedInVersions.Split(',').Contains(version)))
+												It.Is<IEnumerable<string>>(
+												    versions => string.IsNullOrEmpty(fixedInVersions)
+												                    ? true
+												                    : versions.Any(version => fixedInVersions.Contains(version)))
 										)
 								);
 		}

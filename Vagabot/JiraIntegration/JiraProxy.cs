@@ -222,7 +222,7 @@ namespace Binboo.JiraIntegration
 			RemoteNamedObject found = Array.Find(actions, action => action.name.ToLower().Contains(actionName));
 			if (found == null)
 			{
-				throw new ArgumentException(string.Format("Action '{0}' not found", actionName), actionName);
+				throw new ArgumentException(string.Format("Invalid operation requested: '{0}'.", actionName), actionName);
 			}
 			return found.id;
 		}

@@ -165,7 +165,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Marks issues as resolved.
-        ///Use: %cmd% &lt;ticket #&gt;  fixed|won&apos;t fix|incomplete|cannot reproduce  [comment].
+        ///Use: %cmd% &lt;ticket #&gt;  fixed|won&apos;t fix|incomplete|cannot reproduce  [versions=v1, v2, ..., vn] [comment].
         /// </summary>
         internal static string Resolve {
             get {
