@@ -105,6 +105,8 @@
   <ItemGroup>
     <Compile Include="Commands\EstimateCommandTestCase.cs" />
     <Compile Include="Commands\PairCommandTestCase.Helper.cs" />
+    <Compile Include="Core\CommandQueueTestCase.cs" />
+    <Compile Include="Core\CommandQueueTestCase.Helper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

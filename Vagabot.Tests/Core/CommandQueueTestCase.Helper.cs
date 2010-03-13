@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,41 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Collections.Generic;
+using System;
 using System.Threading;
+using Binboo.Core;
 using SKYPE4COMLib;
 
-namespace Binboo.Core
+namespace Binboo.Tests.Core
 {
-	public class CommandQueue
+	partial class CommandQueueTestCase
 	{
-		public CommandQueue(EventWaitHandle quitEvent)
+		private static IChatMessage NewChatMessage(int value)
 		{
-			_quitEvent = quitEvent;
+			ChatMessage message = new Mocks.ChatMessageMock(null, value.ToString(), null);
+			return message;
 		}
 
-		public void Add(IChatMessage command)
+		private void AssertBlock(WaitCallback testBlock)
 		{
-			lock (_commands)
-			{
-				_commands.Enqueue(command);
-			}
-			_messagesAvaiable.Release();
+			ThreadPool.QueueUserWorkItem(
+				state =>
+				{
+					testBlock(state);
+					_finishedMethod.Set();
+				},
+
+				_queue);
+
+			_finishedMethod.WaitOne();
+			_assert();
 		}
 
-		public IChatMessage Next()
-		{
-			int reason = WaitHandle.WaitAny(new WaitHandle[] { _quitEvent, _messagesAvaiable}, 500, true);
-			if (reason == WaitHandle.WaitTimeout || reason == 0) return null;
-
-			lock (_commands)
-			{
-				return _commands.Dequeue();
-			}
-		}
-
-		private readonly Queue<IChatMessage> _commands = new Queue<IChatMessage>();
-		private readonly Semaphore _messagesAvaiable = new Semaphore(0, 10);
-		private readonly EventWaitHandle _quitEvent;
+		private CommandQueue _queue;
+		private readonly EventWaitHandle _exitEvent = new ManualResetEvent(false);
+		private readonly EventWaitHandle _finishedMethod = new AutoResetEvent(false);
+		private Action _assert = () => { };
 	}
 }
