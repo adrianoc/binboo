@@ -52,6 +52,14 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Db4objects.Db4o, Version=7.13.139.14312, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\db4o\Db4objects.Db4o.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Linq, Version=7.13.138.14281, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\db4o\Db4objects.Db4o.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="JiraSoapServiceService, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\JiraIntegration\JiraWS\JiraSoapServiceService.dll</HintPath>
@@ -67,14 +75,7 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Web.Services" />
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -104,6 +105,10 @@
     <Compile Include="Core\ConfigServices.cs" />
     <Compile Include="Core\Events\ErrorEventArgs.cs" />
     <Compile Include="Core\Exceptions\InvalidCommandArgumentsException.cs" />
+    <Compile Include="Core\Persistence\IStorage.cs" />
+    <Compile Include="Core\Persistence\IStorageManager.cs" />
+    <Compile Include="Core\Persistence\Storage.cs" />
+    <Compile Include="Core\Persistence\StorageManager.cs" />
     <Compile Include="Core\Util\ExtensionMethods.cs" />
     <Compile Include="JiraIntegration\CustomFieldId.cs" />
     <Compile Include="Core\Commands\FileIssueCommand.cs" />
@@ -184,6 +189,7 @@
     <Content Include="Binboo.config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Compile Include="Core\Persistence\Storage.InnerClasses.cs" />
     <None Include="Resources\ipodcast1.ico" />
     <None Include="Resources\Accessibility Warning.ico" />
   </ItemGroup>
