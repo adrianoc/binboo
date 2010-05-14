@@ -29,6 +29,8 @@ namespace Binboo.Core.Commands
 {
 	internal class FileIssueCommand : JiraCommandBase
 	{
+		internal const int DefaultIssueOrder = 7;
+
 		public FileIssueCommand(IJiraProxy proxy, string help) : base(proxy, help)
 		{
 		}
@@ -54,7 +56,7 @@ namespace Binboo.Core.Commands
 									arguments["summary"].Value,
 									OptionalArgumentOrDefault(arguments, "description", String.Empty),
 									IssueType.Parse(OptionalArgumentOrDefault(arguments, "type", "bug")).Id,
-									OptionalArgumentOrDefault(arguments, "order", -1)),
+									OptionalArgumentOrDefault(arguments, "order", DefaultIssueOrder)),
 
 						issue => string.Format("Jira tiket created successfuly ({2}).{0}{0}{1}", Environment.NewLine, issue.Format(), UrlFor(issue)));
 		}

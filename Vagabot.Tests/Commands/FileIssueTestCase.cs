@@ -51,7 +51,7 @@ namespace Binboo.Tests.Commands
 		[Test]
 		public void TestJustRequiredArguments()
 		{
-			AssertFileIssue("BTST", "required argument 1", Arguments.Missing(string.Empty), Arguments.Missing("bug"), Arguments.Missing(-1));
+			AssertFileIssue("BTST", "required argument 1", Arguments.Missing(string.Empty), Arguments.Missing("bug"), Arguments.Missing(FileIssueCommand.DefaultIssueOrder));
 		}
 
 		[Ignore("Behavior when type is invalid is to use Bug as default. we should throw an exception.")]
