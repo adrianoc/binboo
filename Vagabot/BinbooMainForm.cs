@@ -136,7 +136,6 @@ namespace Binboo
 				AddCommand(new SetOrderCommand(JiraProxy(), Binboo.SetOrder));
 		}
 
-		private JiraProxy _jira;
 		private JiraProxy JiraProxy()
 		{
 			if (_jira == null)
@@ -163,6 +162,7 @@ namespace Binboo
 		{
 		}
 
+		private JiraProxy _jira;
 		private readonly Core.Application _controler = new Core.Application("Jira");
 	}
 }
