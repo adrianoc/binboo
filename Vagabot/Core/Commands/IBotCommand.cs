@@ -20,12 +20,16 @@
  * THE SOFTWARE.
  **/
 
+using Binboo.Core.Persistence;
+
 namespace Binboo.Core.Commands
 {
 	public interface IBotCommand
 	{
-		string Help { get; }
+		void Initialize();
+		IStorage Storage { set; }
 
+		string Help { get; }
 		string Id { get; }
 		string Process(IContext context);
 	}

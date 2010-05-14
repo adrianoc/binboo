@@ -19,8 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 using System.Text.RegularExpressions;
+using Binboo.Core.Persistence;
 
 namespace Binboo.Core.Commands
 {
@@ -35,6 +35,24 @@ namespace Binboo.Core.Commands
 			_help = ReplaceCommand(help, Id);
 		}
 
+		virtual public void Initialize()
+		{
+			// give subcasses a chance to take any action upon initialization.
+		}
+
+		public IStorage Storage
+		{
+			set 
+			{
+				_storage = value;
+			}
+
+			protected get
+			{
+				return _storage;
+			}
+		}
+
 		public string Help
 		{
 			get { return _help; }
@@ -46,5 +64,6 @@ namespace Binboo.Core.Commands
 		}
 
 		private readonly string _help;
+		private IStorage _storage;
 	}
 }

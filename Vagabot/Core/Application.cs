@@ -29,11 +29,12 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Binboo.Core.Commands;
 using Binboo.Core.Events;
+using Binboo.Core.Persistence;
 using SKYPE4COMLib;
 
 namespace Binboo.Core
 {
-	public partial class Application
+	public partial class Application : IDisposable
 	{
 		public event EventHandler Quit;
 		public event ErrorEventHandler Error;
@@ -43,6 +44,8 @@ namespace Binboo.Core
 		{
 			_prefix = prefix;
 			_commandQueue = new CommandQueue(_exitEvent);
+			
+			_storageManager = new StorageManager(ConfigServices.StoragePath);
 
 			StartCommandProcessor();
 		}
@@ -54,6 +57,9 @@ namespace Binboo.Core
 
 		public Application AddCommand(IBotCommand command)
 		{
+			command.Storage = _storageManager.StorageFor(command.Id);
+			command.Initialize();
+
 			_commands[NormalizeCommandName(command.Id)] = command;
 			return this;
 		}
@@ -298,10 +304,16 @@ namespace Binboo.Core
 				handler(this, e);
 			}
 		}
+
+		public void Dispose()
+		{
+			_storageManager.Dispose();
+		}
 		
 		private readonly string _prefix;
 		private readonly IDictionary<string, IBotCommand> _commands = new Dictionary<string, IBotCommand>();
 		private readonly CommandQueue _commandQueue;
+		private IStorageManager _storageManager;
 
 		private Skype _skype = new Skype();
 		private bool _attached;

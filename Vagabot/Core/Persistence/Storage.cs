@@ -78,8 +78,6 @@ namespace Binboo.Core.Persistence
 			{
 				var storageEntry = new StorageEntry(_id);
 				_container.Store(storageEntry);
-				_container.Commit();
-
 				return storageEntry;
 			}
 			

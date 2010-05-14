@@ -28,15 +28,13 @@ using System.Text;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Tests.Mocks;
-using Moq;
 using NUnit.Framework;
-using SKYPE4COMLib;
 using Application=Binboo.Core.Application;
 
 namespace Binboo.Tests
 {
 	[TestFixture]
-	public class ArgumentsTestCase
+	public class ArgumentsTestCase : TestWithUser
 	{
 		private Application _app;
 		private SkypeMock _mockSkype;
@@ -55,12 +53,10 @@ namespace Binboo.Tests
 			_app.AttachToSkype();
 		}
 
-		private User NewUserMock()
+		[TearDown]
+		public void TearDown()
 		{
-			var userMock = new Mock<User>();
-			userMock.Setup(user => user.IsBlocked).Returns(false);
-			userMock.Setup(user => user.Handle).Returns("test");
-			return userMock.Object;
+			_app.Dispose();
 		}
 
 		[Test]

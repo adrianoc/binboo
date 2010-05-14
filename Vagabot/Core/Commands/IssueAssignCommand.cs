@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Persistence;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -33,6 +34,19 @@ namespace Binboo.Core.Commands
 	{
 		public IssueAssignCommand(IJiraProxy proxy, string help) : base(proxy, help)
 		{
+		}
+
+		public override void Initialize()
+		{
+			if (Storage.Contains(AssigneesKey))
+			{
+				_userAssigneesMap = AssigneesFrom(Storage);
+			}
+		}
+
+		private static IDictionary<string, Assignees> AssigneesFrom(IStorage storage)
+		{
+			return (IDictionary<string, Assignees>) storage[AssigneesKey];
 		}
 
 		public override string Id
@@ -60,7 +74,14 @@ namespace Binboo.Core.Commands
 				sb.AppendLine(AssignIssue(ticket, assignees.Assignee, assignees.Peer, IterationFrom(arguments["iteration"])));
 			}
 
+			StoreAssignees();
+
 			return sb.Remove(sb.Length - 2, 2).ToString();
+		}
+
+		private void StoreAssignees()
+		{
+			Storage[AssigneesKey] = _userAssigneesMap;
 		}
 
 		private static string CommaSeparated(IEnumerable<string> list)
@@ -133,7 +154,9 @@ namespace Binboo.Core.Commands
 		private const int NoIteration = -1;
 
 		private int _lastestIterationUsed = NoIteration;
-		private readonly IDictionary<string, Assignees> _userAssigneesMap = new Dictionary<string, Assignees>();
+		private const string AssigneesKey = "Assignees";
+
+		private IDictionary<string, Assignees> _userAssigneesMap = new Dictionary<string, Assignees>();
 
 	}
 }

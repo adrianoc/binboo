@@ -58,10 +58,12 @@ namespace Binboo.Tests.Commands
 
 		private void AssertIssueAssignment(string skypeUser, string ticket, string user, string peer, string iteration)
 		{
-			CommandMock<IssueAssignCommand> commandMock = NewCommand<IssueAssignCommand>(MockSetupsFor(ticket, peer));
-			IContext context = ContextMockFor(skypeUser, ticket, user, peer, iteration).Object;
-			string result = commandMock.Process(context);
-			Assert.AreEqual(ExpectedAssignmentMessageFor(ticket, user), result);
+			using (var commandMock = NewCommand<IssueAssignCommand>(MockSetupsFor(ticket, peer)))
+			{
+				IContext context = ContextMockFor(skypeUser, ticket, user, peer, iteration).Object;
+				string result = commandMock.Process(context);
+				Assert.AreEqual(ExpectedAssignmentMessageFor(ticket, user), result);
+			}
 		}
 
 		private void AssertCachedAssigneeAndPeer(string skpypeUser, string issue, string expectedAssign, string expectedPeer)

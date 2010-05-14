@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2010 Adriano Carlos Verona
+ * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,12 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace Binboo.Core.Persistence
+using System;
+using System.IO;
+using Binboo.Core;
+using NUnit.Framework;
+
+namespace Binboo.Tests.Core
 {
-	public interface IStorage
+	[TestFixture]
+	public class StoragePathTestCase
 	{
-		object Value { get; set; }
-		object this[string name] { get; set; }
-		bool Contains(string name);
+		[Test]
+		public void Test()
+		{
+			Assert.AreEqual(Path.Combine(Environment.GetEnvironmentVariable("ALLUSERSPROFILE"), "Binboo"), ConfigServices.StoragePath);
+		}
 	}
 }

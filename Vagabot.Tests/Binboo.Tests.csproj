@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,8 +108,12 @@
     <Compile Include="Commands\PairCommandTestCase.Helper.cs" />
     <Compile Include="Core\CommandQueueTestCase.cs" />
     <Compile Include="Core\CommandQueueTestCase.Helper.cs" />
-    <Compile Include="StorageTestCase.cs" />
-    <Compile Include="StorageTestCase.Helper.cs" />
+    <Compile Include="Core\StoragePathTestCase.cs" />
+    <Compile Include="Mocks\DummyStorage.cs" />
+    <Compile Include="StorageIntegrationTestcase.cs" />
+    <Compile Include="Core\StorageTestCase.cs" />
+    <Compile Include="Core\StorageTestCase.Helper.cs" />
+    <Compile Include="TestWithUser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

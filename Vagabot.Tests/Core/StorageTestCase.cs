@@ -22,7 +22,7 @@
 using Binboo.Core.Persistence;
 using NUnit.Framework;
 
-namespace Binboo.Tests
+namespace Binboo.Tests.Core
 {
 	[TestFixture]
 	public partial class StorageTestCase

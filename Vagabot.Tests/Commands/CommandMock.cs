@@ -22,6 +22,7 @@
 using System;
 using Binboo.JiraIntegration;
 using Binboo.Core.Commands;
+using Binboo.Tests.Mocks;
 using Moq;
 
 namespace Binboo.Tests.Commands
@@ -35,6 +36,7 @@ namespace Binboo.Tests.Commands
 		{
 			_mock = mock;
 			_command = command;
+			_command.Storage = new DummyStorage();
 		}
 
 		public string Process(IContext context)

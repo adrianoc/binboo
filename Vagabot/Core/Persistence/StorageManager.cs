@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2010 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,20 @@ namespace Binboo.Core.Persistence
 {
 	internal class StorageManager : IStorageManager
 	{
+		public StorageManager() : this(null)
+		{
+			
+		}
+
+		public StorageManager(string basePath)
+		{
+			_basePath = basePath ?? Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+			if (!Directory.Exists(_basePath))
+			{
+				Directory.CreateDirectory(_basePath);
+			}
+		}
+
 		public void Dispose()
 		{
 			if (_db != null)
@@ -68,11 +82,13 @@ namespace Binboo.Core.Persistence
 			return configuration;
 		}
 
-		private static string DatabaseFilePath()
+		private string DatabaseFilePath()
 		{
-			return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "BinbooPersistence.odb");
+			return Path.Combine(_basePath, "BinbooPersistence.odb");
 		}
 
 		private IObjectContainer _db;
+		private readonly string _basePath;
+
 	}
 }

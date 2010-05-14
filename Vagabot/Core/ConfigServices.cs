@@ -39,7 +39,21 @@ namespace Binboo.Core
 			XmlNode userMappingNode = FindConfigItem(NameMappingXPathFor(name));
 			return userMappingNode != null ? userMappingNode.Value : String.Empty;
 		}
-		
+
+		public static string StoragePath
+		{
+			get
+			{
+				XmlNode storagePathNode = FindConfigItem("//binboo/jira/storage/@path");
+				if (storagePathNode == null)
+				{
+					throw new ArgumentException("Unable to retrieve storage path from configuration file: " + ConfigFilePath());
+				}
+
+				return Regex.Replace(storagePathNode.Value, "%(.*)%", match => Environment.GetEnvironmentVariable(match.Groups[1].Captures[0].Value));
+			}
+		}
+
 		public static string EndPoint
 		{
 			get

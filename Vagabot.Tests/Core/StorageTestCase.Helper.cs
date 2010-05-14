@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2010 Adriano Carlos Verona
+ * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,12 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace Binboo.Core.Persistence
+using Binboo.Core.Persistence;
+
+namespace Binboo.Tests.Core
 {
-	public interface IStorage
+	public partial class StorageTestCase
 	{
-		object Value { get; set; }
-		object this[string name] { get; set; }
-		bool Contains(string name);
+		private object SetValueFor(IStorageManager manager, string commandId, string value)
+		{
+			IStorage storage = manager.StorageFor(commandId);
+			storage.Value = value;
+
+			return value;
+		}
 	}
 }
