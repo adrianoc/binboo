@@ -5,7 +5,7 @@
   <jira id="unit-test">
     <user name="john doe" password="blabla" />
     <endpoint value="http://sei.la.com" />
-	<storage path="%ALLUSERSPROFILE%\Binboo" />
+	<storage path="%TEMP%\BinbooTest" />
     <im-user-mapping>
       <user skypeName="susan" jiraName="Susan Murphy" pair ="true"/>
 	  <user skypeName="link" jiraName="The Lost Link" alias="the.lost.LINK"/>

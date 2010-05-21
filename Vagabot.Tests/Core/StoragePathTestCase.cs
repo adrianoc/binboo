@@ -32,7 +32,7 @@ namespace Binboo.Tests.Core
 		[Test]
 		public void Test()
 		{
-			Assert.AreEqual(Path.Combine(Environment.GetEnvironmentVariable("ALLUSERSPROFILE"), "Binboo"), ConfigServices.StoragePath);
+			Assert.AreEqual(Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "BinbooTest"), ConfigServices.StoragePath);
 		}
 	}
 }
