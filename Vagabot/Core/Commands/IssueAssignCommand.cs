@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Persistence;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -40,13 +39,20 @@ namespace Binboo.Core.Commands
 		{
 			if (Storage.Contains(AssigneesKey))
 			{
-				_userAssigneesMap = AssigneesFrom(Storage);
+				_userAssigneesMap = FromStorage(AssigneesKey, new Dictionary<string, Assignees>());
+			}
+
+			if (Storage.Contains(IterationKey))
+			{
+				_lastUsedIteration = FromStorage(IterationKey, NoIteration);
 			}
 		}
 
-		private static IDictionary<string, Assignees> AssigneesFrom(IStorage storage)
+		private T FromStorage<T>(string key, T defaultValue)
 		{
-			return (IDictionary<string, Assignees>) storage[AssigneesKey];
+			return Storage.Contains(key)
+			       	? (T) Storage[key]
+			       	: defaultValue;
 		}
 
 		public override string Id
@@ -82,6 +88,7 @@ namespace Binboo.Core.Commands
 		private void StoreAssignees()
 		{
 			Storage[AssigneesKey] = _userAssigneesMap;
+			Storage[IterationKey] = _lastUsedIteration;
 		}
 
 		private static string CommaSeparated(IEnumerable<string> list)
@@ -133,10 +140,10 @@ namespace Binboo.Core.Commands
 		{
 			if (iteration.IsPresent)
 			{
-				_lastestIterationUsed = Int32.Parse(iteration.Value);
+				_lastUsedIteration = Int32.Parse(iteration.Value);
 			}
 
-			return _lastestIterationUsed == NoIteration ? null : IssueField.CustomField(CustomFieldId.Iteration) <= _lastestIterationUsed.ToString();
+			return _lastUsedIteration == NoIteration ? null : IssueField.CustomField(CustomFieldId.Iteration) <= _lastUsedIteration.ToString();
 		}
 
 		private static string Peer(IContext context, Argument peer)
@@ -153,10 +160,10 @@ namespace Binboo.Core.Commands
 		private const string NoOne = null;
 		private const int NoIteration = -1;
 
-		private int _lastestIterationUsed = NoIteration;
+		private int _lastUsedIteration = NoIteration;
 		private const string AssigneesKey = "Assignees";
+		private const string IterationKey = "Iteration";
 
 		private IDictionary<string, Assignees> _userAssigneesMap = new Dictionary<string, Assignees>();
-
 	}
 }
