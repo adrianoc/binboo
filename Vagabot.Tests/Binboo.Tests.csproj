@@ -83,6 +83,10 @@
     <Compile Include="Mocks\SkypeMock.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TCL.Net\TCL.Net.csproj">
+      <Project>{E468BBD6-A194-455F-A157-E22CF2726B1C}</Project>
+      <Name>TCL.Net</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Vagabot\Binboo.csproj">
       <Project>{E154BA05-1592-44A6-9135-6A47C94DD5F8}</Project>
       <Name>Binboo</Name>
@@ -109,6 +113,7 @@
     <Compile Include="Core\CommandQueueTestCase.cs" />
     <Compile Include="Core\CommandQueueTestCase.Helper.cs" />
     <Compile Include="Core\StoragePathTestCase.cs" />
+    <Compile Include="JiraHttpProxy\JiraHttpProxyTestCase.cs" />
     <Compile Include="Mocks\DummyStorage.cs" />
     <Compile Include="StorageIntegrationTestcase.cs" />
     <Compile Include="Core\StorageTestCase.cs" />
