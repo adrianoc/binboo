@@ -4,6 +4,6 @@
 	{
 		void Login(string userName, string password);
 		bool IsLoggedIn { get; }
-		void LinkIssues(int issueId, string linkDesc, string issueKey);
+		void CreateLink(int issueId, string linkDesc, string issueKey);
 	}
 }

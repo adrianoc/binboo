@@ -53,13 +53,13 @@ namespace Binboo.Tests.JiraHttp
 		public void TestLink()
 		{
 			const string issueKey = "TIL-001";
-			const string linkName = "Tested With";
+			const string linkDescription = "Tested With";
 			const int issueId = 42;
 			
 			Mock<IHttpClient> httpClient = new Mock<IHttpClient>();
 			httpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream());
 			httpClient.Setup(client => client.Post(
-												"linkDesc=" + linkName.Replace(' ', '+'),
+												"linkDesc=" + linkDescription.Replace(' ', '+'),
 												"linkKey=" + issueKey,
 												"comment=",
 												"commentLevel=",
@@ -69,7 +69,7 @@ namespace Binboo.Tests.JiraHttp
 			IJiraHttpProxy jira = new JiraHttpProxy(TargetUrl, httpClient.Object);
 			jira.Login("foo", "bar");
 
-			jira.LinkIssues(issueId, linkName, issueKey);
+			jira.CreateLink(issueId, linkDescription, issueKey);
 			httpClient.VerifyAll();
 		}
 	}

@@ -185,6 +185,7 @@
     <Content Include="Binboo.config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="Core\Commands\IssueLinkCommand.cs" />
     <Compile Include="Core\Persistence\Storage.InnerClasses.cs" />
     <Compile Include="JiraIntegration\JiraHttp\IJiraHttpProxy.cs" />
     <Compile Include="JiraIntegration\JiraHttp\JiraHttpProxy.cs" />

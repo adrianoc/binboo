@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TCL.Net.Extensions;
 using TCL.Net;
 
@@ -36,7 +35,7 @@ namespace Binboo.JiraIntegration.JiraHttp
 			get { return _isLoggedIn; }
 		}
 
-		public void LinkIssues(int issueId, string linkDesc, string issueKey)
+		public void CreateLink(int issueId, string linkDesc, string issueKey)
 		{
 			_httpClient.Cookies = _cookies;
 			_httpClient.Post(

@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\EstimateCommandTestCase.cs" />
+    <Compile Include="Commands\LinkCommandTestCase.cs" />
     <Compile Include="Commands\PairCommandTestCase.Helper.cs" />
     <Compile Include="Core\CommandQueueTestCase.cs" />
     <Compile Include="Core\CommandQueueTestCase.Helper.cs" />

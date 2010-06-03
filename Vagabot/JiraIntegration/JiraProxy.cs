@@ -34,7 +34,7 @@ namespace Binboo.JiraIntegration
 	{
 		public JiraProxy(string endPoint, JiraUser user)
 		{
-			_client = new ExpirationStrategy<JiraSoapServiceClient>(
+			_soapClient = new ExpirationStrategy<JiraSoapServiceClient>(
 								new JiraSoapServiceClient("jirasoapservice-v2", new EndpointAddress(endPoint)),
 								client => _loginToken = client.login(user.Name, user.Password));
 
@@ -43,41 +43,41 @@ namespace Binboo.JiraIntegration
 
 		private void Login()
 		{
-			_client.Refresh();
+			_soapClient.Refresh();
 			InitializeConstants();
 		}
 
 		private void InitializeConstants()
 		{
-			CustomFieldId.Initialize(_client.Item.getCustomFields(_loginToken));
-			IssueResolution.Initialize(_client.Item.getResolutions(_loginToken));
-			IssueStatus.Initialize(_client.Item.getStatuses(_loginToken));
-			IssueType.Initialize(_client.Item.getIssueTypes(_loginToken));
-			IssuePriority.Initialize(_client.Item.getPriorities(_loginToken));
+			CustomFieldId.Initialize(_soapClient.Item.getCustomFields(_loginToken));
+			IssueResolution.Initialize(_soapClient.Item.getResolutions(_loginToken));
+			IssueStatus.Initialize(_soapClient.Item.getStatuses(_loginToken));
+			IssueType.Initialize(_soapClient.Item.getIssueTypes(_loginToken));
+			IssuePriority.Initialize(_soapClient.Item.getPriorities(_loginToken));
 		}
 
 		public void LogOut()
 		{
 			ValidateConnection();
-			_client.Item.logout(_loginToken);
+			_soapClient.Item.logout(_loginToken);
 		}
 
 		public RemoteIssue[] SearchIssues(string content)
 		{
 			ValidateConnection();
-			return Run( () => _client.Item.getIssuesFromTextSearch(_loginToken, content), "Failed searching for content: " + content);
+			return Run( () => _soapClient.Item.getIssuesFromTextSearch(_loginToken, content), "Failed searching for content: " + content);
 		}
 
 		public RemoteProject[] GetProjectList()
 		{
 			ValidateConnection();
-			return Run(() => _client.Item.getProjects(_loginToken), "Failed to get project list.");
+			return Run(() => _soapClient.Item.getProjects(_loginToken), "Failed to get project list.");
 		}
 
 		public RemoteIssue[] IssuesForFilter(string filterId)
 		{
 			ValidateConnection();
-			return Run( () => _client.Item.getIssuesFromFilter(_loginToken, filterId), string.Format("Failed to get issues for field '{0}'", filterId));
+			return Run( () => _soapClient.Item.getIssuesFromFilter(_loginToken, filterId), string.Format("Failed to get issues for field '{0}'", filterId));
 		}
 
 		public RemoteIssue GetIssue(string ticket)
@@ -85,14 +85,14 @@ namespace Binboo.JiraIntegration
 			ValidateConnection();
 			ticket = Normalize(ticket);
 
-			return Run(() => _client.Item.getIssue(_loginToken, ticket), "Failed to get issue: " + ticket);
+			return Run(() => _soapClient.Item.getIssue(_loginToken, ticket), "Failed to get issue: " + ticket);
 		}
 
 		public RemoteIssue FileIssue(string reporter, string project, string summary, string description, string type, int order)
 		{
 			ValidateConnection();
 			RemoteIssue issue = CreateIssue(reporter, project.ToUpper(), summary, description, type, order, IssuePriority.Major);
-			return Run( () => _client.Item.createIssue(_loginToken, issue),
+			return Run( () => _soapClient.Item.createIssue(_loginToken, issue),
 						string.Format("Failed to file issue '{0}' for project {1}.", summary, issue.project));
 		}
 
@@ -106,7 +106,7 @@ namespace Binboo.JiraIntegration
 				RemoteIssue issue = GetIssue(ticket);
 				if (issue.status == IssueStatus.Closed)
 				{
-					_client.Item.progressWorkflowAction(
+					_soapClient.Item.progressWorkflowAction(
 												_loginToken,
 												ticket,
 												ActionIdFor(ticket, "Reopen"),
@@ -142,7 +142,7 @@ namespace Binboo.JiraIntegration
 													IssueField.Resolution <= resolution,
 													IssueField.FixedInVersion <= fixedInVersionIds);
 
-			    	return _client.Item.progressWorkflowAction(_loginToken, ticket, actionId, fields);
+			    	return _soapClient.Item.progressWorkflowAction(_loginToken, ticket, actionId, fields);
 				},
 				
 				"Failed to resolve issue " + ticket);
@@ -155,7 +155,7 @@ namespace Binboo.JiraIntegration
 
 		private string[] RemoteVersionIdsFor(string project, IEnumerable<string> versions)
 		{
-			RemoteVersion[] remoteVersions = _client.Item.getVersions(_loginToken, project);
+			RemoteVersion[] remoteVersions = _soapClient.Item.getVersions(_loginToken, project);
 			return remoteVersions.Where(version => versions.Contains(version.name)).Select(version => version.id).ToArray();
 		}
 
@@ -164,7 +164,7 @@ namespace Binboo.JiraIntegration
 			ValidateConnection();
 			ticketNumber = Normalize(ticketNumber);
 
-			Run( () => _client.Item.updateIssue(
+			Run( () => _soapClient.Item.updateIssue(
 								_loginToken, 
 								ticketNumber, 
 								CollectChangedFields(fields)),
@@ -191,7 +191,7 @@ namespace Binboo.JiraIntegration
 			if (!string.IsNullOrEmpty(comment))
 			{
 				Run(
-					() => _client.Item.addComment(_loginToken, ticket, new RemoteComment {body = comment}),
+					() => _soapClient.Item.addComment(_loginToken, ticket, new RemoteComment {body = comment}),
 					errorMessage);
 			}
 		}
@@ -199,7 +199,7 @@ namespace Binboo.JiraIntegration
 		public string GetComments(string ticket)
 		{
 			ticket = Normalize(ticket);
-			RemoteComment[] comments = Run(() => _client.Item.getComments(_loginToken, ticket), "Unable to retrieve comments.");
+			RemoteComment[] comments = Run(() => _soapClient.Item.getComments(_loginToken, ticket), "Unable to retrieve comments.");
 
 			var sb = new StringBuilder("Comments\r\n\r\n");
 			foreach (RemoteComment comment in comments)
@@ -244,7 +244,7 @@ namespace Binboo.JiraIntegration
 		{
 			actionName = actionName.ToLower();
 
-			RemoteNamedObject[] actions = _client.Item.getAvailableActions(_loginToken, ticket);
+			RemoteNamedObject[] actions = _soapClient.Item.getAvailableActions(_loginToken, ticket);
 			RemoteNamedObject found = Array.Find(actions, action => action.name.ToLower().Contains(actionName));
 			if (found == null)
 			{
@@ -293,7 +293,7 @@ namespace Binboo.JiraIntegration
 
 		private void ValidateConnection()
 		{
-			if (_loginToken == null || _client == null)
+			if (_loginToken == null || _soapClient == null)
 			{
 				throw new InvalidOperationException("Client needs to be connected and loged-in.");
 			}
@@ -323,7 +323,7 @@ namespace Binboo.JiraIntegration
 			}
 		}
 
-		private readonly ExpirationStrategy<JiraSoapServiceClient> _client;
+		private readonly ExpirationStrategy<JiraSoapServiceClient> _soapClient;
 		private string _loginToken;
 	}
 
