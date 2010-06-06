@@ -28,11 +28,12 @@ namespace Binboo.Core.Commands.Arguments
 {
 	internal class ParamValidator
 	{
-		internal static readonly ParamValidator Project = new ParamValidator("^[A-Za-z]{3,4}");
+		internal static readonly ParamValidator ProjectBase = new ParamValidator("\\b[A-Za-z]{3,4}");
+		internal static readonly ParamValidator Project = new ParamValidator("%0%(?=$|\\s+)", ProjectBase);
 
 		internal static readonly ParamValidator Anything = new ParamValidator("\"(?<param>[^\\r\\n\"]+)\"|(?<param>[^\\s\"]+)");
 		internal static readonly ParamValidator AnythingStartingWithText = new ParamValidator("\"(?<param>[A-Za-z][^\"]+)\"|(?<param>[^0-9\\s\r\n\"]+)");
-		internal static readonly ParamValidator IssueId = new ParamValidator(@"%0%-[0-9]+", Project);
+		internal static readonly ParamValidator IssueId = new ParamValidator(@"%0%-[0-9]+", ProjectBase);
 		internal static readonly ParamValidator IssueStatus = new ParamValidator("open|closed|all");
 		internal static readonly ParamValidator Iteration = new ParamValidator("(?<param>[0-9]+)", true);
 		internal static readonly ParamValidator MultipleIssueId = new ParamValidator(@"(?<issues>(?<param>[A-Za-z]{1,4}-[0-9]{1,4})(\s*,\s*(?<param>[A-Za-z]{1,4}-[0-9]{1,4}))*)");

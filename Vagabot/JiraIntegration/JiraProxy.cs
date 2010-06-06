@@ -210,7 +210,7 @@ namespace Binboo.JiraIntegration
 			return sb.ToString();
 		}
 
-		public void CreateLink(string source, string target, string linkDescription)
+		public void CreateLink(string source, string linkDescription, string target)
 		{
 			RemoteIssue sourceIssue = GetIssue(source);
 			var jiraLink = new HttpClient(""); //HttpWebRequest jiraLink = (HttpWebRequest)WebRequest.Create("http://192.168.56.101:8080/secure/LinkExistingIssue.jspa");
