@@ -19,22 +19,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Collections.Generic;
-using System.IO;
+using Binboo.Core.Commands;
+using Binboo.JiraIntegration;
+using Moq;
+using NUnit.Framework;
+using TCL.Net;
 
-namespace TCL.Net
+namespace Binboo.Tests.Commands
 {
-	public interface IHttpClient
+	[TestFixture]
+	public class LinkCommandTestCase : JiraCommandTestCaseBase
 	{
-		void Post(params string[] values);
-		HttpStatus Status { get; }
-		Stream ResponseStream { get; }
-		IList<IHttpCookie> Cookies { get; set; }
-	}
+		[Test]
+		public void TestSuccessfulLink()
+		{
+			Mock<IJiraProxy> mockedJiraSoapProxy = MockedJiraSoapProxy();
+			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink("TIL-001", "Tested With", "TIL-002"));
 
-	public enum HttpStatus
-	{
-		OK = 200,
-		REDIRECT
+			var linkCommand = new IssueLinkCommand(
+										mockedJiraSoapProxy.Object,
+										"Testing issue linking.");
+
+			Mock<IContext> mockedContext = ContextMockFor("foo", "TIL-001", "\"Tested With\"", "TIL-002");
+			string actualResult = linkCommand.Process(mockedContext.Object);
+
+			Assert.AreEqual("Link created successfully: TIL-001 Tested With TIL-002", actualResult);
+
+			mockedJiraSoapProxy.VerifyAll();
+		}
+
+		private static Mock<IHttpClient> MockedHttpClient()
+		{
+			return new Mock<IHttpClient>(MockBehavior.Strict);
+		}
+
+		private static Mock<IJiraProxy> MockedJiraSoapProxy()
+		{
+			return new Mock<IJiraProxy>();
+		}
 	}
 }

@@ -14,7 +14,6 @@ namespace Binboo.Tests.JiraHttp
 	public class JiraHttpProxyTestCase
 	{
 		private const string InvalidLoginPage = "loginform";
-		private const string TargetUrl = "";
 		private const string UserName = "john";
 		private const string Password = "doe";
 
@@ -26,7 +25,7 @@ namespace Binboo.Tests.JiraHttp
 			httpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream());
 			httpClient.Setup(client => client.Cookies).Returns(new List<IHttpCookie>());
 
-			IJiraHttpProxy jira = new JiraHttpProxy(TargetUrl, httpClient.Object);
+			IJiraHttpProxy jira = new JiraHttpProxy(httpClient.Object);
 
 			jira.Login(UserName, Password);
 			Assert.IsTrue(jira.IsLoggedIn);
@@ -41,7 +40,7 @@ namespace Binboo.Tests.JiraHttp
 			httpClient.Setup(client => client.Post("os_username=foo", "os_password=bar"));
 			httpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream(InvalidLoginPage.ToBytes()));
 
-			IJiraHttpProxy jira = new JiraHttpProxy(TargetUrl, httpClient.Object);
+			IJiraHttpProxy jira = new JiraHttpProxy(httpClient.Object);
 
 			jira.Login("foo", "bar");
 			Assert.IsFalse(jira.IsLoggedIn);
@@ -57,19 +56,20 @@ namespace Binboo.Tests.JiraHttp
 			const int issueId = 42;
 			
 			Mock<IHttpClient> httpClient = new Mock<IHttpClient>();
-			httpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream());
-			httpClient.Setup(client => client.Post(
-												"linkDesc=" + linkDescription.Replace(' ', '+'),
-												"linkKey=" + issueKey,
-												"comment=",
-												"commentLevel=",
-												"id=" + issueId,
-												"Link=Link"));
+			httpClient.Setup(mockHttpClient => mockHttpClient.ResponseStream).Returns(new MemoryStream());
+			httpClient.Setup(mockHttpClient => mockHttpClient.Post(
+														"linkDesc=" + linkDescription.Replace(' ', '+'),
+														"linkKey=" + issueKey,
+														"comment=",
+														"commentLevel=",
+														"id=" + issueId,
+														"Link=Link"));
 
-			IJiraHttpProxy jira = new JiraHttpProxy(TargetUrl, httpClient.Object);
+			IJiraHttpProxy jira = new JiraHttpProxy(httpClient.Object);
 			jira.Login("foo", "bar");
 
 			jira.CreateLink(issueId, linkDescription, issueKey);
+			
 			httpClient.VerifyAll();
 		}
 	}

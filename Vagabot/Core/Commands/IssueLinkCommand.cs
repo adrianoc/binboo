@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2010 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,22 +19,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Collections.Generic;
-using System.IO;
+using Binboo.Core.Commands.Arguments;
+using Binboo.JiraIntegration;
 
-namespace TCL.Net
+namespace Binboo.Core.Commands
 {
-	public interface IHttpClient
+	class IssueLinkCommand : JiraCommandBase
 	{
-		void Post(params string[] values);
-		HttpStatus Status { get; }
-		Stream ResponseStream { get; }
-		IList<IHttpCookie> Cookies { get; set; }
-	}
+		public IssueLinkCommand(IJiraProxy jira, string help) : base(jira, help)
+		{
+		}
 
-	public enum HttpStatus
-	{
-		OK = 200,
-		REDIRECT
+		public override string Id
+		{
+			get { return "link"; }
+		}
+
+		protected override string ProcessCommand(IContext context)
+		{
+			var arguments = CollectAndValidateArguments(context.Arguments, 
+														sourceIssueKey => ParamValidator.IssueId,
+														linkDescription => ParamValidator.AnythingStartingWithText,
+														targetIssueKey => ParamValidator.IssueId);
+
+			_jira.CreateLink(arguments["sourceIssueKey"], arguments["linkDescription"], arguments["targetIssueKey"]);
+
+			return string.Format(	"Link created successfully: {0} {1} {2}", 
+									arguments["sourceIssueKey"].Value, 
+									arguments["linkDescription"].Value,
+									arguments["targetIssueKey"].Value);
+
+		}
 	}
 }

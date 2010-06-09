@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace TCL.Net
 {
-	public class HttpClient
+	public class HttpClient : IHttpClient
 	{
 		public HttpClient(string url)
 		{
@@ -41,7 +42,28 @@ namespace TCL.Net
 		{
 			throw new NotImplementedException();
 		}
-		
+
+		public void Post(params string[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public HttpStatus Status
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public Stream ResponseStream
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public IList<IHttpCookie> Cookies
+		{
+			get { throw new NotImplementedException(); }
+			set { throw new NotImplementedException(); }
+		}
+
 		private string _url;
 		private readonly HttpVariables _variables = new HttpVariables();
 	}
