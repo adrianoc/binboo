@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2010 Adriano Carlos Verona
+ * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,9 +19,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+
+namespace Binboo.Tests.Core.Commands
 {
-	public interface IHttpCookie
+	class Argument<T>
 	{
+		private bool _present;
+		private readonly T _value;
+
+		internal Argument(T value, bool present)
+		{
+			_value = value;
+			_present = present;
+		}
+
+		public T Value
+		{
+			get { return _value; }
+		}
+
+		public bool IsPresent
+		{
+			get { return _present; }
+		}
+
+		public static implicit operator Argument<T>(T value)
+		{
+			return new Argument<T>(value, true);
+		}
 	}
+
+	class ArgumentHelper
+	{
+		public static Argument<T> Missing<T>(T value)
+		{
+			return new Argument<T>(value, false);
+		}
+	}
+
 }

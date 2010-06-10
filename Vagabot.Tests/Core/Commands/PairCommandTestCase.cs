@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2010 Adriano Carlos Verona
+ * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,9 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+
+using Binboo.Core.Commands;
+using NUnit.Framework;
+
+namespace Binboo.Tests.Core.Commands
 {
-	public interface IHttpCookie
+	[TestFixture]
+	public partial class PairCommandTestCase : JiraCommandTestCaseBase
 	{
+		[Test]
+		public void TestPairsAreValid()
+		{
+			using (var commandMock = NewCommand<PairsCommand>())
+			{
+				var contextMock = ContextMockFor("pairs-user");
+				AssertPairsAreValid(ExpectedMessageRegExp(), commandMock.Process(contextMock.Object));
+			}
+		}
 	}
 }

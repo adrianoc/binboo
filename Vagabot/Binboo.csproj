@@ -98,7 +98,7 @@
     <Compile Include="Core\Commands\SetOrderCommand.cs" />
     <Compile Include="Core\Commands\ListProjectsCommand.cs" />
     <Compile Include="Core\Commands\Arguments\ParamValidator.cs" />
-    <Compile Include="Core\ConfigServices.cs" />
+    <Compile Include="Core\Configuration\ConfigServices.cs" />
     <Compile Include="Core\Events\ErrorEventArgs.cs" />
     <Compile Include="Core\Exceptions\InvalidCommandArgumentsException.cs" />
     <Compile Include="Core\Persistence\IStorage.cs" />
@@ -186,6 +186,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Compile Include="Core\Commands\IssueLinkCommand.cs" />
+    <Compile Include="Core\Configuration\HttpInterfaceConfiguration.cs" />
+    <Compile Include="Core\Configuration\IHttpInterfaceConfiguration.cs" />
     <Compile Include="Core\Persistence\Storage.InnerClasses.cs" />
     <Compile Include="JiraIntegration\JiraHttp\IJiraHttpProxy.cs" />
     <Compile Include="JiraIntegration\JiraHttp\JiraHttpProxy.cs" />

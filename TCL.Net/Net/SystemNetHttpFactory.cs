@@ -19,9 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+using System.Net;
+
+namespace TCL.Net.Net
 {
-	public interface IHttpCookie
+	public class SystemNetHttpFactory : IHttpClientFactory
 	{
+		public IHttpClient Connect(string url)
+		{
+			return new SystemNetHttpClient(WebRequest.Create(url));
+		}
 	}
 }

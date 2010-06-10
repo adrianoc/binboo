@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands

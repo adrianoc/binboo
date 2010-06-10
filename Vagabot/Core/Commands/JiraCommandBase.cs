@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Configuration;
 using Binboo.Core.Exceptions;
 using Binboo.JiraIntegration;
 

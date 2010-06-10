@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands

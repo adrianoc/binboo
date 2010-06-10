@@ -28,6 +28,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Binboo.Core.Commands;
+using Binboo.Core.Configuration;
 using Binboo.Core.Events;
 using Binboo.Core.Persistence;
 using SKYPE4COMLib;

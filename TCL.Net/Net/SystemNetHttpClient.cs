@@ -19,9 +19,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+
+namespace TCL.Net.Net
 {
-	public interface IHttpCookie
+	class SystemNetHttpClient : IHttpClient
 	{
+		public SystemNetHttpClient(WebRequest request)
+		{
+			_request = request;
+		}
+
+		public void Post(params string[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public HttpStatus Status
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public Stream ResponseStream
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public IList<IHttpCookie> Cookies
+		{
+			get { throw new NotImplementedException(); }
+			set { throw new NotImplementedException(); }
+		}
+		
+		private readonly WebRequest _request;
 	}
 }

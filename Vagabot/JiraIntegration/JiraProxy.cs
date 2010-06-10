@@ -26,14 +26,15 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using Binboo.Core;
-using TCL.Net;
+using Binboo.JiraIntegration.JiraHttp;
 
 namespace Binboo.JiraIntegration
 {
 	class JiraProxy : IJiraProxy
 	{
-		public JiraProxy(string endPoint, JiraUser user)
+		public JiraProxy(string endPoint, JiraUser user, IJiraHttpProxy httpProxy)
 		{
+			_httpProxy = httpProxy;
 			_soapClient = new ExpirationStrategy<JiraSoapServiceClient>(
 								new JiraSoapServiceClient("jirasoapservice-v2", new EndpointAddress(endPoint)),
 								client => _loginToken = client.login(user.Name, user.Password));
@@ -213,22 +214,7 @@ namespace Binboo.JiraIntegration
 		public void CreateLink(string source, string linkDescription, string target)
 		{
 			RemoteIssue sourceIssue = GetIssue(source);
-			var jiraLink = new HttpClient(""); 
-			//HttpWebRequest jiraLink = (HttpWebRequest)WebRequest.Create("http://192.168.56.101:8080/secure/LinkExistingIssue.jspa");
-			//                        //jiraLink.CookieContainer = cookieContainer;
-			//                        // jiraLink.UserAgent = "binboo";
-
-			jiraLink.Method = HttpMethod.Post;
-			//                // jiraLink.ContentType = "application/x-www-form-urlencoded";
-
-			//jiraLink.Variables["linkDesk"] = linkDescription;
-			//jiraLink.Variables["linkKey"] = target;
-			//jiraLink.Variables["id"] = sourceIssue.id;
-			//jiraLink.Variables["Link"] = "Link";
-			////jiraLink.ContentLength = 79;
-
-			////Write("linkDesc=Duplicates&linkKey=BTT-7%2C+&comment=&commentLevel=&id=10000&Link=Link");
-			//jiraLink.Send();
+			_httpProxy.CreateLink(Int32.Parse(sourceIssue.id), linkDescription, target);
 		}
 
 		public void DeleteLink(string ticket, string linkName)
@@ -326,6 +312,7 @@ namespace Binboo.JiraIntegration
 
 		private readonly ExpirationStrategy<JiraSoapServiceClient> _soapClient;
 		private string _loginToken;
+		private readonly IJiraHttpProxy _httpProxy;
 	}
 
 	internal class JiraProxyException : Exception

@@ -22,11 +22,15 @@
 
 using System;
 using System.Windows.Forms;
+
 using Binboo.Core;
 using Binboo.Core.Commands;
+using Binboo.Core.Configuration;
 using Binboo.Core.Events;
 using Binboo.JiraIntegration;
+using Binboo.JiraIntegration.JiraHttp;
 using Microsoft.Win32;
+using TCL.Net.Net;
 
 namespace Binboo
 {
@@ -142,7 +146,10 @@ namespace Binboo
 			{
 				try
 				{
-					_jira = new JiraProxy(ConfigServices.EndPoint, ConfigServices.User);
+					_jira = new JiraProxy(
+									ConfigServices.EndPoint, 
+									ConfigServices.User,
+									new JiraHttpProxy(new SystemNetHttpFactory(), ConfigServices.HttpInterfaceConfiguration));
 				}
 				catch(Exception e)
 				{

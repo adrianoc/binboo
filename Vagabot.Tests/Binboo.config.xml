@@ -6,12 +6,17 @@
     <user name="john doe" password="blabla" />
     <endpoint value="http://sei.la.com" />
 	<storage path="%TEMP%\BinbooTest" />
-    <im-user-mapping>
+	<im-user-mapping>
       <user skypeName="susan" jiraName="Susan Murphy" pair ="true"/>
 	  <user skypeName="link" jiraName="The Lost Link" alias="the.lost.LINK"/>
 	  <user skypeName="bob" jiraName="BOB"  pair="true" />
 	  <user skypeName="frank" jiraName="Frank Abagnale Jr." pair="true" />
 	  <user skypeName="carl" jiraName="carl@hanratty.com" pair="true" />
 	</im-user-mapping>
+
+	<http>
+		<link url="link.url" />
+		<login url="login.url" />
+	</http>
   </jira>
 </binboo>

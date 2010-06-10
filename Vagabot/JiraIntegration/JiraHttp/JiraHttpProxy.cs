@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2010 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,34 +20,38 @@
  * THE SOFTWARE.
  **/
 using System.Collections.Generic;
-using TCL.Net.Extensions;
+using Binboo.Core.Configuration;
 using TCL.Net;
+using TCL.Net.Extensions;
 
 namespace Binboo.JiraIntegration.JiraHttp
 {
 	class JiraHttpProxy : IJiraHttpProxy
 	{
-		public JiraHttpProxy(IHttpClient httpClient)
+		public JiraHttpProxy(IHttpClientFactory clientFactory, IHttpInterfaceConfiguration config)
 		{
-			_httpClient = httpClient;
+			_config = config;
+			_clientFactory = clientFactory;
 		}
 
 		public void Login(string userName, string password)
 		{
-			_httpClient.Post(string.Format("os_username={0}",userName), string.Format("os_password={0}",password));
-			
-			UpdateLoginStatus();
-			RememberCookies();
+			//TODO: IDisposable ?
+			var client = _clientFactory.Connect(_config.LoginUrl);
+			client.Post(string.Format("os_username={0}", userName), string.Format("os_password={0}", password));
+
+			UpdateLoginStatus(client);
+			RememberCookies(client);
 		}
 
-		private void RememberCookies()
+		private void RememberCookies(IHttpClient client)
 		{
-			_cookies = _httpClient.Cookies;
+			_cookies = client.Cookies;
 		}
 
-		private void UpdateLoginStatus()
+		private void UpdateLoginStatus(IHttpClient client)
 		{
-			_isLoggedIn = !_httpClient.ResponseStream.Contains("loginform");
+			_isLoggedIn = !client.ResponseStream.Contains("loginform");
 		}
 
 		public bool IsLoggedIn
@@ -57,8 +61,9 @@ namespace Binboo.JiraIntegration.JiraHttp
 
 		public void CreateLink(int issueId, string linkDesc, string issueKey)
 		{
-			_httpClient.Cookies = _cookies;
-			_httpClient.Post(
+			var client = _clientFactory.Connect(_config.LinkUrl);
+			client.Cookies = _cookies;
+			client.Post(
 					"linkDesc=" + linkDesc.Replace(' ', '+'),
 					"linkKey=" + issueKey,
 					"comment=",
@@ -71,11 +76,12 @@ namespace Binboo.JiraIntegration.JiraHttp
 
 		public override string ToString()
 		{
-			return _httpClient.ToString();
+			return _clientFactory.ToString();
 		}
 
-		private readonly IHttpClient _httpClient;
+		private readonly IHttpClientFactory _clientFactory;
 		private bool _isLoggedIn;
 		private IList<IHttpCookie> _cookies;
+		private readonly IHttpInterfaceConfiguration _config;
 	}
 }

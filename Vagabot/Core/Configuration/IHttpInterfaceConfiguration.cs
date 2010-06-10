@@ -19,9 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+namespace Binboo.Core.Configuration
 {
-	public interface IHttpCookie
+	public interface IHttpInterfaceConfiguration
 	{
+		string LinkUrl { get; }
+		string LoginUrl { get; }
 	}
 }

@@ -54,7 +54,10 @@
     <Compile Include="Net\HttpClient.cs" />
     <Compile Include="Net\HttpMethod.cs" />
     <Compile Include="Net\IHttpClient.cs" />
+    <Compile Include="Net\IHttpClientFactory.cs" />
     <Compile Include="Net\IHttpCookie.cs" />
+    <Compile Include="Net\SystemNetHttpClient.cs" />
+    <Compile Include="Net\SystemNetHttpFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

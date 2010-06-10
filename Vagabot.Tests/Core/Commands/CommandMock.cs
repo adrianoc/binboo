@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2010 Adriano Carlos Verona
+ * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,9 +19,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+using System;
+using Binboo.JiraIntegration;
+using Binboo.Core.Commands;
+using Binboo.Tests.Mocks;
+using Moq;
+
+namespace Binboo.Tests.Core.Commands
 {
-	public interface IHttpCookie
+	internal class CommandMock<T> : IDisposable where T : IBotCommand
 	{
+		private readonly Mock<IJiraProxy> _mock;
+		private readonly T _command;
+
+		public CommandMock(T command, Mock<IJiraProxy> mock)
+		{
+			_mock = mock;
+			_command = command;
+			_command.Storage = new DummyStorage();
+		}
+
+		public string Process(IContext context)
+		{
+			return _command.Process(context);
+		}
+
+		public void Verify()
+		{
+			_mock.VerifyAll();
+		}
+
+		public void Dispose()
+		{
+			_mock.VerifyAll();
+		}
 	}
 }

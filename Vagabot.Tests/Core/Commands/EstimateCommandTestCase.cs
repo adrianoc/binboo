@@ -19,9 +19,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+
+using Binboo.Core.Commands;
+using Binboo.JiraIntegration;
+using Moq;
+using NUnit.Framework;
+
+namespace Binboo.Tests.Core.Commands
 {
-	public interface IHttpCookie
+	[TestFixture]
+	public class EstimateCommandTestCase : JiraCommandTestCaseBase
 	{
+		[Test]
+		public void TestSingleIssue()
+		{
+			string issue = "TST-01";
+			const string estimation = "42";
+			
+			using (var command = NewCommand<EstimateCommand>(
+								estimateMock => estimateMock.Setup(jira => jira.UpdateIssue(issue, string.Empty, It.Is<IssueField[]>(fields => fields.Length == 1 && fields[0].Values[0] == estimation)))
+							))
+			{
+				var context = ContextMockFor("estimate-testecase", issue, estimation);
+
+				var result = command.Process(context.Object);
+				Assert.AreEqual(string.Format("[{0}] Estimation set to {1}\r\n", issue, estimation), result);
+			}
+		}
 	}
 }

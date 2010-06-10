@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2010 Adriano Carlos Verona
+ * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,9 +19,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+using System;
+using System.Linq.Expressions;
+using Binboo.Core.Configuration;
+using NUnit.Framework;
+
+namespace Binboo.Tests.Core.Configuration
 {
-	public interface IHttpCookie
+	partial class ConfigServicesTestCase
 	{
+		private void AssertJiraHttpLink(Expression<Func<IHttpInterfaceConfiguration, string>> configPropertyAccessor)
+		{
+			IHttpInterfaceConfiguration httpConfig = ConfigServices.HttpInterfaceConfiguration;
+			Assert.AreEqual(
+					ExpectedUrlFrom(configPropertyAccessor),
+					configPropertyAccessor.Compile().Invoke(httpConfig));
+		}
+
+		private string ExpectedUrlFrom(Expression<Func<IHttpInterfaceConfiguration, string>> configPropExpression)
+		{
+			MemberExpression me = (MemberExpression)configPropExpression.Body;
+			string propertyName = me.Member.Name.ToLowerInvariant();
+			return propertyName.Insert(propertyName.Length - "url".Length, ".");
+		}
 	}
 }

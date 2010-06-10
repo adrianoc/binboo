@@ -21,7 +21,8 @@
  **/
 namespace TCL.Net
 {
-	public interface IHttpCookie
+	public interface IHttpClientFactory
 	{
+		IHttpClient Connect(string url);
 	}
 }

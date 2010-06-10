@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2010 Adriano Carlos Verona
+ * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,9 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace TCL.Net
+using Binboo.Core.Commands;
+using NUnit.Framework;
+
+namespace Binboo.Tests.Core.Commands
 {
-	public interface IHttpCookie
+	[TestFixture]
+	public class ListProjectsCommandTestCase : JiraCommandTestCaseBase
 	{
+		[Test]
+		public void Test()
+		{
+			using(var commandMock = NewCommand<ListProjectsCommand>(mock => mock.Setup(proxy => proxy.GetProjectList()).Returns(_projects)))
+			{
+				var contextMock = ContextMockFor("list-user");
+				var result = commandMock.Process(contextMock.Object);
+				StringAssert.Contains("OK", result);
+			}
+		}
+
+		private RemoteProject[] _projects = new []
+		                                    	{
+		                                    		new RemoteProject {key="P1", lead = "P1 lead", description = "P1 description"}, 
+													new RemoteProject {key="P2", lead = "P2 lead", description = "P2 description"}, 
+												};
 	}
 }
