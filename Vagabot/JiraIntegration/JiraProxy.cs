@@ -26,6 +26,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using Binboo.Core;
+using Binboo.Core.Configuration;
 using Binboo.JiraIntegration.JiraHttp;
 
 namespace Binboo.JiraIntegration
@@ -211,10 +212,11 @@ namespace Binboo.JiraIntegration
 			return sb.ToString();
 		}
 
-		public void CreateLink(string source, string linkDescription, string target)
+		public string CreateLink(string source, string linkDescription, string target, bool verbose)
 		{
 			RemoteIssue sourceIssue = GetIssue(source);
-			_httpProxy.CreateLink(Int32.Parse(sourceIssue.id), linkDescription, target);
+			_httpProxy.Login(ConfigServices.User.Name, ConfigServices.User.Password);
+			return _httpProxy.CreateLink(Int32.Parse(sourceIssue.id), linkDescription, target, verbose);
 		}
 
 		public void DeleteLink(string ticket, string linkName)

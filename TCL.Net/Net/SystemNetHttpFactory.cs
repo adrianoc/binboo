@@ -27,7 +27,7 @@ namespace TCL.Net.Net
 	{
 		public IHttpClient Connect(string url)
 		{
-			return new SystemNetHttpClient(WebRequest.Create(url));
+			return new SystemNetHttpClient((HttpWebRequest) WebRequest.Create(url));
 		}
 	}
 }

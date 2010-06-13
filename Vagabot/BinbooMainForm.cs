@@ -125,19 +125,20 @@ namespace Binboo
 
 		private void InitializeCommmands()
 		{
-			_controler.
-				AddCommand(new FileIssueCommand(JiraProxy(), Binboo.File)).
-				AddCommand(new EstimateCommand(JiraProxy(), Binboo.Estimate)).
-				AddCommand(new ResolveIssueCommand(JiraProxy(), Binboo.Resolve)).
-				AddCommand(new SearchCommand(JiraProxy(), Binboo.Search)).
-				AddCommand(new CountIDSCommand(JiraProxy(), Binboo.CountIDS)).
-				AddCommand(new HelpCommand(_controler, Binboo.Help)).
-				AddCommand(new IssueCommand(JiraProxy(), Binboo.Issue)).
-				AddCommand(new IssueAssignCommand(JiraProxy(), Binboo.Assign)).
-				AddCommand(new TaskDropperCommand(JiraProxy(), Binboo.Drop)).
-				AddCommand(new ListProjectsCommand(JiraProxy(), Binboo.ListProjects)).
-				AddCommand(new PairsCommand(JiraProxy(), Binboo.Pairs)).
-				AddCommand(new SetOrderCommand(JiraProxy(), Binboo.SetOrder));
+			_controler
+				.AddCommand(new FileIssueCommand(JiraProxy(), Binboo.File))
+				.AddCommand(new EstimateCommand(JiraProxy(), Binboo.Estimate))
+				.AddCommand(new ResolveIssueCommand(JiraProxy(), Binboo.Resolve))
+				.AddCommand(new SearchCommand(JiraProxy(), Binboo.Search))
+				.AddCommand(new CountIDSCommand(JiraProxy(), Binboo.CountIDS))
+				.AddCommand(new HelpCommand(_controler, Binboo.Help))
+				.AddCommand(new IssueCommand(JiraProxy(), Binboo.Issue))
+				.AddCommand(new IssueAssignCommand(JiraProxy(), Binboo.Assign))
+				.AddCommand(new TaskDropperCommand(JiraProxy(), Binboo.Drop))
+				.AddCommand(new ListProjectsCommand(JiraProxy(), Binboo.ListProjects))
+				.AddCommand(new PairsCommand(JiraProxy(), Binboo.Pairs))
+				.AddCommand(new SetOrderCommand(JiraProxy(), Binboo.SetOrder))
+				.AddCommand(new LinkIssueCommand(JiraProxy(), Binboo.Link));
 		}
 
 		private JiraProxy JiraProxy()

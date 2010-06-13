@@ -51,8 +51,10 @@
     <Compile Include="Cryptography\Interop.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Net\HttpClient.cs" />
+    <Compile Include="Net\CookieContainerImpl.cs" />
     <Compile Include="Net\HttpMethod.cs" />
+    <Compile Include="Net\HttpVariables.cs" />
+    <Compile Include="Net\ICookieContainer.cs" />
     <Compile Include="Net\IHttpClient.cs" />
     <Compile Include="Net\IHttpClientFactory.cs" />
     <Compile Include="Net\IHttpCookie.cs" />

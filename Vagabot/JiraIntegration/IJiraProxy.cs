@@ -38,7 +38,7 @@ namespace Binboo.JiraIntegration
 		void AddComment(string ticket, string comment);
 		string GetComments(string ticket);
 		
-		void CreateLink(string source, string linkDescription, string target);
+		string CreateLink(string source, string linkDescription, string target, bool verbose);
 		void DeleteLink(string ticket, string linkName);
 	}
 }

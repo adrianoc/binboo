@@ -19,12 +19,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace Binboo.JiraIntegration.JiraHttp
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+
+namespace TCL.Net
 {
-	interface IJiraHttpProxy
+	public class HttpVariables : IEnumerable<string>
 	{
-		void Login(string userName, string password);
-		bool IsLoggedIn { get; }
-		string CreateLink(int issueId, string linkDesc, string issueKey, bool versobe);
+		public string this[string name]
+		{
+			get
+			{
+				if (_variables.ContainsKey(name)) return _variables[name];
+				return string.Empty;
+			}
+
+			set
+			{
+				_variables[name] = value;
+			}
+		}
+
+		public override string ToString()
+		{
+			var output = new StringBuilder();
+			foreach (var pair in _variables)
+			{
+				output.AppendFormat("{0}={1}&", pair.Key, Uri.EscapeDataString(pair.Value));
+			}
+
+			return output.Remove(output.Length - 1, 1).ToString();
+		}
+
+		public IEnumerator<string> GetEnumerator()
+		{
+			return _variables.Keys.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		private readonly IDictionary<string, string> _variables = new Dictionary<string, string>();
 	}
 }

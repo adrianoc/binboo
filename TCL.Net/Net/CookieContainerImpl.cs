@@ -19,12 +19,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace Binboo.JiraIntegration.JiraHttp
+using System.Net;
+
+namespace TCL.Net.Net
 {
-	interface IJiraHttpProxy
+	class CookieContainerImpl : ICookieContainer
 	{
-		void Login(string userName, string password);
-		bool IsLoggedIn { get; }
-		string CreateLink(int issueId, string linkDesc, string issueKey, bool versobe);
+		public CookieContainerImpl(CookieContainer container)
+		{
+			_container = container;
+		}
+
+		internal CookieContainer Cookies
+		{
+			get { return _container; }	
+		}
+
+		private readonly CookieContainer _container;
 	}
 }

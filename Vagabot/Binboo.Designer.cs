@@ -138,6 +138,16 @@ namespace Binboo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Links issues
+        ///Use: %cmd% &lt;ticket#&gt; link-type &lt;tiket#&gt;.
+        /// </summary>
+        internal static string Link {
+            get {
+                return ResourceManager.GetString("Link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Displays a list of all projects registered in Jira.
         ///Use: %cmd%.
         /// </summary>

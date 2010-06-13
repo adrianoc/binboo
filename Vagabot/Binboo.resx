@@ -149,6 +149,10 @@ Use: %cmd% [&lt;command&gt;]</value>
     <value>Displays the main details about an issue
 Use: %cmd% &lt;ticket #&gt; [comments]</value>
   </data>
+  <data name="Link" xml:space="preserve">
+    <value>Links issues
+Use: %cmd% &lt;ticket#&gt; link-type &lt;tiket#&gt;</value>
+  </data>
   <data name="ListProjects" xml:space="preserve">
     <value>Displays a list of all projects registered in Jira.
 Use: %cmd%</value>

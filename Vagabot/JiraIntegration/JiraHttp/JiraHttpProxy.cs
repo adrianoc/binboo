@@ -19,10 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Web;
 using Binboo.Core.Configuration;
+using HtmlAgilityPack;
 using TCL.Net;
 using TCL.Net.Extensions;
+using TCL.Net.Net;
 
 namespace Binboo.JiraIntegration.JiraHttp
 {
@@ -38,10 +44,14 @@ namespace Binboo.JiraIntegration.JiraHttp
 		{
 			//TODO: IDisposable ?
 			var client = _clientFactory.Connect(_config.LoginUrl);
-			client.Post(string.Format("os_username={0}", userName), string.Format("os_password={0}", password));
+			client.Variables["os_username"] = userName;
+			client.Variables["os_password"] = password;
+			client.Post();
 
 			UpdateLoginStatus(client);
 			RememberCookies(client);
+			
+			Log("[Login]", client.ResponseStream);
 		}
 
 		private void RememberCookies(IHttpClient client)
@@ -59,19 +69,50 @@ namespace Binboo.JiraIntegration.JiraHttp
 			get { return _isLoggedIn; }
 		}
 
-		public void CreateLink(int issueId, string linkDesc, string issueKey)
+		public string CreateLink(int issueId, string linkDesc, string issueKey, bool versobe)
 		{
 			var client = _clientFactory.Connect(_config.LinkUrl);
 			client.Cookies = _cookies;
-			client.Post(
-					"linkDesc=" + linkDesc.Replace(' ', '+'),
-					"linkKey=" + issueKey,
-					"comment=",
-					"commentLevel=",
-					"id=" + issueId,
-					"Link=Link");
 
-			//TODO: Add response to log        
+			client.Variables["linkDesc"] = linkDesc;
+			client.Variables["linkKey"] = issueKey;
+			client.Variables["comment"] = "";
+			client.Variables["commentLevel"] = "";
+			client.Variables["id"] = issueId.ToString();
+			client.Variables["Link"] = "Link";
+
+			client.Post();
+
+			return ResponseFor(client.ResponseStream, versobe);
+		}
+
+		private static string ResponseFor(Stream responseStream, bool versobe)
+		{
+			HtmlDocument htmlDocument = new HtmlDocument();
+			htmlDocument.Load(responseStream);
+
+			HtmlNode found = htmlDocument.DocumentNode.SelectSingleNode("//select[@name='linkDesc']");
+			if (found != null)
+			{
+				string escapedErrorMessage = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='errMsg']").InnerText.Trim();
+				var errorMessage = HttpUtility.HtmlDecode(escapedErrorMessage);
+
+				HtmlNodeCollection validLinkOptions = found.SelectNodes("option");
+				if (validLinkOptions == null) return null;
+
+				return errorMessage + (versobe 
+										? "\r\nValid link descriptions: \r\n" + validLinkOptions.Aggregate("", (agg, current) => agg + "      \"" + current.NextSibling.InnerText.Trim() + "\"\r\n")
+										: ""); 
+			}
+
+			return null;
+		}
+
+		[Conditional("DEBUG")]
+		private void Log(string msg, Stream data)
+		{
+			string readToEnd = new StreamReader(data).ReadToEnd();
+			Console.WriteLine(msg, readToEnd);
 		}
 
 		public override string ToString()
@@ -81,7 +122,7 @@ namespace Binboo.JiraIntegration.JiraHttp
 
 		private readonly IHttpClientFactory _clientFactory;
 		private bool _isLoggedIn;
-		private IList<IHttpCookie> _cookies;
+		private ICookieContainer _cookies;
 		private readonly IHttpInterfaceConfiguration _config;
 	}
 }

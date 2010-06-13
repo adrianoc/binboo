@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  **/
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Binboo.Core.Configuration;
 using Moq;
@@ -77,32 +76,47 @@ namespace Binboo.Tests.JiraIntegration.JiraHttp
 			const string linkDescription = "Tested With";
 			const int issueId = 42;
 
-			var httpClient = new Mock<IHttpClient>();
+			var loginHttpClient = new Mock<IHttpClient>();
+			var linkHttpClient = new Mock<IHttpClient>();
 			var clientFactory = new Mock<IHttpClientFactory>();
 			
-			clientFactory.Setup(factory => factory.Connect(LoginPage)).Returns(httpClient.Object);
-			clientFactory.Setup(factory => factory.Connect(LinkPage)).Returns(httpClient.Object);
-
+			clientFactory.Setup(factory => factory.Connect(LoginPage)).Returns(loginHttpClient.Object);
+			
 			var config = new Mock<IHttpInterfaceConfiguration>();
 			config.Setup(cfg => cfg.LoginUrl).Returns(LoginPage);
 			config.Setup(cfg => cfg.LinkUrl).Returns(LinkPage);
 
+			HttpVariables loginVariables = new HttpVariables();
+			loginHttpClient.Setup(client => client.Variables).Returns(loginVariables);
+			loginHttpClient.Setup(client => client.Post()).Callback(delegate
+			{
+				Assert.AreEqual("john", loginVariables["os_username"]);
+				Assert.AreEqual("doe", loginVariables["os_password"]);
+			});
+			loginHttpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream());
+
 			var jiraProxy = new JiraHttpProxy(clientFactory.Object, config.Object);
-
-			httpClient.Setup(client => client.Post("os_username=" + UserName, "os_password=" + Password));
-			httpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream());
-			httpClient.Setup(mockHttpClient => mockHttpClient.Post(
-														"linkDesc=" + linkDescription.Replace(' ', '+'),
-														"linkKey=" + issueKey,
-														"comment=",
-														"commentLevel=",
-														"id=" + issueId,
-														"Link=Link"));
-
 			jiraProxy.Login(UserName, Password);
-			jiraProxy.CreateLink(issueId, linkDescription, issueKey);
 
-			httpClient.VerifyAll();
+			clientFactory.Setup(factory => factory.Connect(LinkPage)).Returns(linkHttpClient.Object);
+			HttpVariables linkVariables = new HttpVariables();
+			linkHttpClient.Setup(client => client.Variables).Returns(linkVariables);
+
+			linkHttpClient.Setup(client => client.Post()).Callback(delegate
+			{
+				Assert.AreEqual(linkDescription.Replace(' ', '+'), linkVariables["linkDesc"]);
+				Assert.AreEqual(issueKey, linkVariables["linkKey"]);
+				Assert.AreEqual("", linkVariables["comment"]);
+				Assert.AreEqual("", linkVariables["commentLevel"]);
+				Assert.AreEqual(issueId.ToString(), linkVariables["id"]);
+				Assert.AreEqual("", linkVariables[""]);
+				Assert.AreEqual("Link", linkVariables["Link"]);
+			});
+
+			jiraProxy.CreateLink(issueId, linkDescription, issueKey, true);
+
+			loginHttpClient.VerifyAll();
+			linkHttpClient.VerifyAll();
 		}
 
 		private static IJiraHttpProxy SetupMockForLogin(Mock<IHttpClient> httpClient, string loginPage, string userName, string password)
@@ -116,12 +130,13 @@ namespace Binboo.Tests.JiraIntegration.JiraHttp
 			clientFactory.Setup(factory => factory.Connect(loginPage)).Returns(httpClient.Object);
 			clientFactory.Setup(factory => factory.Connect(It.Is<string>(page => page != loginPage))).Throws(new Exception("Unexpected Connect() call."));
 
-			httpClient.Setup(client => client.Post("os_username=" + userName, "os_password=" + password));
+			//httpClient.Setup(client => client.Post("os_username=" + userName, "os_password=" + password));
+			httpClient.Setup(client => client.Variables).Returns(new HttpVariables());
 			httpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream(returnContent.ToBytes()));
 
 			if (returnContent.Length == 0)
 			{
-				httpClient.Setup(client => client.Cookies).Returns(new List<IHttpCookie>());
+				//httpClient.Setup(client => client.Cookies).Returns(new List<IHttpCookie>());
 			}
 
 			var config = new Mock<IHttpInterfaceConfiguration>();

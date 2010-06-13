@@ -24,15 +24,15 @@ using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
 {
-	class IssueLinkCommand : JiraCommandBase
+	class LinkIssueCommand : JiraCommandBase
 	{
-		public IssueLinkCommand(IJiraProxy jira, string help) : base(jira, help)
+		public LinkIssueCommand(IJiraProxy jira, string help) : base(jira, help)
 		{
 		}
 
 		public override string Id
 		{
-			get { return "link"; }
+			get { return "Link"; }
 		}
 
 		protected override string ProcessCommand(IContext context)
@@ -40,15 +40,22 @@ namespace Binboo.Core.Commands
 			var arguments = CollectAndValidateArguments(context.Arguments, 
 														sourceIssueKey => ParamValidator.IssueId,
 														linkDescription => ParamValidator.AnythingStartingWithText,
-														targetIssueKey => ParamValidator.IssueId);
+														targetIssueKey => ParamValidator.IssueId,
+														verbose => ParamValidator.Custom("verbose", true));
 
-			_jira.CreateLink(arguments["sourceIssueKey"], arguments["linkDescription"], arguments["targetIssueKey"]);
+			return Run(	delegate
+			{
+				string result = _jira.CreateLink(arguments["sourceIssueKey"], arguments["linkDescription"], arguments["targetIssueKey"], arguments["verbose"].IsPresent);
+			    return ResultMessageFor(result, string.Format("Link created successfully: {0} {1} {2}",
+			    																	arguments["sourceIssueKey"].Value,
+			    																	arguments["linkDescription"].Value,
+			    																	arguments["targetIssueKey"].Value));
+			});
+		}
 
-			return string.Format(	"Link created successfully: {0} {1} {2}", 
-									arguments["sourceIssueKey"].Value, 
-									arguments["linkDescription"].Value,
-									arguments["targetIssueKey"].Value);
-
+		private string ResultMessageFor(string failureMessage, string successMessage)
+		{
+			return string.Format("[{0}] {1}", Id, failureMessage ?? successMessage);
 		}
 	}
 }

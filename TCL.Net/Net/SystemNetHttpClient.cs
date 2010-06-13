@@ -20,40 +20,100 @@
  * THE SOFTWARE.
  **/
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 
 namespace TCL.Net.Net
 {
-	class SystemNetHttpClient : IHttpClient
+	public class SystemNetHttpClient : IHttpClient
 	{
-		public SystemNetHttpClient(WebRequest request)
+		public SystemNetHttpClient(HttpWebRequest request)
 		{
 			_request = request;
 		}
 
-		public void Post(params string[] values)
+		public void Post()
 		{
-			throw new NotImplementedException();
+			_response = null;
+
+			_request.UserAgent = "Binboo";
+			_request.Method = "post";
+			_request.Headers.Add("X-Atlassian-Token", "no-check");
+			_request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+			_request.CookieContainer = _cookies;
+
+			string contents = _variables.ToString();
+			_request.ContentLength = contents.Length;
+			
+			using (var writer = new StreamWriter(_request.GetRequestStream()))
+			{
+				writer.Write(contents);
+				writer.Flush();
+			}
+
+			_response = (HttpWebResponse) _request.GetResponse();
+			LastStatus = _response.StatusCode;
 		}
 
 		public HttpStatus Status
 		{
-			get { throw new NotImplementedException(); }
+			get { return _status; }
 		}
 
 		public Stream ResponseStream
 		{
-			get { throw new NotImplementedException(); }
+			get
+			{
+				return _response.GetResponseStream();
+			}
 		}
 
-		public IList<IHttpCookie> Cookies
+		public ICookieContainer Cookies
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get
+			{
+				return new CookieContainerImpl(_cookies);
+			}
+
+			set
+			{
+				if (value == null) return;
+				_cookies =  ((CookieContainerImpl) value).Cookies;
+			}
 		}
-		
-		private readonly WebRequest _request;
+
+		public HttpVariables Variables
+		{
+			get { return _variables; }
+		}
+
+		protected HttpStatusCode LastStatus
+		{
+			set
+			{
+				switch (value)
+				{
+					case HttpStatusCode.OK:
+						_status = HttpStatus.Ok;
+						break;
+
+					case HttpStatusCode.MovedPermanently:
+					case HttpStatusCode.Redirect:
+					case HttpStatusCode.SeeOther:
+					case HttpStatusCode.TemporaryRedirect:
+						_status = HttpStatus.Redirect;
+						break;
+
+					default:
+						throw new ArgumentException("HTTP status not supported: " + value);
+				}
+			}
+		}
+
+		private CookieContainer _cookies = new CookieContainer();
+		private readonly HttpWebRequest _request;
+		private HttpWebResponse _response;
+		private HttpStatus _status;
+		private HttpVariables _variables = new HttpVariables();
 	}
 }

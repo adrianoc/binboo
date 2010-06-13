@@ -60,6 +60,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\db4o\Db4objects.Db4o.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libs\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="JiraSoapServiceService, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\JiraIntegration\JiraWS\JiraSoapServiceService.dll</HintPath>
@@ -73,6 +77,7 @@
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -185,7 +190,7 @@
     <Content Include="Binboo.config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Core\Commands\IssueLinkCommand.cs" />
+    <Compile Include="Core\Commands\LinkIssueCommand.cs" />
     <Compile Include="Core\Configuration\HttpInterfaceConfiguration.cs" />
     <Compile Include="Core\Configuration\IHttpInterfaceConfiguration.cs" />
     <Compile Include="Core\Persistence\Storage.InnerClasses.cs" />

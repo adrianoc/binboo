@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2010 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+using System;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
 using Moq;
@@ -34,18 +35,37 @@ namespace Binboo.Tests.Core.Commands
 		public void TestSuccessfulLink()
 		{
 			Mock<IJiraProxy> mockedJiraSoapProxy = MockedJiraSoapProxy();
-			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink("TIL-001", "Tested With", "TIL-002"));
+			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink("TIL-001", "Tested With", "TIL-002", false));
 
-			var linkCommand = new IssueLinkCommand(
+			var linkCommand = new LinkIssueCommand(
 										mockedJiraSoapProxy.Object,
 										"Testing issue linking.");
 
 			Mock<IContext> mockedContext = ContextMockFor("foo", "TIL-001", "\"Tested With\"", "TIL-002");
 			string actualResult = linkCommand.Process(mockedContext.Object);
 
-			Assert.AreEqual("Link created successfully: TIL-001 Tested With TIL-002", actualResult);
+			Assert.AreEqual("[Link] Link created successfully: TIL-001 Tested With TIL-002", actualResult);
 
 			mockedJiraSoapProxy.VerifyAll();
+		}
+
+		[Test]
+		public void TestSourceIssueDoNotExists()
+		{
+			Mock<IJiraProxy> mockedJiraSoapProxy = MockedJiraSoapProxy();
+			const string NonExistingIssueKey = "TIL-001";
+			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink(NonExistingIssueKey, "test-exception", "TIL-002", false)).Throws(new JiraProxyException("Exception Thrown", new Exception()));
+
+			var linkCommand = new LinkIssueCommand(
+										mockedJiraSoapProxy.Object,
+										"Testing issue linking.");
+
+			Mock<IContext> mockedContext = ContextMockFor("foo", NonExistingIssueKey, "test-exception", "TIL-002");
+			string actualResult = linkCommand.Process(mockedContext.Object);
+
+			Assert.IsTrue(actualResult.Contains("Exception Thrown"));
+
+			mockedJiraSoapProxy.VerifyAll();			
 		}
 
 		private static Mock<IHttpClient> MockedHttpClient()

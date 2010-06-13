@@ -2,15 +2,20 @@
 {
 	public class HttpVariablesTestCaseBase
 	{
-		protected static string AddVariable(HttpClient client, string content, string name, string value)
+		protected static string AddVariable(IHttpClient client, string content, string name, string value)
 		{
-			return content + "\r\n" + AddVariable(client, name, value);
+			return content + "&" + AddVariable(client, name, value);
 		}
 
-		protected static string AddVariable(HttpClient client, string name, string contents)
+		protected static string AddVariable(IHttpClient client, string name, string contents)
 		{
 			client.Variables[name] = contents;
 			return name + "=" + contents;
+		}
+
+		protected IHttpClient Connect(string url)
+		{
+			return new TCL.Net.Net.SystemNetHttpClient(null);
 		}
 	}
 }

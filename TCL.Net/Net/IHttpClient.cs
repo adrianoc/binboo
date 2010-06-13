@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2010 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,22 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Collections.Generic;
 using System.IO;
+using TCL.Net.Net;
 
 namespace TCL.Net
 {
 	public interface IHttpClient
 	{
-		void Post(params string[] values);
+		void Post();
+		HttpVariables Variables { get; }
 		HttpStatus Status { get; }
 		Stream ResponseStream { get; }
-		IList<IHttpCookie> Cookies { get; set; }
+		ICookieContainer Cookies { get; set; }
 	}
 
 	public enum HttpStatus
 	{
-		OK = 200,
-		REDIRECT
+		Ok = 200,
+		Redirect
 	}
 }
