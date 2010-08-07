@@ -50,11 +50,12 @@ namespace Binboo.Tests.Core.Commands
 				var contextMock = ContextMockFor("resolving-user", String.Format("{0} \"{1}\"{2} {3}", ticket, resolution.Description.ToLower(), fixedInVersions, String.IsNullOrEmpty(comment) ? "" : (" " + comment)));
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
-				Assert.AreEqual("OK", commandMock.Process(contextMock.Object));
+				var expectedOutput = string.Format("Issue {0} resolved as '{1}'.", ticket, resolution.Description);
+				Assert.AreEqual(expectedOutput, commandMock.Process(contextMock.Object));
 			}
 		}
 
-		private Action<Mock<IJiraProxy>> ExpectedMethodCalls(string ticket, string noQuotesComment, IssueResolution resolution, string fixedInVersions)
+		private static Action<Mock<IJiraProxy>> ExpectedMethodCalls(string ticket, string noQuotesComment, IssueResolution resolution, string fixedInVersions)
 		{
 			return proxyMock => proxyMock.Setup(
 									p => p.ResolveIssue(

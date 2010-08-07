@@ -64,7 +64,7 @@ namespace Binboo.Core.Commands
 			{
 				var versions = EnumerableFrom(fixedInVersions).ToList();
 				_jira.ResolveIssue(ticket, comment, IssueResolution.Parse(resolution), versions);
-				return "OK";
+				return string.Format("Issue {0} resolved as '{1}'.", ticket, IssueResolution.Parse(resolution).Description);
 			}
 			catch(JiraProxyException jipe)
 			{
