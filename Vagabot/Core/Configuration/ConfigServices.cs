@@ -32,6 +32,14 @@ namespace Binboo.Core.Configuration
 {
 	static class ConfigServices
 	{
+		public static TextReader CommandConfigurationFor(string commandName)
+		{
+			EnsureConfigIsLoaded();
+
+			XmlNode commandConfigurarion = FindConfigItem(string.Format("commands/{0}", commandName.ToLowerInvariant()));
+			return new StringReader(commandConfigurarion.OuterXml);
+		}
+
 		public static string IMUserToIssueTrackerUser(string name)
 		{
 			EnsureConfigIsLoaded();

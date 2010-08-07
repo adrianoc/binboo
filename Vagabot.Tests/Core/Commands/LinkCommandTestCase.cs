@@ -21,16 +21,18 @@
  **/
 using System;
 using Binboo.Core.Commands;
+using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 using Moq;
 using NUnit.Framework;
-using TCL.Net;
 
 namespace Binboo.Tests.Core.Commands
 {
 	[TestFixture]
 	public class LinkCommandTestCase : JiraCommandTestCaseBase
 	{
+		private const string ExpectedLinkDescription = "links to";
+
 		[Test]
 		public void TestSuccessfulLink()
 		{
@@ -68,9 +70,57 @@ namespace Binboo.Tests.Core.Commands
 			mockedJiraSoapProxy.VerifyAll();			
 		}
 
-		private static Mock<IHttpClient> MockedHttpClient()
+		[Test]
+		public void TestLinkAliasesConfig()
 		{
-			return new Mock<IHttpClient>(MockBehavior.Strict);
+			LinkConfiguration config = LinkConfiguration.From(ConfigServices.CommandConfigurationFor("Link"));
+
+			Assert.AreEqual("add=>create new", (string) config.AliasFor("add"));
+			Assert.AreEqual("remove=>delete", (string) config.AliasFor("remove"));
+		}
+
+		[Test]
+		public void TestNonExistingLinkAliasConfig()
+		{
+			LinkConfiguration config = LinkConfiguration.From(ConfigServices.CommandConfigurationFor("Link"));
+			var actual = config.AliasFor("non-existing");
+			
+			Assert.AreSame(LinkAlias.NullAlias, actual);
+			Assert.IsTrue(actual.IsNull);
+		}
+
+		[Test]
+		public void TestLinkAliases()
+		{
+			Mock<IJiraProxy> mockedJiraSoapProxy = MockedJiraSoapProxy();
+			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink("TIL-001", ExpectedLinkDescription, "TIL-002", false));
+
+			var linkCommand = new LinkIssueCommand(
+										mockedJiraSoapProxy.Object,
+										"Testing issue linking.");
+
+			Mock<IContext> mockedContext = ContextMockFor("foo", "TIL-001", "associate", "TIL-002");
+			string actualResult = linkCommand.Process(mockedContext.Object);
+
+			Assert.AreEqual(string.Format("[Link] Link created successfully: TIL-001 {0} TIL-002", ExpectedLinkDescription), actualResult);
+
+			mockedJiraSoapProxy.VerifyAll();
+		}
+
+		[Test]
+		public void TestHelpMessageContainsAliases()
+		{
+			Mock<IJiraProxy> mockedJiraSoapProxy = MockedJiraSoapProxy();
+			var linkCommand = new LinkIssueCommand(
+										mockedJiraSoapProxy.Object,
+										"Testing issue linking.");
+
+			var linkConfiguration = LinkConfiguration.From(ConfigServices.CommandConfigurationFor("link"));
+
+			foreach (var alias in linkConfiguration.Aliases)
+			{
+				StringAssert.Contains(alias.Original, linkCommand.Help);
+			}
 		}
 
 		private static Mock<IJiraProxy> MockedJiraSoapProxy()

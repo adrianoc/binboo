@@ -18,5 +18,15 @@
 		<link url="link.url" />
 		<login url="login.url" />
 	</http>
+
+	<commands>
+	  <link>
+		<description-aliases>
+			<alias original="associate" replacement="links to" />
+			<alias original="Add" replacement="add=>create new" />
+			<alias original="remove" replacement="remove=>delete" />
+		</description-aliases>
+	  </link>
+	</commands>
   </jira>
 </binboo>

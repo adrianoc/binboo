@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2009 Adriano Carlos Verona
+﻿/**
+ * Copyright (c) 2010 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,51 +19,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Text.RegularExpressions;
-using Binboo.Core.Persistence;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Serialization;
 
 namespace Binboo.Core.Commands
 {
-	internal abstract class BotCommandBase : IBotCommand
+	[XmlRoot("link")]
+	public class LinkConfiguration
 	{
-		public abstract string Id { get; }
-
-		public abstract string Process(IContext context);
-
-		protected BotCommandBase(string help)
+		public static LinkConfiguration From(TextReader input)
 		{
-			_help = ReplaceCommand(help, Id);
+			var serializer = new XmlSerializer(typeof(LinkConfiguration));
+			return (LinkConfiguration)serializer.Deserialize(input);
 		}
 
-		virtual public void Initialize()
+		[XmlArrayItem("alias", Type = typeof(LinkAlias))]
+		[XmlArray("description-aliases")]
+		public List<LinkAlias> Aliases
 		{
-			// give subcasses a chance to take any action upon initialization.
+			get { return _aliases; }
 		}
 
-		public IStorage Storage
+		public LinkAlias AliasFor(string original)
 		{
-			set 
-			{
-				_storage = value;
-			}
-
-			protected get
-			{
-				return _storage;
-			}
+			var originalLowerCase = original.ToLowerInvariant();
+			var found = _aliases.Find(candidate => candidate.Original.ToLowerInvariant() == originalLowerCase);
+			
+			return found ?? LinkAlias.NullAlias;
 		}
 
-		public virtual string Help
+		public override string ToString()
 		{
-			get { return _help; }
+			return string.Format("Aliases({0})", 
+								_aliases.Aggregate("", (acc, current) => string.Format("{0}, [{1}]", acc, current), agg => agg.Remove(0, 2))
+								);
 		}
 
-		private static string ReplaceCommand(string contents, string command)
-		{
-			return Regex.Replace(contents, "%cmd%", command);
-		}
-
-		private readonly string _help;
-		private IStorage _storage;
+		private List<LinkAlias> _aliases = new List<LinkAlias>();
 	}
 }

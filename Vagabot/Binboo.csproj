@@ -190,6 +190,8 @@
     <Content Include="Binboo.config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="Core\Commands\LinkAlias.cs" />
+    <Compile Include="Core\Commands\LinkConfiguration.cs" />
     <Compile Include="Core\Commands\LinkIssueCommand.cs" />
     <Compile Include="Core\Configuration\HttpInterfaceConfiguration.cs" />
     <Compile Include="Core\Configuration\IHttpInterfaceConfiguration.cs" />
