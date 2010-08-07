@@ -102,7 +102,7 @@ namespace Binboo.Tests.Core.Commands
 			Mock<IContext> mockedContext = ContextMockFor("foo", "TIL-001", "associate", "TIL-002");
 			string actualResult = linkCommand.Process(mockedContext.Object);
 
-			Assert.AreEqual(string.Format("[Link] Link created successfully: TIL-001 {0} TIL-002", ExpectedLinkDescription), actualResult);
+			Assert.AreEqual(string.Format("[Link] Link created successfully: TIL-001 {0} TIL-002", "associate"), actualResult);
 
 			mockedJiraSoapProxy.VerifyAll();
 		}
