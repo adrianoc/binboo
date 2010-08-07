@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Cryptography\DPAPI.cs" />
     <Compile Include="Cryptography\Interop.cs" />
+    <Compile Include="Extensions\SerializationExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Net\CookieContainerImpl.cs" />

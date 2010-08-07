@@ -25,6 +25,7 @@ using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 using Moq;
 using NUnit.Framework;
+using TCL.Net.Extensions;
 
 namespace Binboo.Tests.Core.Commands
 {
@@ -73,7 +74,7 @@ namespace Binboo.Tests.Core.Commands
 		[Test]
 		public void TestLinkAliasesConfig()
 		{
-			LinkConfiguration config = LinkConfiguration.From(ConfigServices.CommandConfigurationFor("Link"));
+			var config = ConfigServices.CommandConfigurationFor("link").Deserialize<LinkConfiguration>();
 
 			Assert.AreEqual("add=>create new", (string) config.AliasFor("add"));
 			Assert.AreEqual("remove=>delete", (string) config.AliasFor("remove"));
@@ -82,7 +83,7 @@ namespace Binboo.Tests.Core.Commands
 		[Test]
 		public void TestNonExistingLinkAliasConfig()
 		{
-			LinkConfiguration config = LinkConfiguration.From(ConfigServices.CommandConfigurationFor("Link"));
+			var config = ConfigServices.CommandConfigurationFor("link").Deserialize<LinkConfiguration>();
 			var actual = config.AliasFor("non-existing");
 			
 			Assert.AreSame(LinkAlias.NullAlias, actual);
@@ -115,7 +116,7 @@ namespace Binboo.Tests.Core.Commands
 										mockedJiraSoapProxy.Object,
 										"Testing issue linking.");
 
-			var linkConfiguration = LinkConfiguration.From(ConfigServices.CommandConfigurationFor("link"));
+			var linkConfiguration = ConfigServices.CommandConfigurationFor("link").Deserialize<LinkConfiguration>();
 
 			foreach (var alias in linkConfiguration.Aliases)
 			{

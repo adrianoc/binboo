@@ -23,6 +23,7 @@ using System.Linq;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
+using TCL.Net.Extensions;
 
 namespace Binboo.Core.Commands
 {
@@ -73,7 +74,7 @@ namespace Binboo.Core.Commands
 
 		private static LinkConfiguration Configuration()
 		{
-			return LinkConfiguration.From(ConfigServices.CommandConfigurationFor("link"));
+			return ConfigServices.CommandConfigurationFor("link").Deserialize<LinkConfiguration>();
 		}
 
 		private string ResultMessageFor(string failureMessage, string successMessage)

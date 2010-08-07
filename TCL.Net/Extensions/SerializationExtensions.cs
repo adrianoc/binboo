@@ -19,37 +19,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Xml.Serialization;
 
-namespace Binboo.Core.Commands
+namespace TCL.Net.Extensions
 {
-	[XmlRoot("link")]
-	public class LinkConfiguration
+	public static class SerializationExtensions
 	{
-		[XmlArrayItem("alias", Type = typeof(LinkAlias))]
-		[XmlArray("description-aliases")]
-		public List<LinkAlias> Aliases
+		public static T Deserialize<T>(this TextReader input)
 		{
-			get { return _aliases; }
+			var serializer = new XmlSerializer(typeof(T));
+			return (T)serializer.Deserialize(input);
 		}
-
-		public LinkAlias AliasFor(string original)
-		{
-			var originalLowerCase = original.ToLowerInvariant();
-			var found = _aliases.Find(candidate => candidate.Original.ToLowerInvariant() == originalLowerCase);
-			
-			return found ?? LinkAlias.NullAlias;
-		}
-
-		public override string ToString()
-		{
-			return string.Format("Aliases({0})", 
-								_aliases.Aggregate("", (acc, current) => string.Format("{0}, [{1}]", acc, current), agg => agg.Remove(0, 2))
-								);
-		}
-
-		private List<LinkAlias> _aliases = new List<LinkAlias>();
 	}
 }
