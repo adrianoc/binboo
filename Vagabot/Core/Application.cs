@@ -24,6 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -32,6 +33,7 @@ using Binboo.Core.Configuration;
 using Binboo.Core.Events;
 using Binboo.Core.Persistence;
 using SKYPE4COMLib;
+using TCL.Extensions;
 
 namespace Binboo.Core
 {
@@ -231,12 +233,26 @@ namespace Binboo.Core
 				}
 				else
 				{
-					message.Chat.SendMessage(String.Format("Unknown command: {0}.", GetCommandName(message)));
+					ReportCommandNotFound(message);
 				}
 			}
 			catch(Exception ex)
 			{
 				RaiseErrorEvent("Error processing command.", ex);
+			}
+		}
+
+		private void ReportCommandNotFound(IChatMessage message)
+		{
+			var commandName = GetCommandName(message);
+			message.Chat.SendMessage(String.Format("Unknown command: {0}.", commandName));
+
+			var inputSoundex = commandName.SoundEx();
+
+			var probableCommand = _commands.Where(candidate => candidate.Key.SoundEx() == inputSoundex).Select(pair => pair.Key).SingleOrDefault();
+			if (probableCommand != null)
+			{
+				message.Chat.SendMessage(String.Format("\r\nDid you mean \"{0}\" ?", probableCommand));
 			}
 		}
 
