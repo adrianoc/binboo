@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2009 Adriano Carlos Verona
+﻿/**
+ * Copyright (c) 2010 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,51 +19,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Text.RegularExpressions;
-using Binboo.Core.Persistence;
+using System.Xml.Serialization;
 
 namespace Binboo.Core.Commands
 {
-	internal abstract class BotCommandBase : IBotCommand
+	public class LinkAlias
 	{
-		public abstract string Id { get; }
+		public static LinkAlias NullAlias = new LinkAlias {Original = "null", Replacement = "null"};
 
-		public abstract string Process(IContext context);
+		[XmlAttribute("original")]
+		public string Original { get; set; }
+		
+		[XmlAttribute("replacement")]
+		public string Replacement { get; set; }
 
-		protected BotCommandBase(string help)
+		public bool IsNull
 		{
-			_help = ReplaceCommand(help, Id);
+			get { return NullAlias.Equals(this); }
 		}
 
-		virtual public void Initialize()
+		public static implicit operator string(LinkAlias alias)
 		{
-			// give subcasses a chance to take any action upon initialization.
+			return alias.Replacement;
 		}
 
-		public IStorage Storage
+		public override string ToString()
 		{
-			set 
-			{
-				_storage = value;
-			}
-
-			protected get
-			{
-				return _storage;
-			}
+			return string.Format("{0}, {1}", Original, Replacement);
 		}
-
-		public virtual string Help
-		{
-			get { return _help; }
-		}
-
-		private static string ReplaceCommand(string contents, string command)
-		{
-			return Regex.Replace(contents, "%cmd%", command);
-		}
-
-		private readonly string _help;
-		private IStorage _storage;
 	}
 }

@@ -19,7 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+using System.Linq;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -35,6 +37,14 @@ namespace Binboo.Core.Commands
 			get { return "Link"; }
 		}
 
+		public override string Help
+		{
+			get
+			{
+				return AppendAliases(base.Help);
+			}
+		}
+
 		protected override string ProcessCommand(IContext context)
 		{
 			var arguments = CollectAndValidateArguments(context.Arguments, 
@@ -45,17 +55,36 @@ namespace Binboo.Core.Commands
 
 			return Run(	delegate
 			{
-				string result = _jira.CreateLink(arguments["sourceIssueKey"], arguments["linkDescription"], arguments["targetIssueKey"], arguments["verbose"].IsPresent);
+				string aliasedLinkDescription = AliasedLinkDescription(arguments["linkDescription"].Value);
+
+				string result = _jira.CreateLink(arguments["sourceIssueKey"], aliasedLinkDescription, arguments["targetIssueKey"], arguments["verbose"].IsPresent);
 			    return ResultMessageFor(result, string.Format("Link created successfully: {0} {1} {2}",
 			    																	arguments["sourceIssueKey"].Value,
-			    																	arguments["linkDescription"].Value,
+																					arguments["linkDescription"].Value,
 			    																	arguments["targetIssueKey"].Value));
 			});
+		}
+
+		private static string AliasedLinkDescription(string linkDescription)
+		{
+			var aliasedLinkDescription = Configuration().AliasFor(linkDescription);
+			return aliasedLinkDescription.IsNull ? linkDescription : aliasedLinkDescription.Replacement;
+		}
+
+		private static LinkConfiguration Configuration()
+		{
+			return LinkConfiguration.From(ConfigServices.CommandConfigurationFor("link"));
 		}
 
 		private string ResultMessageFor(string failureMessage, string successMessage)
 		{
 			return string.Format("[{0}] {1}", Id, failureMessage ?? successMessage);
+		}
+
+		private static string AppendAliases(string message)
+		{
+			return Configuration().Aliases.Aggregate(message + "\r\nAvailable link types:",
+													 (acc, curr) => acc + "\r\n\t" + curr.Original);
 		}
 	}
 }

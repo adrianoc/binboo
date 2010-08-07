@@ -93,18 +93,19 @@ namespace Binboo.Tests.JiraIntegration.JiraHttp
 				Assert.AreEqual("john", loginVariables["os_username"]);
 				Assert.AreEqual("doe", loginVariables["os_password"]);
 			});
+			
 			loginHttpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream());
-
 			var jiraProxy = new JiraHttpProxy(clientFactory.Object, config.Object);
 			jiraProxy.Login(UserName, Password);
 
 			clientFactory.Setup(factory => factory.Connect(LinkPage)).Returns(linkHttpClient.Object);
 			HttpVariables linkVariables = new HttpVariables();
 			linkHttpClient.Setup(client => client.Variables).Returns(linkVariables);
+			linkHttpClient.Setup(client => client.ResponseStream).Returns(new MemoryStream());
 
 			linkHttpClient.Setup(client => client.Post()).Callback(delegate
 			{
-				Assert.AreEqual(linkDescription.Replace(' ', '+'), linkVariables["linkDesc"]);
+				Assert.AreEqual(linkDescription, linkVariables["linkDesc"]);
 				Assert.AreEqual(issueKey, linkVariables["linkKey"]);
 				Assert.AreEqual("", linkVariables["comment"]);
 				Assert.AreEqual("", linkVariables["commentLevel"]);
