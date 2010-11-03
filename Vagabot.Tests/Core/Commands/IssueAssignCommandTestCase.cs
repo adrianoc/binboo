@@ -52,7 +52,7 @@ namespace Binboo.Tests.Core.Commands
 		}
 
 		[Test]
-		public void TestIterationIsSetAfterFirstAssignmetn()
+		public void TestIterationIsSetAfterFirstAssignment()
 		{
 			AssertIssueAssignment("PRJ-123", "binboo_test_user", string.Empty, "42");
 			AssertIssueAssignment("PRJ-123", "binboo_test_user", p => p.Values[0] == "42");

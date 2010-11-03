@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2009 Adriano Carlos Verona
+﻿/**
+ * Copyright (c) 2010 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,26 +19,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
-using System.Collections.Generic;
-
-namespace Binboo.JiraIntegration
+namespace Binboo.Tests.Utils
 {
-	internal interface IJiraProxy
+	sealed class IssueTestService
 	{
-		void LogOut();
-		RemoteIssue[] SearchIssues(string content);
-		RemoteProject[] GetProjectList();
-		RemoteIssue[] IssuesForFilter(string filterId);
-		RemoteIssue GetIssue(string ticket);
-		RemoteIssue FileIssue(string reporter, string project, string summary, string description, string type, int order);
-		RemoteIssue ResolveIssue(string ticket, string comment, IssueResolution resolution, IEnumerable<string> fixedInVersions);
-		RemoteIssue AssignIssue(string ticket, IssueField assignee, IssueField peer, IssueField iteration);
-		void UpdateIssue(string ticketNumber, string comment, params IssueField[] fields);
-		void AddComment(string ticket, string comment);
-		string GetComments(string ticket);
-		
-		string CreateLink(string source, string linkDescription, string target, bool verbose);
-		void DeleteLink(string ticket, string linkName);
+		private static IssueTestService instance = new IssueTestService();
+
+		private IssueTestService()
+		{
+		}
+
+		public static IssueTestService Issue
+		{
+			get
+			{
+				return instance;	
+			}
+		}
+
+		public RemoteIssue this[string key]
+		{
+			get
+			{
+				return new RemoteIssue {key = key, summary = string.Format("Summary for {0}", key)};
+			}
+		}
 	}
 }

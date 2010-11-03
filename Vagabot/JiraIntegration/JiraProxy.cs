@@ -98,12 +98,12 @@ namespace Binboo.JiraIntegration
 						string.Format("Failed to file issue '{0}' for project {1}.", summary, issue.project));
 		}
 
-		public void AssignIssue(string ticket, IssueField assignee, IssueField peer, IssueField iteration)
+		public RemoteIssue AssignIssue(string ticket, IssueField assignee, IssueField peer, IssueField iteration)
 		{
 			ValidateConnection();
 			ticket = Normalize(ticket);
 
-			Run(delegate
+			return Run(delegate
 			{
 				RemoteIssue issue = GetIssue(ticket);
 				if (issue.status == IssueStatus.Closed)
@@ -118,41 +118,44 @@ namespace Binboo.JiraIntegration
 				{
 					UpdateIssue(ticket, String.Empty, assignee, peer, iteration);
 				}
+				return issue;
 			},
 
 			"Failed to asssign issue " + ticket);			
 		}
 
-		public void ResolveIssue(string ticket, string comment, IssueResolution resolution, IEnumerable<string> fixedInVersion)
+		public RemoteIssue ResolveIssue(string ticket, string comment, IssueResolution resolution, IEnumerable<string> fixedInVersion)
 		{
 			ValidateConnection();
 			ticket = Normalize(ticket);
 
-			Run(delegate
-			    {
-			    	RemoteIssue issue = GetIssue(ticket);
-					string actionId = ActionIdFor(ticket, "Resolve");
+			RemoteIssue updatedIssue = Run(delegate
+			                              	{
+			                              		RemoteIssue issue = GetIssue(ticket);
+			                              		string actionId = ActionIdFor(ticket, "Resolve");
 
-			    	string[] fixedInVersionIds = RemoteVersionIdsFor(issue.project, fixedInVersion);
+			                              		string[] fixedInVersionIds = RemoteVersionIdsFor(issue.project, fixedInVersion);
 				
-					RemoteFieldValue[] fields = CollectChangedFields(
-													IssueField.Status <= IssueStatus.Resolved,
-													IssueField.Assignee <= issue.assignee,
-													IssueField.CustomField(CustomFieldId.Iteration) <= issue.CustomFieldValue(CustomFieldId.Iteration),
-													IssueField.CustomField(CustomFieldId.Peers) <= issue.CustomFieldValue(CustomFieldId.Peers),
-													IssueField.CustomField(CustomFieldId.OriginalIDsEstimate) <= issue.CustomFieldValue(CustomFieldId.OriginalIDsEstimate),
-													IssueField.Resolution <= resolution,
-													IssueField.FixedInVersion <= fixedInVersionIds);
+			                              		RemoteFieldValue[] fields = CollectChangedFields(
+			                              			IssueField.Status <= IssueStatus.Resolved,
+			                              			IssueField.Assignee <= issue.assignee,
+			                              			IssueField.CustomField(CustomFieldId.Iteration) <= issue.CustomFieldValue(CustomFieldId.Iteration),
+			                              			IssueField.CustomField(CustomFieldId.Peers) <= issue.CustomFieldValue(CustomFieldId.Peers),
+			                              			IssueField.CustomField(CustomFieldId.OriginalIDsEstimate) <= issue.CustomFieldValue(CustomFieldId.OriginalIDsEstimate),
+			                              			IssueField.Resolution <= resolution,
+			                              			IssueField.FixedInVersion <= fixedInVersionIds);
 
-			    	return _soapClient.Item.progressWorkflowAction(_loginToken, ticket, actionId, fields);
-				},
+			                              		return _soapClient.Item.progressWorkflowAction(_loginToken, ticket, actionId, fields);
+			                              	},
 				
-				"Failed to resolve issue " + ticket);
+			                              "Failed to resolve issue " + ticket);
 
 			AddComment(
 				ticket, 
 				comment,
 				string.Format("Issue {0} was resolved but an error prevented the comment to be appended.", ticket));
+
+			return updatedIssue;
 		}
 
 		private string[] RemoteVersionIdsFor(string project, IEnumerable<string> versions)

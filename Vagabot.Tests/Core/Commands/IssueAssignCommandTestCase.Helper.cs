@@ -24,6 +24,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
+using Binboo.Tests.Utils;
 using Moq;
 using NUnit.Framework;
 
@@ -38,12 +39,9 @@ namespace Binboo.Tests.Core.Commands
 
 		private void AssertIssueAssignment(string skypeUser, string ticket, Expression<Predicate<IssueField>> iterationPredicate, string user)
 		{
-			using (var commandMock = NewCommand<IssueAssignCommand>(
-						mock => mock.Setup(proxy => proxy.AssignIssue(
-															ticket,
-															It.Is<IssueField>(assigneeField => assigneeField.Id == IssueField.Assignee.Id),
-															It.Is<IssueField>(peerField => peerField.Id == CustomFieldId.Peers.Id),
-															It.Is(iterationPredicate)))))
+			Action<Mock<IJiraProxy>> mockSetups = MockSetupWithIterationPredicateFor(ticket, iterationPredicate);
+
+			using (var commandMock = NewCommand<IssueAssignCommand>(mockSetups))
 			{
 				IContext context = ContextMockFor(skypeUser, ticket, user).Object;
 				string result = commandMock.Process(context);
@@ -68,7 +66,7 @@ namespace Binboo.Tests.Core.Commands
 
 		private void AssertCachedAssigneeAndPeer(string skpypeUser, string issue, string expectedAssign, string expectedPeer)
 		{
-			using (var commandMock = NewCommand<IssueAssignCommand>(mock => mock.Setup(proxy => proxy.AssignIssue(It.IsAny<string>(), It.Is<IssueField>(field => field.Id == IssueField.Assignee.Id && field.Values[0] == expectedAssign), It.Is<IssueField>(field => field.Id == CustomFieldId.Peers.Id && field.Values[0] == expectedPeer), It.IsAny<IssueField>()))))
+			using (var commandMock = NewCommand<IssueAssignCommand>(mock => mock.Setup(proxy => proxy.AssignIssue(It.IsAny<string>(), It.Is<IssueField>(field => field.Id == IssueField.Assignee.Id && field.Values[0] == expectedAssign), It.Is<IssueField>(field => field.Id == CustomFieldId.Peers.Id && field.Values[0] == expectedPeer), It.IsAny<IssueField>())).Returns(IssueTestService.Issue[issue])))
 			{
 				Assert.AreEqual(ExpectedAssignmentMessageFor(issue, expectedAssign), commandMock.Process(ContextMockFor(skpypeUser, issue).Object));
 			}
@@ -94,7 +92,7 @@ namespace Binboo.Tests.Core.Commands
 				}
 				else
 				{
-					sb.AppendFormat("Successfuly assigned issue {0} to {1}\r\n", ticketWithNoSpaces, user);
+					sb.AppendFormat("Issue {0} ('{1}')\r\nsuccessfuly assigned to {2}\r\n", ticketWithNoSpaces, IssueTestService.Issue[ticketWithNoSpaces].summary, user);
 				}
 			}
 
@@ -121,10 +119,22 @@ namespace Binboo.Tests.Core.Commands
 					{
 						setup.Throws(new JiraProxyException("Failed to asssign issue " + NonExistingIssue, new JiraProxyException("Failed to get issue: " + NonExistingIssue)));
 					}
+					else
+					{
+						setup.Returns(IssueTestService.Issue[currentTicket]);
+					}
 				};
 			}
 
 			return setups;
+		}
+
+		private static Action<Mock<IJiraProxy>> MockSetupWithIterationPredicateFor(string ticket, Expression<Predicate<IssueField>> iterationPredicate)
+		{
+			return mock => mock.Setup(proxy => proxy.AssignIssue(
+													ticket,It.Is<IssueField>(assigneeField => assigneeField.Id == IssueField.Assignee.Id),
+													It.Is<IssueField>(peerField => peerField.Id == CustomFieldId.Peers.Id),
+													It.Is(iterationPredicate))).Returns(IssueTestService.Issue[ticket]);
 		}
 	}
 }

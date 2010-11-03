@@ -20,7 +20,6 @@
  * THE SOFTWARE.
  **/
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Binboo.Core.Commands.Arguments;
@@ -60,19 +59,17 @@ namespace Binboo.Core.Commands
 
 		private string ResolveIssue(string ticket, string comment, string resolution, Argument fixedInVersions)
 		{
-			try
-			{
-				var versions = EnumerableFrom(fixedInVersions).ToList();
-				_jira.ResolveIssue(ticket, comment, IssueResolution.Parse(resolution), versions);
-				return string.Format("Issue {0} resolved as '{1}'.", ticket, IssueResolution.Parse(resolution).Description);
-			}
-			catch(JiraProxyException jipe)
-			{
-				return jipe.Message + Environment.NewLine + jipe.InnerException.Message;
-			}
+			return Run(
+					() =>
+					{
+						var versions = EnumerableFor(fixedInVersions).ToList();
+						return _jira.ResolveIssue(ticket, comment, IssueResolution.Parse(resolution), versions);
+					},
+				
+					issue => string.Format("Issue {0} ('{1}') resolved as '{2}'.", ticket, issue.summary, IssueResolution.Parse(resolution).Description));
 		}
 
-		private IEnumerable<string> EnumerableFrom(Argument fixedInVersions)
+		private static IEnumerable<string> EnumerableFor(Argument fixedInVersions)
 		{
 			if (!fixedInVersions.IsPresent)
 			{

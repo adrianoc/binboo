@@ -128,13 +128,14 @@ namespace Binboo.Core.Commands
 
 		private string AssignIssue(string ticket, string assignee, IssueField peer, IssueField iteration)
 		{
-			return Run(() => _jira.AssignIssue(
+			return Run(
+						() => _jira.AssignIssue(
 			                 	ticket,
 			                 	IssueField.Assignee <= assignee,
 			                 	peer,
 			                 	iteration),
 
-			           String.Format("Successfuly assigned issue {0} to {1}", ticket, assignee));
+						issue => String.Format("Issue {0} ('{1}')\r\nsuccessfuly assigned to {2}", ticket, issue.summary, assignee));
 		}
 
 		private IssueField IterationFrom(Argument iteration)

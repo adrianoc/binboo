@@ -49,7 +49,6 @@ namespace Binboo.Tests.Core.Commands
 		{
 			AssertResolve("TBC-002", IssueResolution.Fixed, "\"This comment contains the fixed resolution.\"");
 		}
-
 		
 		[Test]
 		[Ignore("not implemented")]

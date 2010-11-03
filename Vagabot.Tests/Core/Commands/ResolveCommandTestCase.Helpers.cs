@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
+using Binboo.Tests.Utils;
 using Moq;
 using NUnit.Framework;
 
@@ -50,7 +51,7 @@ namespace Binboo.Tests.Core.Commands
 				var contextMock = ContextMockFor("resolving-user", String.Format("{0} \"{1}\"{2} {3}", ticket, resolution.Description.ToLower(), fixedInVersions, String.IsNullOrEmpty(comment) ? "" : (" " + comment)));
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
-				var expectedOutput = string.Format("Issue {0} resolved as '{1}'.", ticket, resolution.Description);
+				var expectedOutput = string.Format("Issue {0} ('{1}') resolved as '{2}'.", ticket, IssueTestService.Issue[ticket].summary, resolution.Description);
 				Assert.AreEqual(expectedOutput, commandMock.Process(contextMock.Object));
 			}
 		}
@@ -67,7 +68,7 @@ namespace Binboo.Tests.Core.Commands
 												                    ? true
 												                    : versions.Any(version => fixedInVersions.Contains(version)))
 										)
-								);
+								).Returns(IssueTestService.Issue[ticket]);
 		}
 
 		private static string StripQuotes(string comment)
