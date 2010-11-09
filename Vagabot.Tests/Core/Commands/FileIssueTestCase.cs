@@ -22,13 +22,12 @@
 
 using System;
 using Binboo.Core.Commands;
-using Binboo.JiraIntegration;
 using NUnit.Framework;
 
 namespace Binboo.Tests.Core.Commands
 {
 	[TestFixture]
-	public class FileIssueTestCase : JiraCommandTestCaseBase
+	public partial class FileIssueTestCase : JiraCommandTestCaseBase
 	{
 		[Test]
 		public void TestSuccessful()
@@ -60,41 +59,5 @@ namespace Binboo.Tests.Core.Commands
 		{
 			ExecuteFileIssueCommand("BTST", "doesn't matter", "This is a description", "INVALID_TYPE", 1);
 		}
-
-		private void AssertFileIssue(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
-		{
-			string result = ExecuteFileIssueCommand(project, summary, description, type, order);
-			string expectedResult = String.Format(@"Jira tiket created successfuly (http://sei.la.com/browse/{0}-001).
-
-{0}-001   Open        {1} {2}", project.Value, CreationDate, summary.Value);
-
-			Assert.AreEqual(expectedResult, result);
-
-		}
-
-		private string ExecuteFileIssueCommand(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
-		{
-			IssueType issueType = IssueType.Parse(type.Value);
-			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, issueType.Id, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = CreationDate, summary = summary.Value })))
-			{
-				var contextMock = ContextMockFor("creator", String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringIfRequiredOrEmpty(description), OrderOrEmpty(order), type.Value));
-				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
-
-				return commandMock.Process(contextMock.Object);
-			}
-		}
-
-		private static string OrderOrEmpty(Argument<int> order)
-		{
-			return order.IsPresent ? order.Value.ToString() : string.Empty;
-		}
-
-		private static string QuotedStringIfRequiredOrEmpty(Argument<string> str)
-		{
-			if (!str.IsPresent) return string.Empty;
-			return str.Value.IndexOf(' ') >= 0 ? "\"" + str.Value + "\"" : str.Value;
-		}
-		
-		private readonly DateTime CreationDate = DateTime.FromFileTime(42);
 	}
 }
