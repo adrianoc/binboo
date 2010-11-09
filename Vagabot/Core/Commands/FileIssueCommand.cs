@@ -45,8 +45,8 @@ namespace Binboo.Core.Commands
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments,
 			                                                     project => ParamValidator.Project,
-			                                                     summary => ParamValidator.Anything,
-			                                                     description => ParamValidator.AnythingStartingWithText.ButNot(ParamValidator.Type).AsOptional(),
+																 summary => ParamValidator.QuotedString,
+																 description => ParamValidator.QuotedString.AsOptional(),
 			                                                     order => ParamValidator.Order.AsOptional(),
 			                                                     type => ParamValidator.Type);
 

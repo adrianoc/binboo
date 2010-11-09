@@ -39,7 +39,10 @@ namespace Binboo.Core.Commands
 
 		protected override string ProcessCommand(IContext context)
 		{
-			var arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comment => ParamValidator.Anything.AsOptional());
+			var arguments = CollectAndValidateArguments(context.Arguments, 
+															issueId => ParamValidator.MultipleIssueId, 
+															comment => ParamValidator.Anything.AsOptional());
+
 			var sb = new StringBuilder();
 			foreach (var issueId in arguments["issueId"].Values)
 			{

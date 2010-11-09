@@ -30,9 +30,23 @@ namespace Binboo.Tests.Core.Commands
 	public partial class FileIssueTestCase : JiraCommandTestCaseBase
 	{
 		[Test]
+		public void TestSpacesInbetweenTypeLiteralAndValueDontCrash()
+		{
+			AssertSpacesInTypeSpecification("type= task");
+			AssertSpacesInTypeSpecification("type = task");
+			AssertSpacesInTypeSpecification("type  =task");
+		}
+
+		[Test]
+		public void TestSingleWordInDescription()
+		{
+			AssertFileIssue("BTST", "File issue command test.", "single-word", "task", 1);
+		}
+
+		[Test]
 		public void TestSuccessful()
 		{
-			AssertFileIssue("BTST", "File issue command test.", "Su", "task", 1);
+			AssertFileIssue("BTST", "File issue command test.", "simple issue creation.", "task", 1);
 		}
 
 		[Test]
