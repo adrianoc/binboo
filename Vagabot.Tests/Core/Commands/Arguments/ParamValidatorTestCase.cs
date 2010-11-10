@@ -29,6 +29,12 @@ namespace Binboo.Tests.Core.Commands.Arguments
 	public class ParamValidatorTestCase
 	{
 		[Test]
+		public void Test()
+		{
+			Assert.IsTrue(ParamValidator.QuotedString.IsMatch("\"[bla] bla bla\""));
+		}
+
+		[Test]
 		public void TestButNotAsOptional()
 		{
 			ParamValidator notOrderOrType = ParamValidator.Anything.ButNot(ParamValidator.Order, ParamValidator.Type).AsOptional();
