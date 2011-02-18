@@ -98,7 +98,13 @@ namespace Binboo.Tests.Core.Commands
 		[Test]
 		public void TestMultipleFixedVersion()
 		{
-			AssertResolve("TBC-002", IssueResolution.Fixed, "", "versions = 1.1, 1.2, 1.3");
+			AssertResolve("TBC-002", IssueResolution.Fixed, "", "versions =1.1, 1.2,1.3");
+		}
+
+		[Test]
+		public void TestVersionsWithMoreThan2Components()
+		{
+			AssertResolve("TBC-002", IssueResolution.Fixed, "", "versions = 1.1.0");
 		}
 		
 		private const string UserName = "resolving-user";

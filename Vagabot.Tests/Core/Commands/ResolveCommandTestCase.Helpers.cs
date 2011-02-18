@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Binboo.Core.Commands;
 using Binboo.JiraIntegration;
 using Binboo.Tests.Utils;
@@ -66,9 +67,15 @@ namespace Binboo.Tests.Core.Commands
 												It.Is<IEnumerable<string>>(
 												    versions => string.IsNullOrEmpty(fixedInVersions)
 												                    ? true
-												                    : versions.Any(version => fixedInVersions.Contains(version)))
+																	: versions.Any(version => IsValidVersion(fixedInVersions, version)))
 										)
 								).Returns(IssueTestService.Issue[ticket]);
+		}
+
+		private static bool IsValidVersion(string fixedInVersions, string version)
+		{
+			var versionPattern = @"\b(?<!\.)" + version.Replace(".", @"\.") + @"(?!\.)";
+			return Regex.IsMatch(fixedInVersions, versionPattern) && !version.StartsWith(".");
 		}
 
 		private static string StripQuotes(string comment)
