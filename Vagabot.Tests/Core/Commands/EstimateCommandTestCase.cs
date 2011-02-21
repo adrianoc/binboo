@@ -43,7 +43,8 @@ namespace Binboo.Tests.Core.Commands
 				var context = ContextMockFor("estimate-testecase", issue, estimation);
 
 				var result = command.Process(context.Object);
-				Assert.AreEqual(string.Format("[{0}] Estimation set to {1}\r\n", issue, estimation), result);
+				Assert.AreEqual(string.Format("[{0}] Estimation set to {1}\r\n", issue, estimation), result.HumanReadable);
+				Assert.AreEqual(issue, result.PipeValue);
 			}
 		}
 	}

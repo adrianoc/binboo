@@ -21,7 +21,9 @@
  **/
 
 using System;
+using System.Collections.Generic;
 using System.Text;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -37,20 +39,25 @@ namespace Binboo.Core.Commands
 			get { return "ListProjects"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			CollectAndValidateArguments(context.Arguments);
 
-			return Run( delegate
+			IList<string> projectKeys = new List<string>();
+
+			var ret = Run( delegate
 			            {
 							var projects = new StringBuilder();
 							foreach(RemoteProject project in _jira.GetProjectList())
 							{
+								projectKeys.Add(project.key);
 								projects.AppendFormat("{0,-5}{1,-15}{2,-30}{3}", project.key, project.lead, project.description, Environment.NewLine);
 							}
 
 			            	return "OK\r\n" + projects;
 						});
+
+			return CommandResult.Success(ret, projectKeys);
 		}
 	}
 }

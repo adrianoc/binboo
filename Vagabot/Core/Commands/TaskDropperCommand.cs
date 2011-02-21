@@ -22,6 +22,7 @@
 
 using System.Text;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -37,18 +38,19 @@ namespace Binboo.Core.Commands
 			get { return "Drop"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			var arguments = CollectAndValidateArguments(context.Arguments, 
 															issueId => ParamValidator.MultipleIssueId, 
 															comment => ParamValidator.Anything.AsOptional());
 
 			var sb = new StringBuilder();
-			foreach (var issueId in arguments["issueId"].Values)
+			var issues = arguments["issueId"].Values;
+			foreach (var issueId in issues)
 			{
 				sb.AppendLine(DropTask(issueId, arguments["comment"]));
 			}
-			return sb.ToString();
+			return CommandResult.Success(sb.ToString(), issues);
 		}
 
 		private string DropTask(string ticket, string comment)

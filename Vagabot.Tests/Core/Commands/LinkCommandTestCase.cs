@@ -21,6 +21,7 @@
  **/
 using System;
 using Binboo.Core.Commands;
+using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 using Moq;
@@ -32,22 +33,25 @@ namespace Binboo.Tests.Core.Commands
 	[TestFixture]
 	public class LinkCommandTestCase : JiraCommandTestCaseBase
 	{
+		private const string SourceIssue = "TIL-001";
+		private const string TargetIssue = "TIL-002";
 		private const string ExpectedLinkDescription = "links to";
 
 		[Test]
 		public void TestSuccessfulLink()
 		{
 			Mock<IJiraProxy> mockedJiraSoapProxy = MockedJiraSoapProxy();
-			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink("TIL-001", "Tested With", "TIL-002", false));
+			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink(SourceIssue, "Tested With", TargetIssue, false));
 
 			var linkCommand = new LinkIssueCommand(
 										mockedJiraSoapProxy.Object,
 										"Testing issue linking.");
 
-			Mock<IContext> mockedContext = ContextMockFor("foo", "TIL-001", "\"Tested With\"", "TIL-002");
-			string actualResult = linkCommand.Process(mockedContext.Object);
+			Mock<IContext> mockedContext = ContextMockFor("foo", SourceIssue, "\"Tested With\"", TargetIssue);
+			var result = linkCommand.Process(mockedContext.Object);
 
-			Assert.AreEqual("[Link] Link created successfully: TIL-001 Tested With TIL-002", actualResult);
+			Assert.AreEqual("[Link] Link created successfully: TIL-001 Tested With TIL-002", result.HumanReadable);
+			Assert.AreEqual(SourceIssue + ", " + TargetIssue, result.PipeValue);
 
 			mockedJiraSoapProxy.VerifyAll();
 		}
@@ -64,9 +68,9 @@ namespace Binboo.Tests.Core.Commands
 										"Testing issue linking.");
 
 			Mock<IContext> mockedContext = ContextMockFor("foo", NonExistingIssueKey, "test-exception", "TIL-002");
-			string actualResult = linkCommand.Process(mockedContext.Object);
+			var actualResult = linkCommand.Process(mockedContext.Object);
 
-			Assert.IsTrue(actualResult.Contains("Exception Thrown"));
+			Assert.IsTrue(actualResult.HumanReadable.Contains("Exception Thrown"));
 
 			mockedJiraSoapProxy.VerifyAll();			
 		}
@@ -94,16 +98,17 @@ namespace Binboo.Tests.Core.Commands
 		public void TestLinkAliases()
 		{
 			Mock<IJiraProxy> mockedJiraSoapProxy = MockedJiraSoapProxy();
-			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink("TIL-001", ExpectedLinkDescription, "TIL-002", false));
+			mockedJiraSoapProxy.Setup(jiraProxy => jiraProxy.CreateLink(SourceIssue, ExpectedLinkDescription, TargetIssue, false));
 
 			var linkCommand = new LinkIssueCommand(
 										mockedJiraSoapProxy.Object,
 										"Testing issue linking.");
 
-			Mock<IContext> mockedContext = ContextMockFor("foo", "TIL-001", "associate", "TIL-002");
-			string actualResult = linkCommand.Process(mockedContext.Object);
+			Mock<IContext> mockedContext = ContextMockFor("foo", SourceIssue, "associate", TargetIssue);
+			var result = linkCommand.Process(mockedContext.Object);
 
-			Assert.AreEqual(string.Format("[Link] Link created successfully: TIL-001 {0} TIL-002", "associate"), actualResult);
+			Assert.AreEqual(string.Format("[Link] Link created successfully: {0} {1} {2}", SourceIssue, "associate", TargetIssue), result.HumanReadable);
+			Assert.AreEqual(SourceIssue + ", " + TargetIssue, result.PipeValue);
 
 			mockedJiraSoapProxy.VerifyAll();
 		}

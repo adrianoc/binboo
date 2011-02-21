@@ -38,4 +38,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.*")]
 
 [assembly: InternalsVisibleTo("Binboo.Tests")]
-[assembly:InternalsVisibleTo("DynamicProxyGenAssembly2")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

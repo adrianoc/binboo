@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 
 namespace Binboo.Core.Commands
 {
@@ -42,7 +43,7 @@ namespace Binboo.Core.Commands
 			get { return "Help"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, cmd => ParamValidator.Anything.AsOptional());
 			var helpMsg = new StringBuilder("Command        Description" + Environment.NewLine + 
@@ -53,7 +54,7 @@ namespace Binboo.Core.Commands
 				helpMsg.AppendFormat("{0,-15}{1}{2}{2}", command.Id, AddTabAtNewLine(command.Help), Environment.NewLine);
 			}
 
-			return helpMsg.ToString();
+			return CommandResult.Success(helpMsg.ToString());
 		}
 
 		private IEnumerable HelpFor(Argument command)

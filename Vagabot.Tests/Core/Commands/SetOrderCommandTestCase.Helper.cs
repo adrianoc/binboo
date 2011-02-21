@@ -31,12 +31,15 @@ namespace Binboo.Tests.Core.Commands
 {
 	public partial class SetOrderCommandTestCase
 	{
-		private void AssertInvalidArguments(string expectedMessage, params string[] arguments)
+		private static void AssertInvalidArguments(string expectedMessage, params string[] arguments)
 		{
 			var jiraProxyMock = new Mock<IJiraProxy>();
 			var commandMock = new CommandMock<SetOrderCommand>(new SetOrderCommand(jiraProxyMock.Object, "Help"), jiraProxyMock);
 			var contextMock = ContextMockFor("some-user", arguments);
-			Assert.AreEqual(expectedMessage, commandMock.Process(contextMock.Object));
+
+			var result = commandMock.Process(contextMock.Object);
+			Assert.AreEqual(expectedMessage, result.HumanReadable);
+			Assert.AreEqual(string.Empty, result.PipeValue);
 		}
 
 		private void AssertSetOrder(string issues, int order)
@@ -45,7 +48,9 @@ namespace Binboo.Tests.Core.Commands
 			{
 				var contextMock = ContextMockFor("setorder-user", issues, order.ToString());
 
-				Assert.AreEqual(ExpectedMessage(issues, order), commandMock.Process(contextMock.Object));
+				var result = commandMock.Process(contextMock.Object);
+				Assert.AreEqual(ExpectedMessage(issues, order), result.HumanReadable);
+				Assert.AreEqual(issues, result.PipeValue);
 			}
 		}
 

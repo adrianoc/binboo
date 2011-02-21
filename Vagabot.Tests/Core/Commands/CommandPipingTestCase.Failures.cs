@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2009 Adriano Carlos Verona
+﻿/**
+ * Copyright (c) 2011 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,27 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+using NUnit.Framework;
 
-using System;
-using System.Globalization;
-
-namespace Binboo.Core.Commands
+namespace Binboo.Tests.Core.Commands
 {
-	internal class Db4oIteration
+	[TestFixture]
+	partial class CommandPipingTestCase
 	{
-
-		public static int CalcWeek()
-		{
-			Calendar calendar = new GregorianCalendar(GregorianCalendarTypes.USEnglish);
-			DateTime currentWeek = calendar.AddWeeks(new DateTime(2007, 1, 2), 30);
-
-			int weekCount = 0;
-			while (currentWeek < DateTime.Now)
-			{
-				weekCount++;
-				currentWeek = calendar.AddWeeks(currentWeek, 1);
-			}
-			return weekCount;
-		}
 	}
 }

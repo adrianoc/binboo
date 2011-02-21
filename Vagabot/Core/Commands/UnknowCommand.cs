@@ -19,56 +19,66 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Commands.Support;
-using Binboo.JiraIntegration;
+using Binboo.Core.Persistence;
+using TCL.Extensions;
 
 namespace Binboo.Core.Commands
 {
-	internal class IssueCommand : JiraCommandBase
+	class UnknowCommand : IBotCommand
 	{
-		public IssueCommand(IJiraProxy proxy, string help) : base(proxy, help)
+		public UnknowCommand(string commandName, IDictionary<string, IBotCommand> commands)
 		{
+			_commandName = commandName;
+			_commands = commands;
 		}
 
-		public override string Id
+		public void Initialize()
 		{
-			get
+			throw new NotImplementedException();
+		}
+
+		public IStorage Storage
+		{
+			set { throw new NotImplementedException(); }
+		}
+
+		public string Help
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public string Id
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public ICommandResult Process(IContext context)
+		{
+			return CommandResult.Fail(ReportCommandNotFound());
+		}
+
+		private string ReportCommandNotFound()
+		{
+			StringBuilder output = new StringBuilder();
+			output.AppendFormat("Unknown command: {0}.", _commandName);
+
+			var inputSoundex = _commandName.SoundEx();
+
+			var probableCommand = _commands.Where(candidate => candidate.Key.SoundEx() == inputSoundex).Select(pair => pair.Key).SingleOrDefault();
+			if (probableCommand != null)
 			{
-				return "Issue";
-			}
-		}
-
-		protected override ICommandResult ProcessCommand(IContext context)
-		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comments => ParamValidator.Custom("comments", true));
-
-			var sb = new StringBuilder();
-			var tikets = arguments["issueId"].Values;
-
-			foreach (var issue in tikets)
-			{
-				var currentIssue = issue;
-				sb.AppendLine(Run(  () => _jira.GetIssue(currentIssue),
-									ri => FormatIssue(ri, arguments["comments"].IsPresent))
-							 );
+				output.AppendFormat("\r\nDid you mean \"{0}\" ?", probableCommand);
 			}
 
-			return CommandResult.Success(sb.ToString(), CommaSeparated(tikets));
+			return output.ToString();
 		}
 
-		private string FormatIssue(RemoteIssue issue, bool showComments)
-		{
-			string issueDetails = Run(() => issue.Format());
-			if (showComments)
-			{
-				issueDetails = issueDetails + "\r\n" + Run(() => _jira.GetComments(issue.key));
-			}
-
-			return issueDetails + "\r\n" + UrlFor(issue);
-		}
+		private readonly string _commandName;
+		private readonly IDictionary<string, IBotCommand> _commands;
 	}
 }

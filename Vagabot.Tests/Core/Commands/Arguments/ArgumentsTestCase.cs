@@ -25,8 +25,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.Tests.Mocks;
 using NUnit.Framework;
 using Application=Binboo.Core.Application;
@@ -224,7 +224,7 @@ namespace Binboo.Tests.Core.Commands.Arguments
 			Assert.AreEqual(expected, _chat.SentMessages.Single().Body);
 		}
 
-        private static string ArgumentEcho(IContext context, IDictionary<string, Argument> args)
+        private static ICommandResult ArgumentEcho(IContext context, IDictionary<string, Argument> args)
 		{
 			var sb = new StringBuilder(50);
 			foreach (var arg in args)
@@ -236,7 +236,7 @@ namespace Binboo.Tests.Core.Commands.Arguments
 				}
 				sb.AppendLine();
 			}
-			return sb.ToString();
+			return CommandResult.Success(sb.ToString());
 		}
 	}
 }

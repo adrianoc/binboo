@@ -48,7 +48,7 @@ namespace Binboo.Tests.Core.Commands
 			using (var commandMock = NewCommand<TaskDropperCommand>(MocksFor(issues)))
 			{
 				var contextMock = ContextMockFor("drop-user", issues);
-				Assert.AreEqual(ExpectedResponse(issues), commandMock.Process(contextMock.Object));
+				Assert.AreEqual(ExpectedResponse(issues), commandMock.Process(contextMock.Object).HumanReadable);
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace Binboo.Tests.Core.Commands
 											It.Is<IssueField>(p => string.IsNullOrEmpty(p.Values[0])))).Throws(new JiraProxyException(issue, new Exception("Not found")))))
 			{
 				var contextMock = ContextMockFor("drop-user", issue);
-				Assert.AreEqual(string.Format("{0}\r\nNot found\r\n", issue), commandMock.Process(contextMock.Object));
+				Assert.AreEqual(string.Format("{0}\r\nNot found\r\n", issue), commandMock.Process(contextMock.Object).HumanReadable);
 			}
 		}
 	}

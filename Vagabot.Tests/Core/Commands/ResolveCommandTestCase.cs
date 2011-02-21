@@ -73,7 +73,7 @@ namespace Binboo.Tests.Core.Commands
 				var contextMock = ContextMockFor(UserName, "TBC-009", "non-existing-resolution");
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
-				StringAssert.Contains("Resolve: Argument index 1 (vale = 'non-existing-resolution') is invalid", commandMock.Process(contextMock.Object));
+				StringAssert.Contains("Resolve: Argument index 1 (vale = 'non-existing-resolution') is invalid", commandMock.Process(contextMock.Object).HumanReadable);
 			}
 		}
 
@@ -85,7 +85,9 @@ namespace Binboo.Tests.Core.Commands
 				var contextMock = ContextMockFor(UserName, "TBC-010", "fixed");
 				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
 
-				Assert.AreEqual("Failed to resolve issue: TBC-010\r\nException of type 'System.Exception' was thrown.", commandMock.Process(contextMock.Object));
+				var result = commandMock.Process(contextMock.Object);
+				Assert.AreEqual("Failed to resolve issue: TBC-010\r\nException of type 'System.Exception' was thrown.", result.HumanReadable);
+				Assert.AreEqual(string.Empty, result.PipeValue);
 			}
 		}
 

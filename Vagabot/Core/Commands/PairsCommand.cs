@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 
@@ -40,7 +41,7 @@ namespace Binboo.Core.Commands
 			get { return "pairs"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			IEnumerator<string> randomUsers = Random(ConfigServices.PairingUsers);
 			var msg = new StringBuilder("Pairs: ");
@@ -52,7 +53,7 @@ namespace Binboo.Core.Commands
 				pair = NextPair(randomUsers);
 			}
 
-			return msg.Remove(msg.Length - 2, 2).ToString();
+			return CommandResult.Success(msg.Remove(msg.Length - 2, 2).ToString());
 		}
 
 		private static string NextPair(IEnumerator<string> randomUsers)

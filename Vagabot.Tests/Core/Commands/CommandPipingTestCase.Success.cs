@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2011 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,39 +19,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System;
-using Binboo.Core.Commands.Support;
-using Binboo.JiraIntegration;
-using Binboo.Tests.Mocks;
-using Moq;
+using NUnit.Framework;
 
 namespace Binboo.Tests.Core.Commands
 {
-	internal class CommandMock<T> : IDisposable where T : IBotCommand
+	[TestFixture]
+	partial class CommandPipingTestCase
 	{
-		private readonly Mock<IJiraProxy> _mock;
-		private readonly T _command;
-
-		public CommandMock(T command, Mock<IJiraProxy> mock)
+		[Test]
+		public void TestSingleOutputNoExtraArguments()
 		{
-			_mock = mock;
-			_command = command;
-			_command.Storage = new DummyStorage();
+			AssertPiping("$test CMD1 s1 | CMD2", rec => AreEqual(rec.Arguments("CMD2"), "s1"));
+		}
+		
+		[Test]
+		public void TestSingleOutputWithExtraArguments()
+		{
+			AssertPiping("CMD1 s1 | CMD2 s2", rec => AreEqual(rec.Arguments("CMD2"), "s1", "s2"));
+		}
+		
+		[Test]
+		public void TestMultipleOutputSingleArgument()
+		{
+			Assert.Fail();
 		}
 
-		public ICommandResult Process(IContext context)
+		[Test]
+		public void TestMultipleOutputMultipleArguments()
 		{
-			return _command.Process(context);
+			Assert.Fail();
 		}
 
-		public void Verify()
+		[Test]
+		public void TestOutputIndexing()
 		{
-			_mock.VerifyAll();
+			Assert.Fail();
 		}
 
-		public void Dispose()
+		[Test]
+		public void TestMultiplePipes()
 		{
-			_mock.VerifyAll();
+			Assert.Fail();
+		}
+		
+		[Test]
+		public void TestPipeSymbolInQuotedStrings()
+		{
+			AssertPiping("$test CMD1 \"no | piping\" | CMD2", rec => AreEqual(rec.Arguments("CMD2"), "\"no | piping\""));
+			AssertPiping("$test CMD1 s1 \"no | piping\" | CMD2", rec => AreEqual(rec.Arguments("CMD2"), "s1", "\"no | piping\""));
 		}
 	}
 }

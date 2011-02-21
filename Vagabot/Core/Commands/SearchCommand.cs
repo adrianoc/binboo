@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -40,11 +41,11 @@ namespace Binboo.Core.Commands
 			get { return "Search"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, lookFor => ParamValidator.Anything, status => ParamValidator.IssueStatus.AsOptional());
 
-			return Run(() =>
+			var result = Run(() =>
 			           	{
 			           		string status = OptionalArgumentOrDefault(arguments, "status", IssueStatus.Open.Description);
 			           		
@@ -61,6 +62,8 @@ namespace Binboo.Core.Commands
 							sb.Insert(0, String.Format("Issue      Status      Created             Sumary{0}{1}{0}", Environment.NewLine, new String('-', max)));
 			           		return sb.ToString();
 			           	});
+
+			return CommandResult.Success(result);
 		}
 	}
 }

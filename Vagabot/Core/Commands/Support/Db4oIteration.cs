@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,27 +20,26 @@
  * THE SOFTWARE.
  **/
 
-namespace Binboo.Core.Commands
+using System;
+using System.Globalization;
+
+namespace Binboo.Core.Commands.Support
 {
-	public class Context : IContext
+	internal class Db4oIteration
 	{
-		public Context(string userName, string args)
-		{
-			_args = args;
-			_userName = userName;
-		}
 
-		public string Arguments
+		public static int CalcWeek()
 		{
-			get { return _args; }
-		}
+			Calendar calendar = new GregorianCalendar(GregorianCalendarTypes.USEnglish);
+			DateTime currentWeek = calendar.AddWeeks(new DateTime(2007, 1, 2), 30);
 
-		public string UserName
-		{
-			get { return _userName; }
+			int weekCount = 0;
+			while (currentWeek < DateTime.Now)
+			{
+				weekCount++;
+				currentWeek = calendar.AddWeeks(currentWeek, 1);
+			}
+			return weekCount;
 		}
-
-		private readonly string _args;
-		private readonly string _userName;
 	}
 }

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,13 +22,13 @@
 using System.Text.RegularExpressions;
 using Binboo.Core.Persistence;
 
-namespace Binboo.Core.Commands
+namespace Binboo.Core.Commands.Support
 {
 	internal abstract class BotCommandBase : IBotCommand
 	{
 		public abstract string Id { get; }
 
-		public abstract string Process(IContext context);
+		public abstract ICommandResult Process(IContext context);
 
 		protected BotCommandBase(string help)
 		{

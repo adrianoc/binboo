@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 
@@ -41,14 +42,17 @@ namespace Binboo.Core.Commands
 			get { return "File"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments,
-			                                                     project => ParamValidator.Project,
-																 summary => ParamValidator.QuotedString,
-																 description => ParamValidator.QuotedString.AsOptional(),
-			                                                     order => ParamValidator.Order.AsOptional(),
-			                                                     type => ParamValidator.Type);
+			var arguments = CollectAndValidateArguments(context.Arguments,
+														project => ParamValidator.Project,
+														summary => ParamValidator.QuotedString,
+														description => ParamValidator.QuotedString.AsOptional(),
+			                                            order => ParamValidator.Order.AsOptional(),
+			                                            type => ParamValidator.Type);
+
+			
+			Func<RemoteIssue, ICommandResult> mapping = issue => CommandResult.Success(string.Format("Jira tiket created successfuly ({2}).{0}{0}{1}", Environment.NewLine, issue.Format(), UrlFor(issue)), issue.key);
 
 			return Run(
 						() => _jira.FileIssue(
@@ -59,7 +63,7 @@ namespace Binboo.Core.Commands
 									IssueType.Parse(OptionalArgumentOrDefault(arguments, "type", "bug")).Id,
 									OptionalArgumentOrDefault(arguments, "order", DefaultIssueOrder)),
 
-						issue => string.Format("Jira tiket created successfuly ({2}).{0}{0}{1}", Environment.NewLine, issue.Format(), UrlFor(issue)));
+						mapping);
 		}
 	}
 }

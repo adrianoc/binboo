@@ -23,6 +23,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -38,7 +39,7 @@ namespace Binboo.Core.Commands
 			get { return "Resolve"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context);
 			return ResolveIssue(
@@ -57,7 +58,7 @@ namespace Binboo.Core.Commands
 			                                   comment => ParamValidator.Anything.AsOptional());
 		}
 
-		private string ResolveIssue(string ticket, string comment, string resolution, Argument fixedInVersions)
+		private ICommandResult ResolveIssue(string ticket, string comment, string resolution, Argument fixedInVersions)
 		{
 			return Run(
 					() =>
@@ -66,7 +67,7 @@ namespace Binboo.Core.Commands
 						return _jira.ResolveIssue(ticket, comment, IssueResolution.Parse(resolution), versions);
 					},
 				
-					issue => string.Format("Issue {0} ('{1}') resolved as '{2}'.", ticket, issue.summary, IssueResolution.Parse(resolution).Description));
+					issue => CommandResult.Success(string.Format("Issue {0} ('{1}') resolved as '{2}'.", ticket, issue.summary, IssueResolution.Parse(resolution).Description), ticket));
 		}
 
 		private static IEnumerable<string> EnumerableFor(Argument fixedInVersions)

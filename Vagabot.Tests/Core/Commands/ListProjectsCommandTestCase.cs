@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+using System.Linq;
 using Binboo.Core.Commands;
 using NUnit.Framework;
 
@@ -34,7 +35,9 @@ namespace Binboo.Tests.Core.Commands
 			{
 				var contextMock = ContextMockFor("list-user");
 				var result = commandMock.Process(contextMock.Object);
-				StringAssert.Contains("OK", result);
+				
+				StringAssert.Contains("OK", result.HumanReadable);
+				Assert.AreEqual(string.Join(", ", _projects.Select( p => p.key).ToArray() ), result.PipeValue);
 			}
 		}
 

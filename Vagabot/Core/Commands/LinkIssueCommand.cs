@@ -21,6 +21,7 @@
  **/
 using System.Linq;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 using TCL.Net.Extensions;
@@ -46,7 +47,7 @@ namespace Binboo.Core.Commands
 			}
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			var arguments = CollectAndValidateArguments(context.Arguments, 
 														sourceIssueKey => ParamValidator.IssueId,
@@ -54,16 +55,21 @@ namespace Binboo.Core.Commands
 														targetIssueKey => ParamValidator.IssueId,
 														verbose => ParamValidator.Custom("verbose", true));
 
-			return Run(	delegate
+			var sourceTitket = arguments["sourceIssueKey"];
+			var targetTicket = arguments["targetIssueKey"];
+
+			var ret = Run(	delegate
 			{
 				string aliasedLinkDescription = AliasedLinkDescription(arguments["linkDescription"].Value);
 
-				string result = _jira.CreateLink(arguments["sourceIssueKey"], aliasedLinkDescription, arguments["targetIssueKey"], arguments["verbose"].IsPresent);
+				string result = _jira.CreateLink(sourceTitket, aliasedLinkDescription, targetTicket, arguments["verbose"].IsPresent);
 			    return ResultMessageFor(result, string.Format("Link created successfully: {0} {1} {2}",
-			    																	arguments["sourceIssueKey"].Value,
+			    																	sourceTitket.Value,
 																					arguments["linkDescription"].Value,
-			    																	arguments["targetIssueKey"].Value));
+			    																	targetTicket.Value));
 			});
+
+			return CommandResult.Success(ret, sourceTitket, targetTicket);
 		}
 
 		private static string AliasedLinkDescription(string linkDescription)

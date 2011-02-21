@@ -23,6 +23,7 @@
 using System;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -38,12 +39,13 @@ namespace Binboo.Core.Commands
 			get { return "SetOrder"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			var arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, order => ParamValidator.Order);
 			var sb = new StringBuilder();
-			
-			foreach (var issue in arguments["issueId"].Values)
+
+			var issues = arguments["issueId"].Values;
+			foreach (var issue in issues)
 			{
 				string currentIssue = issue;
 				Argument order = arguments["order"];
@@ -52,7 +54,7 @@ namespace Binboo.Core.Commands
 				              	string.Format("Order set to {0} for issue '{1}'.", order.Value, currentIssue)));
 			}
 
-			return sb.ToString();
+			return CommandResult.Success(sb.ToString(), issues);
 		}
 
 		private static IssueField NewOrder(Argument order)

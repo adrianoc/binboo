@@ -23,6 +23,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 using Binboo.Core.Commands;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 using Binboo.Tests.Utils;
 using Moq;
@@ -44,8 +45,8 @@ namespace Binboo.Tests.Core.Commands
 			using (var commandMock = NewCommand<IssueAssignCommand>(mockSetups))
 			{
 				IContext context = ContextMockFor(skypeUser, ticket, user).Object;
-				string result = commandMock.Process(context);
-				Assert.AreEqual(ExpectedAssignmentMessageFor(ticket, user), result);
+				var result = commandMock.Process(context);
+				Assert.AreEqual(ExpectedAssignmentMessageFor(ticket, user), result.HumanReadable);
 			}
 		}
 
@@ -59,8 +60,10 @@ namespace Binboo.Tests.Core.Commands
 			using (var commandMock = NewCommand<IssueAssignCommand>(MockSetupsFor(ticket, peer)))
 			{
 				IContext context = ContextMockFor(skypeUser, ticket, user, peer, iteration).Object;
-				string result = commandMock.Process(context);
-				Assert.AreEqual(ExpectedAssignmentMessageFor(ticket, user), result);
+				var result = commandMock.Process(context);
+				
+				Assert.AreEqual(ExpectedAssignmentMessageFor(ticket, user), result.HumanReadable);
+				Assert.AreEqual(ticket, result.PipeValue);
 			}
 		}
 
@@ -68,7 +71,7 @@ namespace Binboo.Tests.Core.Commands
 		{
 			using (var commandMock = NewCommand<IssueAssignCommand>(mock => mock.Setup(proxy => proxy.AssignIssue(It.IsAny<string>(), It.Is<IssueField>(field => field.Id == IssueField.Assignee.Id && field.Values[0] == expectedAssign), It.Is<IssueField>(field => field.Id == CustomFieldId.Peers.Id && field.Values[0] == expectedPeer), It.IsAny<IssueField>())).Returns(IssueTestService.Issue[issue])))
 			{
-				Assert.AreEqual(ExpectedAssignmentMessageFor(issue, expectedAssign), commandMock.Process(ContextMockFor(skpypeUser, issue).Object));
+				Assert.AreEqual(ExpectedAssignmentMessageFor(issue, expectedAssign), commandMock.Process(ContextMockFor(skpypeUser, issue).Object).HumanReadable);
 			}
 		}
 
@@ -76,7 +79,7 @@ namespace Binboo.Tests.Core.Commands
 		{
 			using (var commandMock = NewCommand<IssueAssignCommand>())
 			{
-				StringAssert.StartsWith("Failed", commandMock.Process(ContextMockFor(skpypeUser, issue).Object));
+				StringAssert.StartsWith("Failed", commandMock.Process(ContextMockFor(skpypeUser, issue).Object).HumanReadable);
 			}
 		}
 

@@ -21,6 +21,7 @@
  **/
 using System;
 using Binboo.Core.Commands;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 using Moq;
 using NUnit.Framework;
@@ -29,6 +30,8 @@ namespace Binboo.Tests.Core.Commands
 {
 	public partial class FileIssueTestCase
 	{
+		private const string IssueNumber = "001";
+		
 		private void AssertSpacesInTypeSpecification(string typeSpecification)
 		{
 			const string project = "SPC";
@@ -46,15 +49,23 @@ namespace Binboo.Tests.Core.Commands
 
 		private void AssertFileIssue(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
 		{
-			string result = ExecuteFileIssueCommand(project, summary, description, type, order);
-			string expectedResult = String.Format(@"Jira tiket created successfuly (http://sei.la.com/browse/{0}-001).
+			var result = ExecuteFileIssueCommand(project, summary, description, type, order);
+			var expectedPipe = IssueKeyFor(project.Value);
+			string expectedHumanReadableResult = string.Format(@"Jira tiket created successfuly (http://sei.la.com/browse/{0}).
 
-{0}-001   Open        {1} {2}", project.Value, CreationDate, summary.Value);
+{0}   Open        {1} {2}", IssueKeyFor(project.Value), CreationDate, summary.Value);
 
-			Assert.AreEqual(expectedResult, result);
+
+			Assert.AreEqual(expectedHumanReadableResult, result.HumanReadable);
+			Assert.AreEqual(expectedPipe, result.PipeValue);
 		}
 
-		private string ExecuteFileIssueCommand(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
+		private static string IssueKeyFor(string projectId)
+		{
+			return string.Format("{0}-{1}", projectId, IssueNumber);
+		}
+
+		private ICommandResult ExecuteFileIssueCommand(Argument<string> project, Argument<string> summary, Argument<string> description, Argument<string> type, Argument<int> order)
 		{
 			IssueType issueType = IssueType.Parse(type.Value);
 			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, issueType.Id, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = CreationDate, summary = summary.Value })))

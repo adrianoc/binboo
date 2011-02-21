@@ -22,6 +22,7 @@
 using System.Linq;
 using Binboo.Core;
 using Binboo.Core.Commands;
+using Binboo.Core.Commands.Support;
 using Binboo.Core.Persistence;
 using Binboo.Tests.Mocks;
 using NUnit.Framework;
@@ -93,7 +94,7 @@ namespace Binboo.Tests.Core.Persistence
 			get { return "test"; }
 		}
 
-		public string Process(IContext context)
+		public ICommandResult Process(IContext context)
 		{
 			var values = context.Arguments.Split(' ');
 			for (int i = 0; i < values.Length; i++)
@@ -101,7 +102,7 @@ namespace Binboo.Tests.Core.Persistence
 				_storage["arg #" + i] = values[i];
 			}
 
-			return values.Length.ToString();
+			return CommandResult.Success(values.Length.ToString());
 		}
 
 		public string this[int i]

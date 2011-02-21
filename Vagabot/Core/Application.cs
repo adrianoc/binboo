@@ -19,21 +19,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Binboo.Core.Commands;
+using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.Core.Events;
 using Binboo.Core.Persistence;
 using SKYPE4COMLib;
-using TCL.Extensions;
 
 namespace Binboo.Core
 {
@@ -226,15 +225,18 @@ namespace Binboo.Core
 		{
 			try
 			{
-				IBotCommand command = GetCommand(message);
-				if (command != null)
+				var sb = new StringBuilder();
+				ICommandResult result = CommandResult.None;
+				foreach (var commandLine in CommandsFor(message.Body))
 				{
-					message.Chat.SendMessage(command.Process(new Context(message.Sender.Handle, CommandParameters(message))));
+					var ctx = PipedContextFor(message.Sender.Handle, commandLine, result);
+					result = RunCommand(ctx, commandLine);
+					sb.AppendFormat("{0}{1}{1}", result.HumanReadable, Environment.NewLine);
+
+					if (result.Status != CommandStatus.Success) break;
 				}
-				else
-				{
-					ReportCommandNotFound(message);
-				}
+
+				message.Chat.SendMessage(sb.ToString());
 			}
 			catch(Exception ex)
 			{
@@ -242,25 +244,58 @@ namespace Binboo.Core
 			}
 		}
 
-		private void ReportCommandNotFound(IChatMessage message)
+		internal static IEnumerable<string> CommandsFor(string message)
 		{
-			var commandName = GetCommandName(message);
-			message.Chat.SendMessage(String.Format("Unknown command: {0}.", commandName));
+			int startPos = 0;
+			int currentPos;
 
-			var inputSoundex = commandName.SoundEx();
-
-			var probableCommand = _commands.Where(candidate => candidate.Key.SoundEx() == inputSoundex).Select(pair => pair.Key).SingleOrDefault();
-			if (probableCommand != null)
+			for (int pos = message.IndexOf('|'); pos != -1; pos = message.IndexOf('|', currentPos) )
 			{
-				message.Chat.SendMessage(String.Format("\r\nDid you mean \"{0}\" ?", probableCommand));
+				if (!InsideQuotedText(message, pos, startPos))
+				{
+					yield return message.Substring(startPos, pos - startPos - 1);
+					startPos = pos + 1;
+				}
+
+				currentPos = pos + 1;
 			}
+
+			yield return message.Substring(startPos);
 		}
 
-		private static string CommandParameters(IChatMessage message)
+		private static bool InsideQuotedText(string message, int pos, int startPos)
+		{
+			return CharCount(message, startPos, pos) % 2 == 1;
+		}
+
+		private static int CharCount(string buffer, int startPos, int endPos)
+		{
+			var count = 0;
+			for (int i = startPos; i < endPos && i < buffer.Length; i++)
+			{
+				if (buffer[i] == '"') count++;
+			}
+
+			return count;
+		}
+
+		private ICommandResult RunCommand(IContext ctx, string commandLine)
+		{
+			IBotCommand command = GetCommand(commandLine);
+			return command.Process(ctx);
+		}
+
+		private static IContext PipedContextFor(string user, string commandLine, ICommandResult result)
+		{
+			var passedArguments = CommandParameters(commandLine);
+			return result.PipeThrough(passedArguments, pipedArgs => new Context(user, pipedArgs));
+		}
+
+		private static string CommandParameters(string commandLine)
 		{
 			MatchCollection arguments = Regex.Matches(
-									message.Body,
-									@"\$[A-Za-z]+\s+[A-Za-z]+\s(?<param>.*)", 
+									commandLine,
+									@"\$[A-Za-z]+\s+[A-Za-z][A-Za-z0-9]*\s(?<param>.*)", 
 									RegexOptions.IgnoreCase | RegexOptions.Multiline |
 									RegexOptions.CultureInvariant |
 									RegexOptions.IgnorePatternWhitespace |
@@ -271,19 +306,19 @@ namespace Binboo.Core
 				: string.Empty;
 		}
 
-		private IBotCommand GetCommand(IChatMessage message)
+		private IBotCommand GetCommand(string message)
 		{
 			string commandName = GetNormilizedCommandName(message);
-			return _commands.ContainsKey(commandName) ? _commands[commandName] : null;
+			return _commands.ContainsKey(commandName) ? _commands[commandName] : new UnknowCommand(commandName, _commands);
 		}
 
-		private static string GetCommandName(IChatMessage message)
+		private static string GetCommandName(string message)
 		{
-			string[] strings = Regex.Split(message.Body, " ");
+			string[] strings = Regex.Split(message, " ");
 			return strings.Length > 1 ? strings[1] : string.Empty;
 		}
 
-		private static string GetNormilizedCommandName(IChatMessage message)
+		private static string GetNormilizedCommandName(string message)
 		{
 			return NormalizeCommandName(GetCommandName(message));
 		}

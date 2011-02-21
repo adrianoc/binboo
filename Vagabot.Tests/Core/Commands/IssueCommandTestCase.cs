@@ -22,6 +22,7 @@
 
 using System;
 using Binboo.Core.Commands;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 using Moq;
 using NUnit.Framework;
@@ -40,7 +41,9 @@ namespace Binboo.Tests.Core.Commands
 
 				Mock<IContext> contextMock = ContextMockFor("issue-user", issue.key);
 
-				Assert.AreEqual(ExpectedResultFor(issue), issueCommandMock.Process(contextMock.Object));
+				var result = issueCommandMock.Process(contextMock.Object);
+				Assert.AreEqual(ExpectedResultFor(issue), result.HumanReadable);
+				Assert.AreEqual(issue.key, result.PipeValue);
 			}
 		}
 
@@ -55,9 +58,15 @@ namespace Binboo.Tests.Core.Commands
 
 			Mock<IContext> contextMock = ContextMockFor("issue-user", issue.key, "comments");
 
+			var result = commandMock.Process(contextMock.Object);
+
 			Assert.AreEqual(
 				ExpectedResultFor(issue, comments), 
-				commandMock.Process(contextMock.Object));
+				result.HumanReadable);
+			
+			Assert.AreEqual(
+				issue.key, 
+				result.PipeValue);
 
 			commandMock.Verify();
 		}
@@ -68,10 +77,12 @@ namespace Binboo.Tests.Core.Commands
 			RemoteIssue issue = new RemoteIssue { key = "BTST-123", status = "2", created = new DateTime(2009, 01, 05), summary = "summary" };
 			using (var commandMock = NewCommand<IssueCommand>(mock => mock.Setup(proxy => proxy.GetIssue("BTST-123")).Throws(new JiraProxyException("Failed to get issue: " + issue.key, new Exception("")))))
 			{
-
 				Mock<IContext> contextMock = ContextMockFor("issue-user", issue.key);
 
-				Assert.AreEqual("Failed to get issue: " + issue.key + "\r\n\r\n", commandMock.Process(contextMock.Object));
+				var result = commandMock.Process(contextMock.Object);
+
+				Assert.AreEqual("Failed to get issue: " + issue.key + "\r\n\r\n", result.HumanReadable);
+				Assert.AreEqual(issue.key, result.PipeValue);
 			}
 		}
 

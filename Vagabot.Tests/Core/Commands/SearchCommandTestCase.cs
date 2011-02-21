@@ -23,6 +23,7 @@
 using System;
 using System.Linq;
 using Binboo.Core.Commands;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 using Moq;
 using NUnit.Framework;
@@ -58,7 +59,7 @@ namespace Binboo.Tests.Core.Commands
 																					});
 
 			expected = string.Format("Issue      Status      Created             Sumary{0}{1}{2}{0}", Environment.NewLine, new String('-', max), expected);
-			Assert.AreEqual(expected, commandMock.Process(contextMock.Object));
+			Assert.AreEqual(expected, commandMock.Process(contextMock.Object).HumanReadable);
 
 			commandMock.Verify();
 		}

@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -40,7 +41,7 @@ namespace Binboo.Core.Commands
 			get { return "CountIDS"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			return CalculateIDs(OptionalArgumentOrDefault(CollectArguments(context), "status", "all"));
 		}
@@ -50,9 +51,9 @@ namespace Binboo.Core.Commands
 			return CollectAndValidateArguments(context.Arguments, status => ParamValidator.IssueStatus.AsOptional());
 		}
 
-		private string CalculateIDs(string status)
+		private ICommandResult CalculateIDs(string status)
 		{
-			return Run(
+			var result = Run(
 				() =>
 					{
 						IEnumerable<RemoteIssue> issues = CurrentIterationIssuesForStatus(status);
@@ -91,6 +92,8 @@ namespace Binboo.Core.Commands
 
 						return sb.ToString();
 					});
+
+			return CommandResult.Success(result);
 		}
 
 		private static void AppendTotals(StringBuilder buffer, IEnumerable<RemoteIssue> issues)

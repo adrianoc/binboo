@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.JiraIntegration;
 
@@ -64,7 +65,7 @@ namespace Binboo.Core.Commands
 		/*
 		 * Assign <ticket #(s)> <main developer> [<peer>] [<iteration>]
 		 */
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments,
 			                                                     issueId => ParamValidator.MultipleIssueId,
@@ -73,28 +74,25 @@ namespace Binboo.Core.Commands
 			                                                     iteration => ParamValidator.Iteration.AsOptional());
 
 			Assignees assignees = ResolveAssignees(context, arguments["toUser"], arguments["peer"]);
-			if (assignees == null) return string.Format("Failed to assign issue {0}; assignee not informed and no previous assignment found for user '{1}'", CommaSeparated(arguments["issueId"].Values), context.UserName);
+			var tickets = arguments["issueId"].Values;
+
+			if (assignees == null) return CommandResult.Fail(string.Format("Failed to assign issue {0}; assignee not informed and no previous assignment found for user '{1}'", CommaSeparated(tickets), context.UserName));
 
 			var sb = new StringBuilder();
-			foreach (var ticket in arguments["issueId"].Values)
+			foreach (var ticket in tickets)
 			{
 				sb.AppendLine(AssignIssue(ticket, assignees.Assignee, assignees.Peer, IterationFrom(arguments["iteration"])));
 			}
 
 			StoreAssignees();
 
-			return sb.Remove(sb.Length - 2, 2).ToString();
+			return CommandResult.Success(sb.Remove(sb.Length - 2, 2).ToString(), CommaSeparated(tickets));
 		}
 
 		private void StoreAssignees()
 		{
 			Storage[AssigneesKey] = _userAssigneesMap;
 			Storage[IterationKey] = _lastUsedIteration;
-		}
-
-		private static string CommaSeparated(IEnumerable<string> list)
-		{
-			return list.Aggregate("", (acc, current) => acc + ((acc.Length > 0) ? ", " : "") + current);
 		}
 
 		private Assignees ResolveAssignees(IContext context, Argument assignee, Argument peer)

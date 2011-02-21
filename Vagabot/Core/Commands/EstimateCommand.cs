@@ -23,6 +23,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
+using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 
 namespace Binboo.Core.Commands
@@ -38,7 +39,7 @@ namespace Binboo.Core.Commands
 			get { return "Estimate"; }
 		}
 
-		protected override string ProcessCommand(IContext context)
+		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(
 															context.Arguments,
@@ -53,7 +54,7 @@ namespace Binboo.Core.Commands
 				sb.Append(Estimate(issue, arguments["estimation"]));
 			}
 
-			return sb.ToString();
+			return CommandResult.Success(sb.ToString(), ticket.Values);
 		}
 
 		private string Estimate(string issue, string estimation)

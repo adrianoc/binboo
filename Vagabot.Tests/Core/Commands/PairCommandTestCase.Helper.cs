@@ -23,6 +23,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using NUnit.Framework;
 
@@ -30,9 +31,9 @@ namespace Binboo.Tests.Core.Commands
 {
 	partial class PairCommandTestCase
 	{
-		private static void AssertPairsAreValid(string expectedMessageRegExp, string actual)
+		private static void AssertPairsAreValid(string expectedMessageRegExp, ICommandResult actual)
 		{
-			MatchCollection matches = Regex.Matches(actual, expectedMessageRegExp);
+			MatchCollection matches = Regex.Matches(actual.HumanReadable, expectedMessageRegExp);
 			CollectionAssert.AreEquivalent(ConfigServices.PairingUsers.Select(userName => FirstUsableName(userName)), DevNamesFrom(matches[0].Groups));
 		}
 

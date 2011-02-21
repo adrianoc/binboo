@@ -22,13 +22,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Configuration;
 using Binboo.Core.Exceptions;
 using Binboo.JiraIntegration;
 
-namespace Binboo.Core.Commands
+namespace Binboo.Core.Commands.Support
 {
 	internal abstract class JiraCommandBase : BotCommandBase
 	{
@@ -37,7 +38,7 @@ namespace Binboo.Core.Commands
 			_jira = jira;
 		}
 
-		public override sealed string Process(IContext context)
+		public override sealed ICommandResult Process(IContext context)
 		{
 			try
 			{
@@ -45,11 +46,11 @@ namespace Binboo.Core.Commands
 			}
 			catch (InvalidCommandArgumentsException icae)
 			{
-				return icae.Message;
+				return CommandResult.Exception(icae);
 			}
 		}
 
-		protected abstract string ProcessCommand(IContext context);
+		protected abstract ICommandResult ProcessCommand(IContext context);
 		
 		protected static T OptionalArgumentOrDefault<T>(IDictionary<string, Argument> args, string argName, T defaultValue)
 		{
@@ -69,6 +70,18 @@ namespace Binboo.Core.Commands
 			}
 		}
 
+		protected static ICommandResult Run<T>(Func<T> command, Func<T, ICommandResult> messageMapping)
+		{
+			try
+			{
+				return messageMapping(command());
+			}
+			catch (JiraProxyException jipe)
+			{
+				return CommandResult.Exception(jipe);
+			}
+		}
+
 		protected static string Run<T>(Func<T> command, Func<T, string> messageMapping)
 		{
 			try
@@ -77,7 +90,7 @@ namespace Binboo.Core.Commands
 			}
 			catch (JiraProxyException jipe)
 			{
-				return jipe.Message + Environment.NewLine + jipe.InnerException.Message;
+				return CommandResult.Exception(jipe).HumanReadable;
 			}
 		}
 
@@ -113,5 +126,10 @@ namespace Binboo.Core.Commands
 		}
 
 		protected IJiraProxy _jira;
+
+		protected static string CommaSeparated(IEnumerable<string> list)
+		{
+			return list.Aggregate("", (acc, current) => acc + ((acc.Length > 0) ? ", " : "") + current);
+		}
 	}
 }

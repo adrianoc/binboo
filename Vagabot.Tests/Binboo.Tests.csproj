@@ -128,7 +128,12 @@
     <Compile Include="Utils\IssueTestService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ApplicationTestCase.cs" />
+    <Compile Include="Core\Commands\CommandPipingTestCase.Success.cs" />
+    <Compile Include="Core\Commands\CommandPipingTestCase.Failures.cs" />
+    <Compile Include="Core\Commands\CommandPipingTestCase.Helper.cs" />
     <Compile Include="Core\Commands\FileIssueTestCase.Helper.cs" />
+    <Compile Include="Core\Support\ArgumentRecorder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

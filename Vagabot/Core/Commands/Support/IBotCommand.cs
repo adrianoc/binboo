@@ -19,39 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System;
-using Binboo.Core.Commands.Support;
-using Binboo.JiraIntegration;
-using Binboo.Tests.Mocks;
-using Moq;
 
-namespace Binboo.Tests.Core.Commands
+using Binboo.Core.Persistence;
+
+namespace Binboo.Core.Commands.Support
 {
-	internal class CommandMock<T> : IDisposable where T : IBotCommand
+	public interface IBotCommand
 	{
-		private readonly Mock<IJiraProxy> _mock;
-		private readonly T _command;
+		void Initialize();
+		IStorage Storage { set; }
 
-		public CommandMock(T command, Mock<IJiraProxy> mock)
-		{
-			_mock = mock;
-			_command = command;
-			_command.Storage = new DummyStorage();
-		}
-
-		public ICommandResult Process(IContext context)
-		{
-			return _command.Process(context);
-		}
-
-		public void Verify()
-		{
-			_mock.VerifyAll();
-		}
-
-		public void Dispose()
-		{
-			_mock.VerifyAll();
-		}
+		string Help { get; }
+		string Id { get; }
+		ICommandResult Process(IContext context);
 	}
 }

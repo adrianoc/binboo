@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,17 +20,27 @@
  * THE SOFTWARE.
  **/
 
-using Binboo.Core.Persistence;
-
-namespace Binboo.Core.Commands
+namespace Binboo.Core.Commands.Support
 {
-	public interface IBotCommand
+	public class Context : IContext
 	{
-		void Initialize();
-		IStorage Storage { set; }
+		public Context(string userName, string args)
+		{
+			_args = args;
+			_userName = userName;
+		}
 
-		string Help { get; }
-		string Id { get; }
-		string Process(IContext context);
+		public string Arguments
+		{
+			get { return _args; }
+		}
+
+		public string UserName
+		{
+			get { return _userName; }
+		}
+
+		private readonly string _args;
+		private readonly string _userName;
 	}
 }

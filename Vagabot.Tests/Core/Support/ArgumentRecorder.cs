@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2011 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,56 +19,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Commands.Support;
-using Binboo.JiraIntegration;
 
-namespace Binboo.Core.Commands
+namespace Binboo.Tests.Core.Support
 {
-	internal class IssueCommand : JiraCommandBase
+	class ArgumentRecorder
 	{
-		public IssueCommand(IJiraProxy proxy, string help) : base(proxy, help)
+		public static ArgumentRecorder NewInstance()
 		{
+			return new ArgumentRecorder();
+		}
+		
+		public Func<IContext, IDictionary<string, Argument>, ICommandResult> HandlerFor(string command)
+		{
+			return (context, args) => 
+			{
+				_arguments[command] = args;
+			    return CommandResult.Success(command, args.Values.Select(arg => arg.Value)); 
+			};
 		}
 
-		public override string Id
+		public IEnumerable<string> Arguments(string command)
 		{
-			get
+			if (!_arguments.ContainsKey(command))
 			{
-				return "Issue";
+				throw new ArgumentException(string.Format("No arguments found for command {0}", command), "command");
+			}
+
+			foreach(var arg in _arguments[command].Values)
+			{
+				if (arg.IsPresent)
+				{
+					yield return arg.Value;
+				}
 			}
 		}
 
-		protected override ICommandResult ProcessCommand(IContext context)
+		private ArgumentRecorder()
 		{
-			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, comments => ParamValidator.Custom("comments", true));
-
-			var sb = new StringBuilder();
-			var tikets = arguments["issueId"].Values;
-
-			foreach (var issue in tikets)
-			{
-				var currentIssue = issue;
-				sb.AppendLine(Run(  () => _jira.GetIssue(currentIssue),
-									ri => FormatIssue(ri, arguments["comments"].IsPresent))
-							 );
-			}
-
-			return CommandResult.Success(sb.ToString(), CommaSeparated(tikets));
 		}
 
-		private string FormatIssue(RemoteIssue issue, bool showComments)
-		{
-			string issueDetails = Run(() => issue.Format());
-			if (showComments)
-			{
-				issueDetails = issueDetails + "\r\n" + Run(() => _jira.GetComments(issue.key));
-			}
-
-			return issueDetails + "\r\n" + UrlFor(issue);
-		}
+		private IDictionary<string, IDictionary<string, Argument>> _arguments = new Dictionary<string, IDictionary<string, Argument>>();
 	}
 }
