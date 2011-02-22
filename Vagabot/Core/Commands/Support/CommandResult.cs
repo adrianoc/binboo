@@ -44,7 +44,8 @@ namespace Binboo.Core.Commands.Support
 
 		public T PipeThrough<T>(string args, Func<string, T> func)
 		{
-			return func(PipeValue + " " + args);
+			var pipeValue = PipeValue;
+			return func(string.IsNullOrEmpty(pipeValue) ? args : pipeValue + " " + args);
 		}
 
 		public static CommandResult None
@@ -77,6 +78,11 @@ namespace Binboo.Core.Commands.Support
 		{
 			_humanReadable = message;
 			_pipeValue = pipeValues;
+		}
+
+		public override string ToString()
+		{
+			return string.Format("{0} [{1}, '{2}', '{3}']", GetType().Name, Status, HumanReadable, PipeValue);
 		}
 
 		private readonly string _humanReadable;
