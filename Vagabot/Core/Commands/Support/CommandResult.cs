@@ -22,6 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Binboo.Core.Commands.Support
 {
@@ -42,10 +44,36 @@ namespace Binboo.Core.Commands.Support
 			get { return string.Join(", ", _pipeValue); }
 		}
 
-		public T PipeThrough<T>(string args, Func<string, T> func)
+		public T PipeThrough<T>(string originalArgs, Func<string, T> func)
 		{
+			var toBeReplaced = ArgumentIndexRegexp.Matches(originalArgs);
+			if (toBeReplaced.Count > 0)
+			{
+				return PipeThroughIndexed(originalArgs, toBeReplaced, func);
+			}
+
 			var pipeValue = PipeValue;
-			return func(string.IsNullOrEmpty(pipeValue) ? args : pipeValue + " " + args);
+			return func(string.IsNullOrEmpty(pipeValue) ? originalArgs : pipeValue + " " + originalArgs);
+		}
+
+		private T PipeThroughIndexed<T>(string originalArgs, MatchCollection toBeReplaced, Func<string, T> func)
+		{
+			var piped = new StringBuilder(originalArgs);
+				
+			int amountOfseted = 0;
+			foreach (Match tbr in toBeReplaced)
+			{
+				string newValue = PipedValueFor(tbr.Groups["index"].Value);
+				piped.Replace(tbr.Value, newValue, tbr.Index + amountOfseted, tbr.Length);
+				amountOfseted += newValue.Length - tbr.Value.Length;
+			}
+
+			return func(piped.ToString());
+		}
+
+		private string PipedValueFor(string index)
+		{
+			return _pipeValue[Int32.Parse(index)];
 		}
 
 		public static CommandResult None
@@ -85,6 +113,7 @@ namespace Binboo.Core.Commands.Support
 			return string.Format("{0} [{1}, '{2}', '{3}']", GetType().Name, Status, HumanReadable, PipeValue);
 		}
 
+		private static readonly Regex ArgumentIndexRegexp = new Regex("%(?<index>[0-9]+)%");
 		private readonly string _humanReadable;
 		private readonly string[] _pipeValue;
 	}

@@ -29,44 +29,46 @@ namespace Binboo.Tests.Core.Commands
 		[Test]
 		public void TestSingleOutputNoExtraArguments()
 		{
-			AssertPiping("$test CMD1 s1 | CMD2", rec => AreEqual(rec.Arguments("CMD2"), "s1"));
+			AssertPiping("$test CMD1 s1 | CMD2", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "s1"));
 		}
 		
 		[Test]
 		public void TestSingleOutputWithExtraArguments()
 		{
-			AssertPiping("CMD1 s1 | CMD2 s2", rec => AreEqual(rec.Arguments("CMD2"), "s1", "s2"));
+			AssertPiping("$test CMD1 s1 | CMD2 s2", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "s1", "s2"));
 		}
 		
 		[Test]
 		public void TestMultipleOutputSingleArgument()
 		{
-			Assert.Fail();
+			AssertPiping("$test CMD1 m1, m2, m3 | CMD2", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "m1", "m2", "m3"));
 		}
 
 		[Test]
 		public void TestMultipleOutputMultipleArguments()
 		{
-			Assert.Fail();
+			AssertPiping("$test CMD1 s1 s2 m1, m2, m3 | CMD2", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "s1", "s2", "m1", "m2", "m3"));
 		}
 
 		[Test]
 		public void TestOutputIndexing()
 		{
-			Assert.Fail();
+			AssertPiping("$test CMD1 m1, m2 | CMD2 %1%", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "m2"));
+			AssertPiping("$test CMD1 m1 | CMD2 m3,%0%,m2 | CMD3", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "m3", "m1", "m2") && AreEqual(rec.Arguments("CMD3"), "m3", "m1", "m2"));
+			AssertPiping("$test CMD1 m1 | CMD2 m3,%0%,m2 | CMD3 %1%,m2,%0%", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "m3", "m1", "m2") && AreEqual(rec.Arguments("CMD3"), "m1", "m2", "m3"));
+			AssertPiping("$test CMD1 s1 m1, m2 | CMD2 %0% %2%", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "s1", "m2"));
 		}
 
 		[Test]
-		public void TestMultiplePipes()
+		public void TestMultiplePipesSimple()
 		{
-			Assert.Fail();
+			AssertPiping("$test CMD1 m1 | CMD2 | CMD3", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "m1") && AreEqual(rec.Arguments("CMD3"), "m1"));
 		}
-		
+
 		[Test]
-		public void TestPipeSymbolInQuotedStrings()
+		public void TestMultiplePipesComplex()
 		{
-			AssertPiping("$test CMD1 \"no | piping\" | CMD2", rec => AreEqual(rec.Arguments("CMD2"), "\"no | piping\""));
-			AssertPiping("$test CMD1 s1 \"no | piping\" | CMD2", rec => AreEqual(rec.Arguments("CMD2"), "s1", "\"no | piping\""));
+			AssertPiping("$test CMD1 s1 | CMD2 m1, m2 | CMD3", (msgs, rec) => AreEqual(rec.Arguments("CMD2"), "s1", "m1", "m2") && AreEqual(rec.Arguments("CMD3"), "s1", "m1", "m2"));
 		}
 	}
 }

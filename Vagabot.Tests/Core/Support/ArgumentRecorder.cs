@@ -39,7 +39,7 @@ namespace Binboo.Tests.Core.Support
 			return (context, args) => 
 			{
 				_arguments[command] = args;
-			    return CommandResult.Success(command, args.Values.Select(arg => arg.Value)); 
+			    return CommandResult.Success(command, args.Values.Where(arg => arg.IsPresent).SelectMany(arg => arg.Values)); 
 			};
 		}
 
@@ -50,13 +50,10 @@ namespace Binboo.Tests.Core.Support
 				throw new ArgumentException(string.Format("No arguments found for command {0}", command), "command");
 			}
 
-			foreach(var arg in _arguments[command].Values)
-			{
-				if (arg.IsPresent)
-				{
-					yield return arg.Value;
-				}
-			}
+			return from arg in _arguments[command].Values
+			       where arg.IsPresent
+			       from value in arg.Values
+			       select value;
 		}
 
 		private ArgumentRecorder()

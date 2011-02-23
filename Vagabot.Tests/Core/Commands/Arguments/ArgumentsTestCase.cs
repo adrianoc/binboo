@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Commands.Support;
 using Binboo.Tests.Mocks;
@@ -178,8 +179,7 @@ namespace Binboo.Tests.Core.Commands.Arguments
 
 			_mockSkype.SendMessage("adriano", "$test IamACommand x y z");
 			_chat.WaitForMessages(1000);
-			Assert.AreEqual(1, _errors.Count, _errors.Aggregate((acc, err) => acc + "\r\n" + err));
-			Assert.IsTrue(_errors[0].Contains("Mixed"));
+			StringAssert.Contains("Mixed validators", _chat.SentMessages.ElementAt(0).Body);
 		}
 
 		[Test]
@@ -200,6 +200,36 @@ namespace Binboo.Tests.Core.Commands.Arguments
 					"$test IamACommand type=task",
 					"type:{task}\r\n",
 					type => ParamValidator.Type);
+		}
+
+		[Test]
+		public void TestMultipleValues()
+		{
+			var match = Regex.Match("a1, a2, a3", @"(?<param>a[0-9])((?:\s*,\s*)(?<param>a[0-9]))*");
+			var arg = new Argument { IsPresent = true, ArgMatch = match, Name="Test", Value = match.Value };
+
+			Assert.AreEqual("a1, a2, a3", arg.Value);
+			CollectionAssert.AreEqual(new [] {"a1", "a2", "a3"}, arg.Values);
+		}
+
+		[Test]
+		public void TestSingleValueWithNamedGroup()
+		{
+			var match = Regex.Match("a1", @"(?<param>a[0-9])");
+			var arg = new Argument { IsPresent = true, ArgMatch = match, Name="Test", Value = match.Value };
+
+			Assert.AreEqual("a1", arg.Value);
+			CollectionAssert.AreEqual(new [] {"a1"}, arg.Values);
+		}
+		
+		[Test]
+		public void TestSingleValueNONamedGroup()
+		{
+			var match = Regex.Match("a1", @"a[0-9]");
+			var arg = new Argument { IsPresent = true, ArgMatch = match, Name="Test", Value = match.Value };
+
+			Assert.AreEqual("a1", arg.Value);
+			CollectionAssert.AreEqual(new[] { "a1" }, arg.Values);
 		}
 
 		private void AssertInvalidArgumentCount(string message, string expectedResult, params Expression<Func<int, ParamValidator>>[] validatorExpressions)

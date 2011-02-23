@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+using System;
 using NUnit.Framework;
 
 namespace Binboo.Tests.Core.Commands
@@ -26,5 +27,10 @@ namespace Binboo.Tests.Core.Commands
 	[TestFixture]
 	partial class CommandPipingTestCase
 	{
+		[Test]
+		public void TestInvalidIndex()
+		{
+			AssertPiping("$test CMD1 m1, m2, m3 | CMD2 %9%", (msg, rec) => msg.Contains(new IndexOutOfRangeException().Message));
+		}
 	}
 }

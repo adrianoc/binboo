@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -68,8 +69,8 @@ namespace Binboo.Core
 
 		public void Stop()
 		{
-			_exitEvent.Set();
 			UnregisterEvents();
+			_exitEvent.Set();
 		}
 
 		private void UnregisterEvents()
@@ -195,19 +196,19 @@ namespace Binboo.Core
 
 		private void StartCommandProcessor()
 		{
-			Thread processorThread = new Thread(ProcessCommands) { IsBackground = true };
+			Thread processorThread = new Thread(CommandQueueProcessor) { IsBackground = true };
 			processorThread.Start(_commandQueue);
 		}
 
-		private void ProcessCommands(object obj)
+		private void CommandQueueProcessor(object obj)
 		{
-			CommandQueue queue = (CommandQueue) obj;
+			var queue = (CommandQueue) obj;
 			while(WaitHandle.WaitAny(new [] {_exitEvent}, 1, true) == WaitHandle.WaitTimeout)
 			{
 				IChatMessage command = queue.Next();
 				if (IsSafeToProcess(command))
 				{
-					ProcessCommand(command);
+					ProcessCommands(command);
 				}
 				else
 				{
@@ -221,22 +222,11 @@ namespace Binboo.Core
 			return command != null && !command.Sender.IsBlocked;
 		}
 
-		private void ProcessCommand(IChatMessage message)
+		private void ProcessCommands(IChatMessage message)
 		{
 			try
 			{
-				var sb = new StringBuilder();
-				ICommandResult result = CommandResult.None;
-				foreach (var commandLine in CommandsFor(message.Body))
-				{
-					var ctx = PipedContextFor(message.Sender.Handle, commandLine, result);
-					result = RunCommand(ctx, commandLine);
-					sb.AppendFormat("{0}{1}{1}", result.HumanReadable, Environment.NewLine);
-
-					if (result.Status != CommandStatus.Success) break;
-				}
-
-				message.Chat.SendMessage(sb.ToString());
+				SafeProcessCommands(message);
 			}
 			catch(Exception ex)
 			{
@@ -244,8 +234,43 @@ namespace Binboo.Core
 			}
 		}
 
+		private void SafeProcessCommands(IChatMessage message)
+		{
+			var results = new List<string>();
+			ICommandResult result = CommandResult.None;
+			foreach (var commandLine in CommandsFor(message.Body))
+			{
+				result = ProcessCommand(message.Sender.Handle, commandLine, result);
+				results.Add(result.HumanReadable);
+
+				if (result.Status != CommandStatus.Success) break;
+			}
+
+			message.Chat.SendMessage(string.Join(Environment.NewLine, results.ToArray()));
+		}
+
+		private ICommandResult ProcessCommand(string user, string commandLine, ICommandResult previousResullt)
+		{
+			try
+			{
+				return SafeProcessCommand(user, commandLine, previousResullt);
+			}
+			catch(Exception ex)
+			{
+				return CommandResult.Exception(ex);
+			}
+		}
+
+		private ICommandResult SafeProcessCommand(string user, string commandLine, ICommandResult previousResullt)
+		{
+			var ctx = PipedContextFor(user, commandLine, previousResullt);
+			return RunCommand(ctx, commandLine);
+		}
+
 		internal static IEnumerable<string> CommandsFor(string message)
 		{
+			message = StripBotName(message);
+
 			int startPos = 0;
 			int currentPos;
 
@@ -253,14 +278,19 @@ namespace Binboo.Core
 			{
 				if (!InsideQuotedText(message, pos, startPos))
 				{
-					yield return message.Substring(startPos, pos - startPos - 1);
+					yield return message.Substring(startPos, pos - startPos - 1).Trim();
 					startPos = pos + 1;
 				}
 
 				currentPos = pos + 1;
 			}
 
-			yield return message.Substring(startPos);
+			yield return message.Substring(startPos).Trim();
+		}
+
+		private static string StripBotName(string message)
+		{
+			return Regex.Replace(message, @"\$[A-Za-z]+\s+", "");
 		}
 
 		private static bool InsideQuotedText(string message, int pos, int startPos)
@@ -295,7 +325,7 @@ namespace Binboo.Core
 		{
 			MatchCollection arguments = Regex.Matches(
 									commandLine,
-									@"\$[A-Za-z]+\s+[A-Za-z][A-Za-z0-9]*\s(?<param>.*)", 
+									@"[A-Za-z][A-Za-z0-9]*\s(?<param>.*)", 
 									RegexOptions.IgnoreCase | RegexOptions.Multiline |
 									RegexOptions.CultureInvariant |
 									RegexOptions.IgnorePatternWhitespace |
@@ -315,7 +345,7 @@ namespace Binboo.Core
 		private static string GetCommandName(string message)
 		{
 			string[] strings = Regex.Split(message, " ");
-			return strings.Length > 1 ? strings[1] : string.Empty;
+			return strings[0];
 		}
 
 		private static string GetNormilizedCommandName(string message)

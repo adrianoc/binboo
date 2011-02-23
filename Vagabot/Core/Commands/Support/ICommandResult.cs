@@ -28,6 +28,6 @@ namespace Binboo.Core.Commands.Support
 		CommandStatus Status { get; }
 		string HumanReadable { get; }
 		string PipeValue { get; }
-		T PipeThrough<T>(string args, Func<string, T> func);
+		T PipeThrough<T>(string originalArgs, Func<string, T> func);
 	}
 }

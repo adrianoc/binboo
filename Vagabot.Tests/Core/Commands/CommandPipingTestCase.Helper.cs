@@ -51,7 +51,7 @@ namespace Binboo.Tests.Core.Commands
 			_app.Dispose();
 		}
 
-		private void AssertPiping(string commandLine, Func<ArgumentRecorder, bool> argumentChecker)
+		private void AssertPiping(string commandLine, Func<string, ArgumentRecorder, bool> argumentChecker)
 		{
 			ArgumentRecorder recorder = ArgumentRecorder.NewInstance();
 			
@@ -65,29 +65,34 @@ namespace Binboo.Tests.Core.Commands
 			_chat.Reset();
 
 			_mockSkype.SendMessage("user", commandLine);
-			Assert.IsTrue(_chat.WaitForMessages(10000));
+			var gotAnswer = _chat.WaitForMessages(2000);
+			
+			Assert.AreEqual(0, _errors.Count, _errors.Aggregate("", (acc, curr) => curr + "\r\n" + acc));
+			
+			Assert.IsTrue(gotAnswer, "No answer for message '{0}' in 2000 ms", commandLine);
 
 			foreach(var msg in _chat.SentMessages)
 			{
 				Console.WriteLine(msg.Body);
 			}
 
-			Assert.IsTrue(argumentChecker(recorder), string.Format("Command Line: {0}\r\n   Recorded: {1}", commandLine, recorder));
+			Assert.IsTrue(argumentChecker(_chat.SentMessages.ElementAt(0).Body, recorder), string.Format("Command Line: {0}\r\n   Recorded: {1}", commandLine, recorder));
 		}
 
 		private static bool AreEqual(IEnumerable<string> lhs, params string[] rhs)
 		{
-			var expected = lhs.ToArray();
+			var actual = lhs.ToArray();
 
-			Assert.AreEqual(expected.Length, rhs.Length);
-			for(int i =0; i < expected.Length; i++)
+			for(int i =0; i < actual.Length; i++)
 			{
-				if (!expected[i].Equals(rhs[i]))
+				if (!actual[i].Equals(rhs[i]))
 				{
+					Console.WriteLine("Enumerables differs at position {0}\r\n\tExpected: {1}\r\n\t  Actual: {2}", i, rhs[i], actual[i]);
 					return false;
 				}
 			}
 
+			Assert.AreEqual(rhs.Length, actual.Length);
 			return true;
 		}
 
@@ -98,10 +103,11 @@ namespace Binboo.Tests.Core.Commands
 		private readonly Expression<Func<int, ParamValidator>>[] _validatorExpressions = new Expression<Func<int, ParamValidator>>[]
 		                                                                       	{
 																					s1 => ParamValidator.Custom("(?:\\s*)s1", true), 
-																					s2 => ParamValidator.Custom("(?:\\s*)s2", true), 
+																					s2 => ParamValidator.Custom("(?<param>s2)", true), 
+																					s3 => ParamValidator.Custom("(?:\\s*)s3", true), 
 																					s3 => ParamValidator.Custom("(?:\\s*)s3", true), 
 																					s4 => ParamValidator.Custom("(?:\\s*)s4", true), 
-																					multiple => ParamValidator.Custom(@"(?<param>m[0-9])(?:\s*,\s*(?<param>m[0-9]))*", true),
+																					multiple => ParamValidator.Custom(@"(?<param>m[0-9])((?:\s*,\s*)(?<param>m[0-9]))*", true),
 																				};
 
 	}
