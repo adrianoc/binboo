@@ -66,14 +66,15 @@ namespace Binboo.Tests.Core
 			{
 				_assert = () =>
 				          	{
+				          		var queue = (CommandQueue) state;
 				          		foreach (var actualValue in Enumerable.Range(0, msgCount))
 				          		{
-				          			IChatMessage actual = _queue.Next();
+				          			IChatMessage actual = queue.Next();
 									Assert.IsNotNull(actual, string.Format("Expected: {0}", actualValue));
 									Assert.AreEqual(actualValue.ToString(), actual.Body);
 				          		}
 
-				          		Assert.IsNull(_queue.Next());
+				          		Assert.IsNull(queue.Next());
 				          	};
 			});
 		}

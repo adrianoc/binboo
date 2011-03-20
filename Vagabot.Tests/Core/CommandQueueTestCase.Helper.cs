@@ -37,9 +37,9 @@ namespace Binboo.Tests.Core
 		private void AssertBlock(WaitCallback testBlock)
 		{
 			ThreadPool.QueueUserWorkItem(
-				state =>
+				queue =>
 				{
-					testBlock(state);
+					testBlock(queue);
 					_finishedMethod.Set();
 				},
 
