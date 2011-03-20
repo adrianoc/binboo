@@ -23,17 +23,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
-using Binboo.Core.Events;
 using Binboo.Core.Persistence;
+using log4net;
+using log4net.Config;
 using SKYPE4COMLib;
+using ErrorEventArgs = Binboo.Core.Events.ErrorEventArgs;
+using ErrorEventHandler = Binboo.Core.Events.ErrorEventHandler;
 
 namespace Binboo.Core
 {
@@ -42,6 +44,11 @@ namespace Binboo.Core
 		public event EventHandler Quit;
 		public event ErrorEventHandler Error;
 		public event EventHandler Attached;
+
+		static Application()
+		{
+			XmlConfigurator.Configure(new FileInfo("Binboo.config.xml"));	
+		}
 
 		public Application(string prefix)
 		{
@@ -173,9 +180,11 @@ namespace Binboo.Core
 
 		private void ProcessMessage(IChatMessage message, TChatMessageStatus status)
 		{
+			_log.DebugFormat("Got message ({0}): '{1}'", message.FromHandle, message.Body);
 			if (IsVagabotCommand(message) && IsComplete(status))
 			{
 				EnqueueCommand(message);
+				_log.DebugFormat("Message enqueued ({0}): '{1}'", message.FromHandle, message.Body);
 			}
 		}
 
@@ -196,25 +205,30 @@ namespace Binboo.Core
 
 		private void StartCommandProcessor()
 		{
-			Thread processorThread = new Thread(CommandQueueProcessor) { IsBackground = true };
+			_log.InfoFormat("Starting command processor.");
+			var processorThread = new Thread(CommandQueueProcessor) { IsBackground = true };
 			processorThread.Start(_commandQueue);
 		}
 
 		private void CommandQueueProcessor(object obj)
 		{
+			SetThreadName();
+			
 			var queue = (CommandQueue) obj;
+			_log.Info("Command processor thread started.");
+
 			while(WaitHandle.WaitAny(new [] {_exitEvent}, 1, true) == WaitHandle.WaitTimeout)
 			{
 				IChatMessage command = queue.Next();
-				if (IsSafeToProcess(command))
-				{
-					ProcessCommands(command);
-				}
-				else
-				{
-					//TODO: Log
-				}
+				ProcessCommands(command);
 			}
+
+			_log.Info("Command processor thread finished.");
+		}
+
+		private static void SetThreadName()
+		{
+			Thread.CurrentThread.Name = "CommandProcessor";
 		}
 
 		private static bool IsSafeToProcess(IChatMessage command)
@@ -224,12 +238,22 @@ namespace Binboo.Core
 
 		private void ProcessCommands(IChatMessage message)
 		{
+			if (message == null) return;
+			
+			_log.InfoFormat("Received command: {0}", message.Body);
+			if (!IsSafeToProcess(message)) 
+			{
+				_log.InfoFormat("Command ignored (not safe): {0}", message.Body);
+				return;
+			}
+
 			try
 			{
 				SafeProcessCommands(message);
 			}
 			catch(Exception ex)
 			{
+				_log.Error("Error processing command.", ex);
 				RaiseErrorEvent("Error processing command.", ex);
 			}
 		}
@@ -240,13 +264,19 @@ namespace Binboo.Core
 			ICommandResult result = CommandResult.None;
 			foreach (var commandLine in CommandsFor(message.Body))
 			{
+				_log.DebugFormat("Processing command line: {0}", commandLine);
+
 				result = ProcessCommand(message.Sender.Handle, commandLine, result);
 				results.Add(result.HumanReadable);
 
+				_log.Info(result);
 				if (result.Status != CommandStatus.Success) break;
 			}
 
-			message.Chat.SendMessage(string.Join(Environment.NewLine, results.ToArray()));
+			var resultMessage = string.Join(Environment.NewLine, results.ToArray());
+			_log.DebugFormat("Sending result message: '{0}'", resultMessage);
+
+			message.Chat.SendMessage(resultMessage);
 		}
 
 		private ICommandResult ProcessCommand(string user, string commandLine, ICommandResult previousResullt)
@@ -396,6 +426,8 @@ namespace Binboo.Core
 		private readonly IDictionary<string, IBotCommand> _commands = new Dictionary<string, IBotCommand>();
 		private readonly CommandQueue _commandQueue;
 		private IStorageManager _storageManager;
+
+		private readonly ILog _log = LogManager.GetLogger(typeof(Application));
 
 		private Skype _skype = new Skype();
 		private bool _attached;

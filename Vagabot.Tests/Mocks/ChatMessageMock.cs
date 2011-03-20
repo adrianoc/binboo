@@ -50,7 +50,7 @@ namespace Binboo.Tests.Mocks
 
 		public string FromHandle
 		{
-			get { throw new System.NotImplementedException(); }
+			get { return _sender.DisplayName; }
 		}
 
 		public string FromDisplayName
