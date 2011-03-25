@@ -69,12 +69,7 @@ namespace Binboo.Core.Commands.Arguments
 		public virtual bool IsMatch(string candidate)
 		{
 			var match = Regex.Match(candidate, _regex);
-			return match.Success && match.Value.Trim().Length == RemoveQuotes(candidate).Trim().Length;
-		}
-
-		private string RemoveQuotes(string candidate)
-		{
-			return candidate;
+			return match.Success && match.Value.Trim().Length == candidate.Trim().Length;
 		}
 
 		public ParamValidator ButNot(params ParamValidator[] ignored)
