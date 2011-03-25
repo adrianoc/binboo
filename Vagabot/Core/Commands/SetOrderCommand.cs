@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 using System;
 using System.Text;
 using Binboo.Core.Commands.Arguments;
@@ -44,14 +43,15 @@ namespace Binboo.Core.Commands
 			var arguments = CollectAndValidateArguments(context.Arguments, issueId => ParamValidator.MultipleIssueId, order => ParamValidator.Order);
 			var sb = new StringBuilder();
 
+			var orderField = NewOrder(arguments["order"]);
 			var issues = arguments["issueId"].Values;
+
 			foreach (var issue in issues)
 			{
 				string currentIssue = issue;
-				Argument order = arguments["order"];
 				sb.AppendLine(Run(
-				              	() => _jira.UpdateIssue(currentIssue, String.Empty, NewOrder(order)),
-				              	string.Format("Order set to {0} for issue '{1}'.", order.Value, currentIssue)));
+				              	() => _jira.UpdateIssue(currentIssue, String.Empty, orderField),
+								string.Format("Order set to {0} for issue '{1}'.", arguments["order"].Value, currentIssue)));
 			}
 
 			return CommandResult.Success(sb.ToString(), issues);

@@ -84,7 +84,7 @@ namespace Binboo.JiraIntegration
 
 		private static IssueField FieldName<T, R>(Expression<Func<T, R>> member)
 		{
-			MemberExpression me = (MemberExpression) member.Body;
+			var me = (MemberExpression) member.Body;
 			return new IssueField(me.Member.Name);
 		}
 		

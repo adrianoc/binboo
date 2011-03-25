@@ -188,6 +188,8 @@
     <Content Include="Binboo.config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="Core\Commands\LabelCommand.cs" />
+    <Compile Include="Core\Commands\LabelFormatConveter.cs" />
     <Compile Include="Core\Commands\LinkAlias.cs" />
     <Compile Include="Core\Commands\LinkConfiguration.cs" />
     <Compile Include="Core\Commands\LinkIssueCommand.cs" />

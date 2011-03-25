@@ -31,6 +31,7 @@ namespace Binboo.JiraIntegration
 		internal static CustomFieldId Peers;
 		internal static CustomFieldId Iteration;
 		internal static CustomFieldId Order;
+		internal static CustomFieldId Labels;
 
 		public static void Initialize(RemoteField[] statuses)
 		{
@@ -47,6 +48,7 @@ namespace Binboo.JiraIntegration
 			ToBeInitialized<CustomFieldId>(c => Peers, "peers", Create);
 			ToBeInitialized<CustomFieldId>(c => Iteration, "iteration", Create);
 			ToBeInitialized<CustomFieldId>(c => Order, "order", Create);
+			ToBeInitialized<CustomFieldId>(c => Labels, "labels", Create);
 		}
 
 		private static object Create(string name, IEnumerable constants)

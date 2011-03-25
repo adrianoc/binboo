@@ -37,7 +37,7 @@ namespace Binboo.Tests.Core.Commands
 			const string estimation = "42";
 			
 			using (var command = NewCommand<EstimateCommand>(
-								estimateMock => estimateMock.Setup(jira => jira.UpdateIssue(issue, string.Empty, It.Is<IssueField[]>(fields => fields.Length == 1 && fields[0].Values[0] == estimation)))
+								mock => mock.Setup(jira => jira.UpdateIssue(issue, string.Empty, It.Is<IssueField[]>(fields => fields.Length == 1 && fields[0].Values[0] == estimation)))
 							))
 			{
 				var context = ContextMockFor("estimate-testecase", issue, estimation);

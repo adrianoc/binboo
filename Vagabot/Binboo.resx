@@ -119,6 +119,7 @@
   </resheader>
   <data name="Assign" xml:space="preserve">
     <value>Assigns one (or more) issue(s) to a specific developer
+
 use: %cmd% &lt;issue-list&gt; &lt;main developer&gt;| myself [&lt;peer&gt;| myself] [&lt;iteration&gt;]</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
@@ -127,36 +128,50 @@ use: %cmd% &lt;issue-list&gt; &lt;main developer&gt;| myself [&lt;peer&gt;| myse
   </data>
   <data name="CountIDS" xml:space="preserve">
     <value>Shows the sum of IDS for the Early Progress Report.
+
 Use: %cmd% [*all|open|closed]</value>
   </data>
   <data name="Drop" xml:space="preserve">
     <value>Drop the task for the current iteration by reseting assignee/peer/iteration in the correspondent ticket.
+
 Use: %cmd% &lt;issue-list&gt; [&lt;comment&gt;]
 Sample:%cmd% ISSUE-1, ISSUE-2, ISSUE-3  "Have to play video game :)"</value>
   </data>
   <data name="Estimate" xml:space="preserve">
     <value>Sets issue's estimation in IDS
+
 Use:%cmd% &lt;issue-list&gt; &lt;estimation&gt;</value>
   </data>
   <data name="File" xml:space="preserve">
     <value>Files a new issue into jira system. 
+
 Use: %cmd% &lt;project&gt; &lt;summary&gt; [description] [&lt;order&gt;] [type=*bug|task|improvement]</value>
   </data>
   <data name="Help" xml:space="preserve">
     <value>Help
+
 Use: %cmd% [&lt;command&gt;]</value>
   </data>
   <data name="Issue" xml:space="preserve">
     <value>Displays the main details about an issue
+
 Use: %cmd% &lt;issue-list&gt; [comments]
 Sample: %cmd% ISSUE-1, ISSUE-2, ISSUE-3</value>
   </data>
+  <data name="Label" xml:space="preserve">
+    <value>Add, removes or lists labels for one or more issues
+
+Use: %cmd% &lt;issue-list&gt; [+label] [-label1]
+Sample:%cmd%  ISSUE-1, ISSUE2 +foo -bar (adds label foo and removes label bar for the specified issues)</value>
+  </data>
   <data name="Link" xml:space="preserve">
     <value>Links issues
+
 Use: %cmd% &lt;ticket#&gt; link-type &lt;tiket#&gt;</value>
   </data>
   <data name="ListProjects" xml:space="preserve">
     <value>Displays a list of all projects registered in Jira.
+
 Use: %cmd%</value>
   </data>
   <data name="NotConnected" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -167,6 +182,7 @@ Use: %cmd%</value>
   </data>
   <data name="Resolve" xml:space="preserve">
     <value>Marks issues as resolved.
+
 Use: %cmd% &lt;ticket #&gt;  fixed|won't fix|incomplete|cannot reproduce  [versions=v1, v2, ..., vn] [comment]</value>
   </data>
   <data name="Search" xml:space="preserve">
@@ -175,6 +191,7 @@ Use:%cmd% text [all|*open|closed]</value>
   </data>
   <data name="SetOrder" xml:space="preserve">
     <value>Sets the order for one or more issues
+
 Use: %cmd% &lt;issue-list&gt; order
 Sample:%cmd% ISSUE-1, ISSUE2 3</value>
   </data>

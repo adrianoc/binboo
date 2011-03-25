@@ -49,25 +49,17 @@ namespace Binboo.Tests.Core.Commands
 														new RemoteIssueType {id = "4", name="new feature"}, 
 													};
 
-		private static readonly RemoteField[] WellKnownStatuses = new[]
+		private static readonly RemoteField[] WellKnownCustomFields = new[]
 		                                                  	{
 		                                                  		new RemoteField { id = "1", name = "peers" },
 		                                                  		new RemoteField { id = "2", name = "iteration" },
 		                                                  		new RemoteField { id = "3", name = "original ids estimate" },
 		                                                  		new RemoteField { id = "4", name = "order" },
+		                                                  		new RemoteField { id = "5", name = "Labels" },
 		                                                  	};
 
 
-		protected RemoteIssue[] _issues = new []
-		                                  	{
-		                                  		new RemoteIssue {key = "BTS-001", status = IssueStatus.Open, summary = "", assignee = "tetyana"}, 
-		                                  		new RemoteIssue {key = "BTS-002", status = IssueStatus.Open, summary = "", assignee = "shrek"}, 
-		                                  		new RemoteIssue {key = "BTS-003", status = IssueStatus.Closed, summary = "", assignee = "rodrigo"}, 
-		                                  		new RemoteIssue {key = "BTS-004", status = IssueStatus.Closed, summary = "", assignee = "adriano"}, 
-		                                  		new RemoteIssue {key = "BTS-005", status = IssueStatus.Resolved, summary = "", assignee = "carl"}, 
-		                                  		new RemoteIssue {key = "BTS-006", status = IssueStatus.ReOpened, summary = "", assignee = "patrick"}, 
-		                                  		new RemoteIssue {key = "BTS-007", status = IssueStatus.InProgress, summary = "", assignee = "anat"}, 
-		                                  	};
+		private static RemoteIssue[] _issues;
 
 		private static readonly RemoteResolution [] WellKnownResolutions = new []
 		                                           	{
@@ -85,9 +77,29 @@ namespace Binboo.Tests.Core.Commands
 		{
 			IssueType.Initialize(WellKnownIssueTypes);
 			IssueStatus.Initialize(WellKnownIssueStatus);
-			CustomFieldId.Initialize(WellKnownStatuses);
+			CustomFieldId.Initialize(WellKnownCustomFields);
 			IssueResolution.Initialize(WellKnownResolutions);
 			//IssuePriority.Initialize(new RemotePriority[] {});
+		}
+
+		public static RemoteIssue[] Issues
+		{
+			get 
+			{ 
+				if (_issues == null)
+				{
+					_issues = new [] {
+		                            	new RemoteIssue {key = "BTS-001", status = IssueStatus.Open, summary = "", assignee = "tetyana", customFieldValues = Labels("foo")}, 
+		                                new RemoteIssue {key = "BTS-002", status = IssueStatus.Open, summary = "", assignee = "shrek", customFieldValues = Labels("foo", "bar")},  
+		                                new RemoteIssue {key = "BTS-003", status = IssueStatus.Closed, summary = "", assignee = "rodrigo", customFieldValues = Labels("foo","bar","foobar")}, 
+		                                new RemoteIssue {key = "BTS-004", status = IssueStatus.Closed, summary = "", assignee = "adriano", customFieldValues = Labels("foo","bar","foobar", "baz")}, 
+		                                new RemoteIssue {key = "BTS-005", status = IssueStatus.Resolved, summary = "", assignee = "carl", customFieldValues = Labels("foo")}, 
+		                                new RemoteIssue {key = "BTS-006", status = IssueStatus.ReOpened, summary = "", assignee = "patrick", customFieldValues = Labels("bar")}, 
+		                                new RemoteIssue {key = "BTS-007", status = IssueStatus.InProgress, summary = "", assignee = "anat", customFieldValues = Labels("foobar")}, 
+		                             };					
+				}
+				return _issues; 
+			}
 		}
 
 		protected static Mock<IContext> ContextMockFor(string userName, params string[] arguments)
@@ -141,6 +153,18 @@ namespace Binboo.Tests.Core.Commands
 			JiraCommandBase command = Commands[typeof (T)];
 			command.Proxy = _jiraProxyMock.Object;
 			return (T) command;
+		}
+
+		private static RemoteCustomFieldValue[] Labels(params string[] labels)
+		{
+			var fieldValue = new RemoteCustomFieldValue
+			                 	{
+			                 		customfieldId = CustomFieldId.Labels.Id,
+			                 		key = CustomFieldId.Labels.Description,
+			                 		values = new[] { string.Join(" ", labels) }
+								};
+
+			return new[] { fieldValue };
 		}
 	}
 }

@@ -138,7 +138,8 @@ namespace Binboo
 				.AddCommand(new ListProjectsCommand(JiraProxy(), Binboo.ListProjects))
 				.AddCommand(new PairsCommand(JiraProxy(), Binboo.Pairs))
 				.AddCommand(new SetOrderCommand(JiraProxy(), Binboo.SetOrder))
-				.AddCommand(new LinkIssueCommand(JiraProxy(), Binboo.Link));
+				.AddCommand(new LinkIssueCommand(JiraProxy(), Binboo.Link))
+				.AddCommand(new LabelCommand(JiraProxy(), Binboo.Label));
 		}
 
 		private JiraProxy JiraProxy()

@@ -169,16 +169,17 @@ namespace Binboo.JiraIntegration
 			ValidateConnection();
 			ticketNumber = Normalize(ticketNumber);
 
-			Run( () => _soapClient.Item.updateIssue(
-								_loginToken, 
-								ticketNumber, 
-								CollectChangedFields(fields)),
-				"Failed to update issue: " + ticketNumber);
+			Run( () => _soapClient.Item.updateIssue(_loginToken, 
+													ticketNumber, 
+													CollectChangedFields(fields)),
+														
+													"Failed to update issue: " + ticketNumber);
 
 			AddComment(
 					ticketNumber, 
 					comment,
 					string.Format("Issue {0} was updated but an error prevented the comment to be appended.", ticketNumber));
+
 		}
 
 		public void AddComment(string ticket, string comment)
@@ -271,8 +272,7 @@ namespace Binboo.JiraIntegration
 			{
 				issue.customFieldValues = new[]
 				                          	{
-				                          		RemoteCustomFieldValueFor(IssueField.CustomField(CustomFieldId.Order) <=
-				                          		                          new[] {order.ToString()}),
+				                          		RemoteCustomFieldValueFor(IssueField.CustomField(CustomFieldId.Order) <= new[] {order.ToString()}),
 				                          	};
 			}
 			return issue;

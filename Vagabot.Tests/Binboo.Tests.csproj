@@ -133,6 +133,8 @@
     <Compile Include="Core\Commands\CommandPipingTestCase.Failures.cs" />
     <Compile Include="Core\Commands\CommandPipingTestCase.Helper.cs" />
     <Compile Include="Core\Commands\FileIssueTestCase.Helper.cs" />
+    <Compile Include="Core\Commands\LabelCommandTestCase.cs" />
+    <Compile Include="Core\Commands\LabelCommandTestCase.Helper.cs" />
     <Compile Include="Core\Support\ArgumentRecorder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

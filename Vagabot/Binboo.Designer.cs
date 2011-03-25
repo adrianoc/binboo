@@ -62,6 +62,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Assigns one (or more) issue(s) to a specific developer
+        ///
         ///use: %cmd% &lt;issue-list&gt; &lt;main developer&gt;| myself [&lt;peer&gt;| myself] [&lt;iteration&gt;].
         /// </summary>
         internal static string Assign {
@@ -79,6 +80,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Shows the sum of IDS for the Early Progress Report.
+        ///
         ///Use: %cmd% [*all|open|closed].
         /// </summary>
         internal static string CountIDS {
@@ -89,6 +91,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Drop the task for the current iteration by reseting assignee/peer/iteration in the correspondent ticket.
+        ///
         ///Use: %cmd% &lt;issue-list&gt; [&lt;comment&gt;]
         ///Sample:%cmd% ISSUE-1, ISSUE-2, ISSUE-3  &quot;Have to play video game :)&quot;.
         /// </summary>
@@ -100,6 +103,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Sets issue&apos;s estimation in IDS
+        ///
         ///Use:%cmd% &lt;issue-list&gt; &lt;estimation&gt;.
         /// </summary>
         internal static string Estimate {
@@ -110,6 +114,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Files a new issue into jira system. 
+        ///
         ///Use: %cmd% &lt;project&gt; &lt;summary&gt; [description] [&lt;order&gt;] [type=*bug|task|improvement].
         /// </summary>
         internal static string File {
@@ -120,6 +125,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Help
+        ///
         ///Use: %cmd% [&lt;command&gt;].
         /// </summary>
         internal static string Help {
@@ -130,6 +136,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Displays the main details about an issue
+        ///
         ///Use: %cmd% &lt;issue-list&gt; [comments]
         ///Sample: %cmd% ISSUE-1, ISSUE-2, ISSUE-3.
         /// </summary>
@@ -140,7 +147,20 @@ namespace Binboo {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add, removes or lists labels for one or more issues
+        ///
+        ///Use: %cmd% &lt;issue-list&gt; [+label] [-label1]
+        ///Sample:%cmd%  ISSUE-1, ISSUE2 +foo -bar (adds label foo and removes label bar for the specified issues).
+        /// </summary>
+        internal static string Label {
+            get {
+                return ResourceManager.GetString("Label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Links issues
+        ///
         ///Use: %cmd% &lt;ticket#&gt; link-type &lt;tiket#&gt;.
         /// </summary>
         internal static string Link {
@@ -151,6 +171,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Displays a list of all projects registered in Jira.
+        ///
         ///Use: %cmd%.
         /// </summary>
         internal static string ListProjects {
@@ -177,6 +198,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Marks issues as resolved.
+        ///
         ///Use: %cmd% &lt;ticket #&gt;  fixed|won&apos;t fix|incomplete|cannot reproduce  [versions=v1, v2, ..., vn] [comment].
         /// </summary>
         internal static string Resolve {
@@ -197,6 +219,7 @@ namespace Binboo {
         
         /// <summary>
         ///   Looks up a localized string similar to Sets the order for one or more issues
+        ///
         ///Use: %cmd% &lt;issue-list&gt; order
         ///Sample:%cmd% ISSUE-1, ISSUE2 3.
         /// </summary>

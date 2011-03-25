@@ -42,16 +42,30 @@ namespace Binboo.Tests.Core.Commands
 			AssertParameters("what-we-are-looking-for", "closed");
 		}
 
+		[Test]
+		public void TestCustomFilter()
+		{
+			// $jira search ´$.Labels.Contains('lhs', 'tbv')´ 
+			// $jira search FILTER-NAME ´$.Labels.Contains('lhs', 'tbv')´ 
+			// $jira search FILTER-NAME ´$.Labels.Contains('lhs', 'tbv')´  | setorder 7 | drop
+			// $jira search FILTER-NAME ´$.Iteration == ~ && $.Status == Open´  | drop
+			//
+			// $		 -> Current issue
+			// Labels	 -> Virtual field : ICollection<string>
+			// Key		 -> Normal field
+			// Iteration -> Virtual field : Integer (~ means current iteration)
+		}
+
 		private void AssertParameters(params string[] args)
 		{
-			var commandMock = NewCommand<SearchCommand>(mock => mock.Setup(proxy => proxy.SearchIssues(args[0])).Returns(_issues));
+			var commandMock = NewCommand<SearchCommand>(mock => mock.Setup(proxy => proxy.SearchIssues(args[0])).Returns(Issues));
 
 			Mock<IContext> contextMock = ContextMockFor("some-user", args);
 			
 			string status = (args.Length == 2) ? args[1] : "open";
 
 			int max = 0;
-			string expected = _issues.Where(FilterByStatus(status)).Aggregate("", (buffer, issue) => 
+			string expected = Issues.Where(FilterByStatus(status)).Aggregate("", (buffer, issue) => 
 																					{
 																						string formatedIssue = issue.Format();
 																						max = Math.Max(max, formatedIssue.Length);

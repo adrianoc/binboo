@@ -44,6 +44,7 @@ namespace Binboo.Core.Commands.Arguments
 		internal static readonly ParamValidator UserName = new ParamValidator(@"\s*(?<param>[A-za-z][A-Za-z_]*[0-9]*)", true);
 		internal static readonly ParamValidator Estimation = new ParamValidator(@"[0-9]+");
 		internal static readonly ParamValidator Version = new ParamValidator(@"\bversions\s*=(\s*(?<param>[1-9]?[0-9]*((\.)?(?(3)[0-9]+|\b))+)(\s*,?\s*)?(?(4)(?=\s*[0-9]|\b)))+");
+		internal static readonly ParamValidator LabelOperations = new ParamValidator(@"(?<labels>(?<param>(?:(?:\B\+|\B\-)[^\s]*\b))|(\s*(?<param>(?:(?:\B\+|\B\-)[^\s]*\b)))+)", true);
 
 		public static ParamValidator Custom(string regex, bool optional)
 		{

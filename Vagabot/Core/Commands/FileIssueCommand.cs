@@ -21,7 +21,6 @@
  **/
 
 using System;
-using System.Collections.Generic;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
