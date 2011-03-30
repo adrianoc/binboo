@@ -56,21 +56,21 @@ namespace Binboo.Core.Commands
 			var result = Run(
 				() =>
 					{
-						IEnumerable<RemoteIssue> issues = CurrentIterationIssuesForStatus(status);
+						var issues = CurrentIterationIssuesForStatus(status);
 
 						var allDevIssues=  from devName in GetDevs(issues)
 							               from RemoteIssue issue in issues
-										   group issue by devName into issuesByDev
 											   
 										   select new
 										   {
-											   Name = issuesByDev.Key,
+											   Name = devName,
 											   Issues = from issueTemp in issues
-														where issueTemp.assignee == issuesByDev.Key || DevIsAPeer(issueTemp, issuesByDev.Key)
+											            let devIsAPeer = DevIsAPeer(issueTemp, devName)
+											            where issueTemp.assignee == devName || devIsAPeer
 														select new
 														{
 															Item = issueTemp,
-															IsPeer = DevIsAPeer(issueTemp, issuesByDev.Key)
+															IsPeer = devIsAPeer
 														}
 											   };
 
@@ -78,10 +78,10 @@ namespace Binboo.Core.Commands
 						foreach (var devIssues in allDevIssues)
 						{
 							sb.AppendLine(devIssues.Name);
-							float idsForDev = 0.0F;
+							var idsForDev = 0.0F;
 							foreach (var issue in devIssues.Issues)
 							{
-								float estimate = GetEstimatedIds(issue.Item);
+								var estimate = GetEstimatedIds(issue.Item);
 								idsForDev += estimate;
 								sb.AppendFormat("{0,-13}{1,-12} {2,4}{3}", issue.Item.key, IssueStatus.FriendlyNameFor(issue.Item.status), estimate, Environment.NewLine);
 							}
