@@ -106,7 +106,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Binboo.config.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +132,7 @@
     <Compile Include="Core\Commands\CommandPipingTestCase.Success.cs" />
     <Compile Include="Core\Commands\CommandPipingTestCase.Failures.cs" />
     <Compile Include="Core\Commands\CommandPipingTestCase.Helper.cs" />
+    <Compile Include="Core\Commands\CountIdsTestCase.cs" />
     <Compile Include="Core\Commands\FileIssueTestCase.Helper.cs" />
     <Compile Include="Core\Commands\LabelCommandTestCase.cs" />
     <Compile Include="Core\Commands\LabelCommandTestCase.Helper.cs" />

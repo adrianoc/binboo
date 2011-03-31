@@ -60,13 +60,14 @@ namespace Binboo.Core.Commands
 
 						var allDevIssues=  from devName in GetDevs(issues)
 							               from RemoteIssue issue in issues
+										   group issue by devName into issuesByDev
 											   
 										   select new
 										   {
-											   Name = devName,
+											   Name = issuesByDev.Key,
 											   Issues = from issueTemp in issues
-											            let devIsAPeer = DevIsAPeer(issueTemp, devName)
-											            where issueTemp.assignee == devName || devIsAPeer
+														let devIsAPeer = DevIsAPeer(issueTemp, issuesByDev.Key)
+														where issueTemp.assignee == issuesByDev.Key || devIsAPeer
 														select new
 														{
 															Item = issueTemp,
@@ -130,12 +131,12 @@ namespace Binboo.Core.Commands
 
 		private static float LoadFor(IEnumerable<RemoteIssue> issues)
 		{
-			float totalIDS = 0.0F;
-			foreach (RemoteIssue issue in issues)
+			var totalIds = 0.0F;
+			foreach (var issue in issues)
 			{
-				totalIDS += GetEstimatedIds(issue);
+				totalIds += GetEstimatedIds(issue);
 			}
-			return totalIDS;
+			return totalIds;
 		}
 
 		private IEnumerable<RemoteIssue> CurrentIterationIssuesForStatus(string status)

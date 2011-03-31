@@ -70,6 +70,10 @@ namespace Binboo.Tests.Core.Commands
 		                                           		new RemoteResolution {id="5", description = "cannot reproduce", name="Cannot Reproduce"},
 													};
 
+
+		protected const int CurrentIteration = 2;
+		private const int NextIteration = CurrentIteration + 1;
+
 		private Mock<IJiraProxy> _jiraProxyMock;
 		private static readonly IDictionary<Type, JiraCommandBase> Commands = new Dictionary<Type, JiraCommandBase>();
 
@@ -89,13 +93,14 @@ namespace Binboo.Tests.Core.Commands
 				if (_issues == null)
 				{
 					_issues = new [] {
-		                            	new RemoteIssue {key = "BTS-001", status = IssueStatus.Open, summary = "", assignee = "tetyana", customFieldValues = Labels("foo")}, 
-		                                new RemoteIssue {key = "BTS-002", status = IssueStatus.Open, summary = "", assignee = "shrek", customFieldValues = Labels("foo", "bar")},  
-		                                new RemoteIssue {key = "BTS-003", status = IssueStatus.Closed, summary = "", assignee = "rodrigo", customFieldValues = Labels("foo","bar","foobar")}, 
-		                                new RemoteIssue {key = "BTS-004", status = IssueStatus.Closed, summary = "", assignee = "adriano", customFieldValues = Labels("foo","bar","foobar", "baz")}, 
-		                                new RemoteIssue {key = "BTS-005", status = IssueStatus.Resolved, summary = "", assignee = "carl", customFieldValues = Labels("foo")}, 
-		                                new RemoteIssue {key = "BTS-006", status = IssueStatus.ReOpened, summary = "", assignee = "patrick", customFieldValues = Labels("bar")}, 
-		                                new RemoteIssue {key = "BTS-007", status = IssueStatus.InProgress, summary = "", assignee = "anat", customFieldValues = Labels("foobar")}, 
+		                            	new RemoteIssue {key = "BTS-001", status = IssueStatus.Open, summary = "", assignee = "tetyana", customFieldValues = CustomFields(CurrentIteration, 1, "foo")}, 
+		                                new RemoteIssue {key = "BTS-002", status = IssueStatus.Open, summary = "", assignee = "shrek", customFieldValues = CustomFields(CurrentIteration, 2, "foo", "bar")},  
+		                                new RemoteIssue {key = "BTS-003", status = IssueStatus.Closed, summary = "", assignee = "rodrigo", customFieldValues = CustomFields(CurrentIteration, 3, "foo","bar","foobar")}, 
+		                                new RemoteIssue {key = "BTS-004", status = IssueStatus.Closed, summary = "", assignee = "adriano", customFieldValues = CustomFields(CurrentIteration, 4, "foo","bar","foobar", "baz")}, 
+		                                new RemoteIssue {key = "BTS-005", status = IssueStatus.Resolved, summary = "", assignee = "carl", customFieldValues = CustomFields(NextIteration, 5, "foo")}, 
+		                                new RemoteIssue {key = "BTS-006", status = IssueStatus.ReOpened, summary = "", assignee = "patrick", customFieldValues = CustomFields(NextIteration, 6, "bar")}, 
+		                                new RemoteIssue {key = "BTS-007", status = IssueStatus.InProgress, summary = "", assignee = "anat", customFieldValues = CustomFields(NextIteration, 7, "foobar")}, 
+		                                new RemoteIssue {key = "BTS-008", status = IssueStatus.InProgress, summary = "", assignee = "adriano", customFieldValues = CustomFields(CurrentIteration, 8,"wth")}, 
 		                             };					
 				}
 				return _issues; 
@@ -155,16 +160,30 @@ namespace Binboo.Tests.Core.Commands
 			return (T) command;
 		}
 
-		private static RemoteCustomFieldValue[] Labels(params string[] labels)
+		private static RemoteCustomFieldValue[] CustomFields(int iteration, int estimation, params string[] labels)
 		{
-			var fieldValue = new RemoteCustomFieldValue
+			var labelsField = new RemoteCustomFieldValue
 			                 	{
 			                 		customfieldId = CustomFieldId.Labels.Id,
 			                 		key = CustomFieldId.Labels.Description,
 			                 		values = new[] { string.Join(" ", labels) }
 								};
 
-			return new[] { fieldValue };
+			var iterationField = new RemoteCustomFieldValue
+			                     	{
+										customfieldId = CustomFieldId.Iteration.Id,
+										key = CustomFieldId.Iteration.Description,
+										values = new[] { iteration.ToString() }
+			                     	};
+			
+			var estimationField = new RemoteCustomFieldValue
+			                     	{
+										customfieldId = CustomFieldId.OriginalIDsEstimate.Id,
+										key = CustomFieldId.OriginalIDsEstimate.Description,
+										values = new[] { estimation.ToString() }
+			                     	};
+
+			return new[] { iterationField, labelsField, estimationField };
 		}
 	}
 }
