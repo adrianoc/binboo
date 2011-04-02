@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo", "Binboo.csproj", "{E154BA05-1592-44A6-9135-6A47C94DD5F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Tests", "..\Vagabot.Tests\Binboo.Tests.csproj", "{F5CFB483-15C3-4F2A-AD75-4CAA109FBBE3}"

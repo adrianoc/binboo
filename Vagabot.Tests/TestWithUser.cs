@@ -5,9 +5,9 @@ namespace Binboo.Tests
 {
 	public abstract class TestWithUser
 	{
-		protected User NewUserMock()
+		protected IUser NewUserMock()
 		{
-			var userMock = new Mock<User>();
+			var userMock = new Mock<IUser>();
 			userMock.Setup(user => user.IsBlocked).Returns(false);
 			userMock.Setup(user => user.Handle).Returns("test");
 			return userMock.Object;

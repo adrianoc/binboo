@@ -33,12 +33,12 @@ namespace Binboo.Tests.Core.Commands
 {
 	public partial class IssueAssignCommandTestCase
 	{
-		private void AssertIssueAssignment(string ticket, string user, Expression<Predicate<IssueField>> iterationPredicate)
+		private void AssertIssueAssignment(string ticket, string user, Expression<Func<IssueField, bool>> iterationPredicate)
 		{
 			AssertIssueAssignment("assign-user", ticket, iterationPredicate, user);
 		}
 
-		private void AssertIssueAssignment(string skypeUser, string ticket, Expression<Predicate<IssueField>> iterationPredicate, string user)
+		private void AssertIssueAssignment(string skypeUser, string ticket, Expression<Func<IssueField, bool>> iterationPredicate, string user)
 		{
 			Action<Mock<IJiraProxy>> mockSetups = MockSetupWithIterationPredicateFor(ticket, iterationPredicate);
 
@@ -132,7 +132,7 @@ namespace Binboo.Tests.Core.Commands
 			return setups;
 		}
 
-		private static Action<Mock<IJiraProxy>> MockSetupWithIterationPredicateFor(string ticket, Expression<Predicate<IssueField>> iterationPredicate)
+		private static Action<Mock<IJiraProxy>> MockSetupWithIterationPredicateFor(string ticket, Expression<Func<IssueField, bool >> iterationPredicate)
 		{
 			return mock => mock.Setup(proxy => proxy.AssignIssue(
 													ticket,It.Is<IssueField>(assigneeField => assigneeField.Id == IssueField.Assignee.Id),

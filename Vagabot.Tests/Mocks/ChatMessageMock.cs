@@ -28,24 +28,24 @@ namespace Binboo.Tests.Mocks
 	internal class ChatMessageMock : ChatMessage
 	{
 		private readonly string _body;
-		private readonly User _sender;
+		private readonly IUser _sender;
 		private readonly Chat _chat;
 
-		public ChatMessageMock(User sender, string body, Chat chat)
+		public ChatMessageMock(IUser sender, string body, IChat chat)
 		{
 			_body = body;
 			_sender = sender;
-			_chat = chat;
+			_chat = (Chat) chat;
 		}
 
 		public int Id
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public DateTime Timestamp
 		{
-			get { throw new System.NotImplementedException(); }
+			get { throw new NotImplementedException(); }
 		}
 
 		public string FromHandle
@@ -104,7 +104,7 @@ namespace Binboo.Tests.Mocks
 
 		public User Sender
 		{
-			get { return _sender ;}
+			get { return (User) _sender ;}
 		}
 
 		public string EditedBy

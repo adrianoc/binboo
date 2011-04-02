@@ -32,9 +32,9 @@ namespace Binboo.Tests.Mocks
 		private readonly IList<ChatMessage> _messages = new List<ChatMessage>();
 		private readonly EventWaitHandle _messageEvent = new EventWaitHandle(false, EventResetMode.ManualReset);
 
-		private readonly User _user;
+		private readonly IUser _user;
 
-		public ChatMock(User user)
+		public ChatMock(IUser user)
 		{
 			_user = user;
 		}
