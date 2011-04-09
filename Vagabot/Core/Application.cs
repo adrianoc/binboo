@@ -82,14 +82,15 @@ namespace Binboo.Core
 
 		private void UnregisterEvents()
 		{
-			_skype.MessageStatus -= ProcessMessage;
-			((_ISkypeEvents_Event)_skype).AttachmentStatus -= ProcessAttachmentStatus;
+			var skypeEvents = ((_ISkypeEvents_Event)_skype);
+			skypeEvents.MessageStatus -= ProcessMessage;
+			skypeEvents.AttachmentStatus -= ProcessAttachmentStatus;
 		}
 
 		public void AttachToSkype()
 		{
-			_ISkypeEvents_Event events = _skype;
-			
+			var events = (_ISkypeEvents_Event) _skype;
+
 			events.MessageStatus += ProcessMessage;
 			events.AttachmentStatus += ProcessAttachmentStatus;
 			events.CallStatus += CallStatusChanged;
@@ -116,8 +117,6 @@ namespace Binboo.Core
 		[Conditional("DEBUG")]
 		private void DumpCall(string status, ICall pCall)
 		{
-			ICall x;
-
 			Debug.WriteLine(
 				String.Format(
 					"----------------------\r\nCall: {0}\r\n"+
@@ -166,10 +165,21 @@ namespace Binboo.Core
 			{
 				_attached = true;
 				RaiseAttachedEvent();
+				ProcessMissedMessages();
 			}
 			else if (Closing(status))
 			{
 				RaiseQuitEvent();
+			}
+		}
+
+		private void ProcessMissedMessages()
+		{
+			ChatMessageCollection missedMessages = _skype.MissedMessages;
+			_log.InfoFormat("Processing {0} messages received while offline'", missedMessages.Count);
+			for (int i = 1; i <= missedMessages.Count; i++)
+			{
+				ProcessMessage(missedMessages[i], TChatMessageStatus.cmsReceived);
 			}
 		}
 
@@ -429,7 +439,7 @@ namespace Binboo.Core
 
 		private readonly ILog _log = LogManager.GetLogger(typeof(Application));
 
-		private Skype _skype = new Skype();
+		private ISkype _skype = new Skype();
 		private bool _attached;
 		private readonly EventWaitHandle _exitEvent = new EventWaitHandle(false, EventResetMode.ManualReset);
 	}

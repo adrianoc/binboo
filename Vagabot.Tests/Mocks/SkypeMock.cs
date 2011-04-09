@@ -21,6 +21,7 @@
  **/
 
 using System;
+using System.Collections.Generic;
 using Moq;
 using SKYPE4COMLib;
 
@@ -29,10 +30,12 @@ namespace Binboo.Tests.Mocks
 	public class SkypeMock : Skype
 	{
 		private readonly Func<Chat> _chatRetriever;
+		private readonly IEnumerable<string> _missedMessageBodies;
 
-		public  SkypeMock(Func<Chat> chatRetriever)
+		public  SkypeMock(Func<Chat> chatRetriever, params string[] missedMessageBodies)
 		{
-			_chatRetriever = chatRetriever;	
+			_chatRetriever = chatRetriever;
+			_missedMessageBodies = missedMessageBodies;
 		}
 
 		public UserCollection SearchForUsers(string Target)
@@ -42,6 +45,7 @@ namespace Binboo.Tests.Mocks
 
 		public void Attach(int Protocol, bool Wait)
 		{
+			AttachmentStatus(TAttachmentStatus.apiAttachSuccess);
 		}
 
 		public Call PlaceCall(string Target, string Target2, string Target3, string Target4)
@@ -214,7 +218,18 @@ namespace Binboo.Tests.Mocks
 
 		public ChatMessageCollection MissedMessages
 		{
-			get { throw new System.NotImplementedException(); }
+			get
+			{
+				var missedMessages = new ChatMessageCollection();
+				
+				ChatMock chat = (ChatMock) _chatRetriever();
+				foreach (var messageBody in _missedMessageBodies)
+				{
+					missedMessages.Add(chat.NewMessage(messageBody));	
+				}
+
+				return missedMessages;
+			}
 		}
 
 		TAttachmentStatus ISkype.AttachmentStatus
@@ -459,11 +474,8 @@ namespace Binboo.Tests.Mocks
 		public event _ISkypeEvents_CommandEventHandler Command;
 		public event _ISkypeEvents_ReplyEventHandler Reply;
 		public event _ISkypeEvents_ErrorEventHandler Error;
-		event _ISkypeEvents_AttachmentStatusEventHandler _ISkypeEvents_Event.AttachmentStatus
-		{
-			add { }
-			remove { }
-		}
+
+		public event _ISkypeEvents_AttachmentStatusEventHandler AttachmentStatus;
 
 		event _ISkypeEvents_ConnectionStatusEventHandler _ISkypeEvents_Event.ConnectionStatus
 		{

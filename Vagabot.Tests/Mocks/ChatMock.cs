@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -41,12 +40,17 @@ namespace Binboo.Tests.Mocks
 
 		public ChatMessage SendMessage(string messageText)
 		{
-			ChatMessage msg = new ChatMessageMock(_user, messageText, this);
+			ChatMessage msg = NewMessage(messageText);
 
 			_messages.Add(msg);
 			_messageEvent.Set();
 
 			return msg;
+		}
+
+		internal ChatMessageMock NewMessage(string messageText)
+		{
+			return new ChatMessageMock(_user, messageText, this);
 		}
 
 		public IEnumerable<ChatMessage> SentMessages

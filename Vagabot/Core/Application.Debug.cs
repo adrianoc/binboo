@@ -28,7 +28,7 @@ namespace Binboo.Core
 	public partial class Application
 	{
 		[Conditional("DEBUG")]
-		public void SetSkype(Skype skype)
+		public void SetSkype(ISkype skype)
 		{
 			_skype = skype;
 		}

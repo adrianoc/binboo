@@ -22,14 +22,44 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Binboo.Core;
+using Binboo.Tests.Mocks;
 using NUnit.Framework;
+using Application = Binboo.Core.Application;
 
 namespace Binboo.Tests.Core
 {
 	[TestFixture]
-	class ApplicationTestCase
+	class ApplicationTestCase : TestWithUser
 	{
+		[Test]
+		public void MissedMessagesAreProcessed()
+		{
+			var app = new Application("test");
+			
+			var chat = new ChatMock(NewUserMock());
+
+			var skype = new SkypeMock(() => chat, MissedMessages()); 
+		
+			app.SetSkype(skype);
+			app.AttachToSkype();
+
+			Assert.IsTrue(chat.WaitForMessages(1000));
+
+			AssertErrorResponse(chat, "Unknown command: cmd1.");
+			AssertErrorResponse(chat, "Unknown command: cmd2.");
+			AssertErrorResponse(chat, "Unknown command: cmd3.");
+		}
+
+		private static string[] MissedMessages()
+		{
+			return new[] {"no no no", "$test cmd1", "bla", "$test cmd2", "$test cmd3"};
+		}
+
+		private static void AssertErrorResponse(ChatMock chat, string errorMsg)
+		{
+			Assert.IsTrue(chat.SentMessages.Select(m => m.Body).Contains(errorMsg), string.Format("Expected response not fould: '{0}'", errorMsg));
+		}
+
 		[Test]
 		public void TestCommandLinePipingSplit()
 		{
