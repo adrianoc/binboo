@@ -87,9 +87,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.ServiceModel">
-      <RequiredTargetFramework>3.0</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
@@ -114,6 +112,10 @@
     <Compile Include="Core\Commands\ListProjectsCommand.cs" />
     <Compile Include="Core\Commands\Arguments\ParamValidator.cs" />
     <Compile Include="Core\Configuration\ConfigServices.cs" />
+    <Compile Include="Core\CustomFilters\CustomPredicateFactory.cs" />
+    <Compile Include="Core\CustomFilters\DisposableCustomFilterPredicate.cs" />
+    <Compile Include="Core\CustomFilters\ICustomFilterPredicate.cs" />
+    <Compile Include="Core\CustomFilters\PredicateServices.cs" />
     <Compile Include="Core\Events\ErrorEventArgs.cs" />
     <Compile Include="Core\Exceptions\InvalidCommandArgumentsException.cs" />
     <Compile Include="Core\Persistence\IStorage.cs" />

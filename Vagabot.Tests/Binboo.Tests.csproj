@@ -100,6 +100,7 @@
     <Compile Include="Core\Commands\IssueCommandTestCase.cs" />
     <Compile Include="Core\Commands\JiraCommandTestCaseBase.cs" />
     <Compile Include="Core\Configuration\ConfigServicesTestCase.cs" />
+    <Compile Include="Core\CustomFilters\CustomFiltersTestCase.cs" />
     <Compile Include="Mocks\ChatMock.cs" />
     <Compile Include="Mocks\ChatMessageMock.cs" />
     <Compile Include="Mocks\JiraCommandMock.cs" />
