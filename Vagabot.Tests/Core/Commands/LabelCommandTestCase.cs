@@ -19,6 +19,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+using System.Linq;
+using Binboo.Core.Commands;
+using Binboo.Core.Commands.Support;
 using NUnit.Framework;
 
 namespace Binboo.Tests.Core.Commands
@@ -89,6 +92,21 @@ namespace Binboo.Tests.Core.Commands
 		{
 			AssertQueryPipe("BTS-001, BTS-002", "foo/foo,bar", "foo, bar");
 			AssertQueryPipe("BTS-001, BTS-004", "foo/foo,bar,foobar,baz", "foo, bar, foobar, baz");
+		}
+
+		[Test]
+		public void TestLabelsAreNotDupplicatedUponInsertion()
+		{
+			AssertUpdateLabels("BTS-001", "+foo", "foo");
+			AssertUpdateLabels("BTS-001", "+FOO", "foo");
+			AssertUpdateLabels("BTS-001", "+FOO +fabio +FABIO +fAbIo", "foo, fabio");
+		}
+
+		[Test]
+		public void TestRemoveNonExistingLabelDoesNoHarm()
+		{
+			AssertUpdateLabels("BTS-001", "-XXX", "foo");
+			AssertUpdateLabels("BTS-001", "-fabio", "foo");
 		}
 	}
 }

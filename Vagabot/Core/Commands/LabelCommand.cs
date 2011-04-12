@@ -84,7 +84,15 @@ namespace Binboo.Core.Commands
 		{
 			switch(labelOperation[0])
 			{
-				case LabelOperations.Add:	 return labels => labels.Add(LabelFrom(labelOperation));
+				case LabelOperations.Add: return labels =>
+				                                 	{
+														var label = LabelFrom(labelOperation);
+														if (!labels.Contains(label, StringComparer.InvariantCultureIgnoreCase))
+														{
+															labels.Add(label);
+														}
+				                                 	};
+
 				case LabelOperations.Remove: return labels => labels.Remove(LabelFrom(labelOperation));
 			}
 
