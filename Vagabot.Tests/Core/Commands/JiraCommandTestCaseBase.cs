@@ -123,7 +123,7 @@ namespace Binboo.Tests.Core.Commands
 
 		internal CommandMock<T> NewCommand<T, TResult>(Expression<Func<IJiraProxy, TResult>> expectedMethodCall, TResult valueToReturn) where T : JiraCommandBase
 		{
-			_jiraProxyMock = new Mock<IJiraProxy>(MockBehavior.Strict);
+			_jiraProxyMock = new Mock<IJiraProxy>();
 			_jiraProxyMock.Setup(expectedMethodCall).Returns(valueToReturn);
 
 			return new CommandMock<T>(FromCacheOrNew<T>(), _jiraProxyMock);
@@ -131,7 +131,7 @@ namespace Binboo.Tests.Core.Commands
 
 		internal CommandMock<T> NewCommand<T>(params Action<Mock<IJiraProxy>>[] mockSetups) where T: JiraCommandBase
 		{
-			_jiraProxyMock = new Mock<IJiraProxy>(MockBehavior.Strict);
+			_jiraProxyMock = new Mock<IJiraProxy>();
 			foreach (var setup in mockSetups)
 			{
 				setup(_jiraProxyMock);

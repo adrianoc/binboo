@@ -24,6 +24,7 @@ using Binboo.Core.Commands.Support;
 using Binboo.JiraIntegration;
 using Binboo.Tests.Mocks;
 using Moq;
+using NUnit.Framework;
 
 namespace Binboo.Tests.Core.Commands
 {
@@ -31,6 +32,7 @@ namespace Binboo.Tests.Core.Commands
 	{
 		private readonly Mock<IJiraProxy> _mock;
 		private readonly T _command;
+		private bool _exceptionThrown;
 
 		public CommandMock(T command, Mock<IJiraProxy> mock)
 		{
@@ -41,6 +43,11 @@ namespace Binboo.Tests.Core.Commands
 
 		public ICommandResult Process(IContext context)
 		{
+			AppDomain.CurrentDomain.FirstChanceException += (sender, args) => 
+			{
+				_exceptionThrown = args.Exception.GetType() == typeof (AssertionException);
+			};
+
 			return _command.Process(context);
 		}
 
@@ -51,7 +58,10 @@ namespace Binboo.Tests.Core.Commands
 
 		public void Dispose()
 		{
-			_mock.VerifyAll();
+			if (!_exceptionThrown)
+			{
+				_mock.VerifyAll();
+			}
 		}
 	}
 }
