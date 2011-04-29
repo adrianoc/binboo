@@ -190,12 +190,15 @@ namespace Binboo.Core
 
 		private void ProcessMessage(IChatMessage message, TChatMessageStatus status)
 		{
-			_log.DebugFormat("Got message ({0}): '{1}'", message.FromHandle, message.Body);
+			_log.DebugFormat("Got message ({0} - {1}): '{2}'", message.FromHandle, status, message.Body);
 			if (IsVagabotCommand(message) && IsComplete(status))
 			{
 				EnqueueCommand(message);
 				_log.DebugFormat("Message enqueued ({0}): '{1}'", message.FromHandle, message.Body);
+				return;
 			}
+
+			_log.DebugFormat("Ignored message ({0} - {1}): '{2}'", message.FromHandle, status, message.Body);
 		}
 
 		private static bool IsComplete(TChatMessageStatus status)
