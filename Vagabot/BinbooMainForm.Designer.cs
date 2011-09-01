@@ -84,7 +84,6 @@ namespace Binboo
 			this.popupShowConsole.Name = "popupShowConsole";
 			this.popupShowConsole.Size = new System.Drawing.Size(222, 22);
 			this.popupShowConsole.Text = "Show Console";
-			this.popupShowConsole.Click += new System.EventHandler(this.popupShowConsole_Click);
 			// 
 			// toolStripMenuItem1
 			// 

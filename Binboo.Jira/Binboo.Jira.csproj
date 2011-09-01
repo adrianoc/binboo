@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1E7398B3-9EED-451A-852B-AD9000C1949D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Binboo.Jira</RootNamespace>
+    <AssemblyName>Binboo.Jira</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\Libs\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="JiraSoapServiceService, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>JiraIntegration\JiraWS\JiraSoapServiceService.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition.Codeplex, Version=4.1.2.0, Culture=neutral, PublicKeyToken=13e5ffd4e05db186, processorArchitecture=MSIL" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Binboo.Jira.Designer.cs">
+      <DependentUpon>Binboo.Jira.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Commands\CountIDSCommand.cs" />
+    <Compile Include="Commands\EstimateCommand.cs" />
+    <Compile Include="Commands\FileIssueCommand.cs" />
+    <Compile Include="Commands\IssueAssignCommand.cs" />
+    <Compile Include="Commands\IssueCommand.cs" />
+    <Compile Include="Commands\JiraParamValidator.cs" />
+    <Compile Include="Commands\LabelCommand.cs" />
+    <Compile Include="Commands\LabelFormatConveter.cs" />
+    <Compile Include="Commands\LinkAlias.cs" />
+    <Compile Include="Commands\LinkConfiguration.cs" />
+    <Compile Include="Commands\LinkIssueCommand.cs" />
+    <Compile Include="Commands\ListProjectsCommand.cs" />
+    <Compile Include="Commands\PairsCommand.cs" />
+    <Compile Include="Commands\ResolveIssueCommand.cs" />
+    <Compile Include="Commands\SearchCommand.cs" />
+    <Compile Include="Commands\SetOrderCommand.cs" />
+    <Compile Include="Commands\JiraCommandBase.cs" />
+    <Compile Include="Commands\TaskDropperCommand.cs" />
+    <Compile Include="Integration\CustomFieldId.cs" />
+    <Compile Include="Integration\ExpirationStrategy.cs" />
+    <Compile Include="Integration\ExtensionsHelper.cs" />
+    <Compile Include="Integration\IJiraProxy.cs" />
+    <Compile Include="Integration\IssueField.cs" />
+    <Compile Include="Integration\IssueFormater.cs" />
+    <Compile Include="Integration\IssuePriority.cs" />
+    <Compile Include="Integration\IssueResolution.cs" />
+    <Compile Include="Integration\IssueStatus.cs" />
+    <Compile Include="Integration\IssueType.cs" />
+    <Compile Include="Integration\JiraConstantBase.cs" />
+    <Compile Include="Integration\JiraHttp\IJiraHttpProxy.cs" />
+    <Compile Include="Integration\JiraHttp\JiraHttpProxy.cs" />
+    <Compile Include="Integration\JiraProxy.cs" />
+    <None Include="Integration\JiraWS\JiraSoapServiceService.cs" />
+    <Compile Include="Plugin\JiraPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Binboo.Core\Binboo.Core.csproj">
+      <Project>{89B1E578-05FB-4C7A-A561-284F266097A6}</Project>
+      <Name>Binboo.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TCL.Net\TCL.Net.csproj">
+      <Project>{E468BBD6-A194-455F-A157-E22CF2726B1C}</Project>
+      <Name>TCL.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Integration\JiraWS\jirasoapservice-v2.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Integration\JiraWS\JiraSoapServiceService.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Binboo.Jira.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Binboo.Jira.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

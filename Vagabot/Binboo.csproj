@@ -57,97 +57,25 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Db4objects.Db4o, Version=7.13.139.14312, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\db4o\Db4objects.Db4o.dll</HintPath>
-    </Reference>
-    <Reference Include="Db4objects.Db4o.Linq, Version=7.13.138.14281, Culture=neutral, PublicKeyToken=6199cd4f203aa8eb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\db4o\Db4objects.Db4o.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="JiraSoapServiceService, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\JiraIntegration\JiraWS\JiraSoapServiceService.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\log4net\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="SKYPE4COMLib">
-      <HintPath>..\Libs\SKYPE4COMLib.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition.Codeplex, Version=4.1.2.0, Culture=neutral, PublicKeyToken=13e5ffd4e05db186, processorArchitecture=MSIL" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Binboo.Designer.cs">
+      <DependentUpon>Binboo.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="ConfigForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Core\Application.Debug.cs" />
-    <Compile Include="Core\Commands\Arguments\ArgumentCollector.cs" />
-    <Compile Include="Core\CommandQueue.cs" />
-    <Compile Include="Core\Commands\Arguments\Argument.cs" />
-    <Compile Include="Core\Commands\Arguments\ButNotParamValidator.cs" />
-    <Compile Include="Core\Commands\Arguments\DelegatingParamValidator.cs" />
-    <Compile Include="Core\Commands\ResolveIssueCommand.cs" />
-    <Compile Include="Core\Commands\EstimateCommand.cs" />
-    <Compile Include="Core\Commands\PairsCommand.cs" />
-    <Compile Include="Core\Commands\SetOrderCommand.cs" />
-    <Compile Include="Core\Commands\ListProjectsCommand.cs" />
-    <Compile Include="Core\Commands\Arguments\ParamValidator.cs" />
-    <Compile Include="Core\Configuration\ConfigServices.cs" />
-    <Compile Include="Core\CustomFilters\CustomPredicateFactory.cs" />
-    <Compile Include="Core\CustomFilters\DisposableCustomFilterPredicate.cs" />
-    <Compile Include="Core\CustomFilters\ICustomFilterPredicate.cs" />
-    <Compile Include="Core\CustomFilters\PredicateServices.cs" />
-    <Compile Include="Core\Events\ErrorEventArgs.cs" />
-    <Compile Include="Core\Exceptions\InvalidCommandArgumentsException.cs" />
-    <Compile Include="Core\Persistence\IStorage.cs" />
-    <Compile Include="Core\Persistence\IStorageManager.cs" />
-    <Compile Include="Core\Persistence\Storage.cs" />
-    <Compile Include="Core\Persistence\StorageManager.cs" />
-    <Compile Include="Core\Util\ExtensionMethods.cs" />
-    <Compile Include="JiraIntegration\CustomFieldId.cs" />
-    <Compile Include="Core\Commands\FileIssueCommand.cs" />
-    <Compile Include="Core\Application.cs" />
-    <Compile Include="Core\Commands\HelpCommand.cs" />
-    <Compile Include="Core\Commands\IssueAssignCommand.cs" />
-    <Compile Include="Core\Commands\IssueCommand.cs" />
-    <Compile Include="Core\Commands\TaskDropperCommand.cs" />
-    <Compile Include="Core\JiraUser.cs" />
-    <Compile Include="JiraIntegration\ExpirationStrategy.cs" />
-    <Compile Include="JiraIntegration\ExtensionsHelper.cs" />
-    <Compile Include="JiraIntegration\IJiraProxy.cs" />
-    <Compile Include="JiraIntegration\IssueField.cs" />
-    <Compile Include="JiraIntegration\IssueFormater.cs" />
-    <Compile Include="JiraIntegration\IssuePriority.cs" />
-    <Compile Include="JiraIntegration\IssueResolution.cs" />
-    <Compile Include="JiraIntegration\IssueStatus.cs" />
-    <Compile Include="JiraIntegration\IssueType.cs" />
-    <Compile Include="JiraIntegration\JiraConstantBase.cs" />
-    <Compile Include="JiraIntegration\JiraProxy.cs" />
-    <Compile Include="Core\Commands\CountIDSCommand.cs" />
-    <Compile Include="Core\Commands\SearchCommand.cs" />
-    <Compile Include="Binboo.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Binboo.resx</DependentUpon>
     </Compile>
     <Compile Include="BinbooMainForm.cs">
       <SubType>Form</SubType>
@@ -157,6 +85,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Binboo.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Binboo.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ConfigForm.resx">
       <DependentUpon>ConfigForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -164,11 +97,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Binboo.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Binboo.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="BinbooMainForm.resx">
@@ -185,40 +113,17 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="JiraIntegration\JiraWS\jirasoapservice-v2.wsdl" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="JiraIntegration\JiraWS\JiraSoapServiceService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ipodcast1.ico" />
-    <Content Include="JiraIntegration\JiraWS\JiraSoapServiceService.dll" />
     <Content Include="Binboo.config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Core\Commands\LabelCommand.cs" />
-    <Compile Include="Core\Commands\LabelFormatConveter.cs" />
-    <Compile Include="Core\Commands\LinkAlias.cs" />
-    <Compile Include="Core\Commands\LinkConfiguration.cs" />
-    <Compile Include="Core\Commands\LinkIssueCommand.cs" />
-    <Compile Include="Core\Commands\Support\BotCommandBase.cs" />
-    <Compile Include="Core\Commands\Support\CommandResult.cs" />
-    <Compile Include="Core\Commands\Support\CommandStatus.cs" />
-    <Compile Include="Core\Commands\Support\Context.cs" />
-    <Compile Include="Core\Commands\Support\Db4oIteration.cs" />
-    <Compile Include="Core\Commands\Support\IBotCommand.cs" />
-    <Compile Include="Core\Commands\Support\ICommandResult.cs" />
-    <Compile Include="Core\Commands\Support\IContext.cs" />
-    <Compile Include="Core\Commands\Support\JiraCommandBase.cs" />
-    <Compile Include="Core\Commands\UnknowCommand.cs" />
-    <Compile Include="Core\Configuration\HttpInterfaceConfiguration.cs" />
-    <Compile Include="Core\Configuration\IHttpInterfaceConfiguration.cs" />
-    <Compile Include="Core\Persistence\Storage.InnerClasses.cs" />
-    <Compile Include="JiraIntegration\JiraHttp\IJiraHttpProxy.cs" />
-    <Compile Include="JiraIntegration\JiraHttp\JiraHttpProxy.cs" />
     <None Include="Resources\ipodcast1.ico" />
     <None Include="Resources\Accessibility Warning.ico" />
   </ItemGroup>
@@ -255,9 +160,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TCL.Net\TCL.Net.csproj">
-      <Project>{E468BBD6-A194-455F-A157-E22CF2726B1C}</Project>
-      <Name>TCL.Net</Name>
+    <ProjectReference Include="..\Binboo.Core\Binboo.Core.csproj">
+      <Project>{89B1E578-05FB-4C7A-A561-284F266097A6}</Project>
+      <Name>Binboo.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

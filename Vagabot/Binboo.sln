@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo", "Binboo.csproj", "{E154BA05-1592-44A6-9135-6A47C94DD5F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Tests", "..\Vagabot.Tests\Binboo.Tests.csproj", "{F5CFB483-15C3-4F2A-AD75-4CAA109FBBE3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCL.Net", "..\TCL.Net\TCL.Net.csproj", "{E468BBD6-A194-455F-A157-E22CF2726B1C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCL.Net.Tests", "..\TCL.Net\TCL.Net.Tests\TCL.Net.Tests.csproj", "{2F44BA8F-11BE-40AB-A913-7489952D3294}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Core", "..\Binboo.Core\Binboo.Core.csproj", "{89B1E578-05FB-4C7A-A561-284F266097A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Core.Tests", "..\Binboo.Core.Tests\Binboo.Core.Tests.csproj", "{6CB00A65-8539-4503-8214-69896A72123F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Jira.Tests", "..\Binboo.Jira.Tests\Binboo.Jira.Tests.csproj", "{E64B7DFB-DFB4-4378-832D-158E94D2E483}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Jira", "..\Binboo.Jira\Binboo.Jira.csproj", "{1E7398B3-9EED-451A-852B-AD9000C1949D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +25,6 @@ Global
 		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5CFB483-15C3-4F2A-AD75-4CAA109FBBE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5CFB483-15C3-4F2A-AD75-4CAA109FBBE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5CFB483-15C3-4F2A-AD75-4CAA109FBBE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5CFB483-15C3-4F2A-AD75-4CAA109FBBE3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E468BBD6-A194-455F-A157-E22CF2726B1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E468BBD6-A194-455F-A157-E22CF2726B1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E468BBD6-A194-455F-A157-E22CF2726B1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -31,6 +33,22 @@ Global
 		{2F44BA8F-11BE-40AB-A913-7489952D3294}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F44BA8F-11BE-40AB-A913-7489952D3294}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F44BA8F-11BE-40AB-A913-7489952D3294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89B1E578-05FB-4C7A-A561-284F266097A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89B1E578-05FB-4C7A-A561-284F266097A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89B1E578-05FB-4C7A-A561-284F266097A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89B1E578-05FB-4C7A-A561-284F266097A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CB00A65-8539-4503-8214-69896A72123F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CB00A65-8539-4503-8214-69896A72123F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CB00A65-8539-4503-8214-69896A72123F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CB00A65-8539-4503-8214-69896A72123F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E64B7DFB-DFB4-4378-832D-158E94D2E483}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E64B7DFB-DFB4-4378-832D-158E94D2E483}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E64B7DFB-DFB4-4378-832D-158E94D2E483}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E64B7DFB-DFB4-4378-832D-158E94D2E483}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E7398B3-9EED-451A-852B-AD9000C1949D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E7398B3-9EED-451A-852B-AD9000C1949D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E7398B3-9EED-451A-852B-AD9000C1949D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E7398B3-9EED-451A-852B-AD9000C1949D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

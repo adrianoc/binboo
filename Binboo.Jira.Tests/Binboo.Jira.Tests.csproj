@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E64B7DFB-DFB4-4378-832D-158E94D2E483}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Binboo.Jira.Tests</RootNamespace>
+    <AssemblyName>Binboo.Jira.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JiraSoapServiceService">
+      <HintPath>..\Binboo.Jira\Integration\JiraWS\JiraSoapServiceService.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\Libs\moq\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\Libs\NUnit-2.6.0.11240\bin\framework\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Tests\Arguments\Argument.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Tests\Arguments\ArgumentsTestCase.cs" />
+    <Compile Include="Tests\Arguments\ParamValidatorTestCase.cs" />
+    <Compile Include="Tests\Commands\CommandMock.cs" />
+    <Compile Include="Tests\Commands\CountIdsTestCase.cs" />
+    <Compile Include="Tests\Commands\EstimateCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\FileIssueTestCase.cs" />
+    <Compile Include="Tests\Commands\FileIssueTestCase.Helper.cs" />
+    <Compile Include="Tests\Commands\IssueAssignCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\IssueAssignCommandTestCase.Helper.cs" />
+    <Compile Include="Tests\Commands\IssueCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\JiraCommandTestCaseBase.cs" />
+    <Compile Include="Tests\Commands\LabelCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\LabelCommandTestCase.Helper.cs" />
+    <Compile Include="Tests\Commands\LinkCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\ListProjectsCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\PairCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\PairCommandTestCase.Helper.cs" />
+    <Compile Include="Tests\Commands\ResolveCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\ResolveCommandTestCase.Helpers.cs" />
+    <Compile Include="Tests\Commands\SearchCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\SetOrderCommandTestCase.cs" />
+    <Compile Include="Tests\Commands\SetOrderCommandTestCase.Helper.cs" />
+    <Compile Include="Tests\Commands\TaskDropperCommandTestCase.cs" />
+    <Compile Include="Tests\Integration\JiraHttp\JiraHttpProxyTestCase.cs" />
+    <Compile Include="Mocks\DummyStorage.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\IssueTestService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Binboo.Core.Tests\Binboo.Core.Tests.csproj">
+      <Project>{6CB00A65-8539-4503-8214-69896A72123F}</Project>
+      <Name>Binboo.Core.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Binboo.Core\Binboo.Core.csproj">
+      <Project>{89B1E578-05FB-4C7A-A561-284F266097A6}</Project>
+      <Name>Binboo.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Binboo.Jira\Binboo.Jira.csproj">
+      <Project>{1E7398B3-9EED-451A-852B-AD9000C1949D}</Project>
+      <Name>Binboo.Jira</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TCL.Net\TCL.Net.csproj">
+      <Project>{E468BBD6-A194-455F-A157-E22CF2726B1C}</Project>
+      <Name>TCL.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Binboo.config.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

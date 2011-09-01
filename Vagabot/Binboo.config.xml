@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<binboo>
+  <active refid="current" />
+  
+  <jira id="current">
+    <user 
+		name="PUT YOUR JIRA USER NAME HERE" 
+		password="YOUR JIRA PASSOWORD (Encrypted) IN BASE64 FORMAT" />
+			
+    <endpoint value="YOUR JIRA WS URL" />
+	
+    <im-user-mapping>
+	  <!-- Skype Name -> Jira User mapping. Used in commands that accept "myself" as a user name. -->
+	  <!-- Not required if "myself" is never seen in a command. -->
+      <user skypeName="skype-user-name-1" jiraName="jira-user-name-1" />
+      <user skypeName="skype-user-name-2" jiraName="jira-user-name-2" />
+    </im-user-mapping>
+  </jira>
+  
+  <!-- YOU MAY HAVE MORE CONFIGURATIONS-->
+  <jira id="binboo-test">
+	<!--
+	.
+	.
+	. -->
+  </jira>
+</binboo>
