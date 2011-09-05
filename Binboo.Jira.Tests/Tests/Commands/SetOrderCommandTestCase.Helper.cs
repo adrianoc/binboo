@@ -24,6 +24,7 @@ using System;
 using System.Text;
 using Binboo.Jira.Commands;
 using Binboo.Jira.Integration;
+using Binboo.Plugins.Tests.Foundation.Commands;
 using Moq;
 using NUnit.Framework;
 
@@ -34,7 +35,7 @@ namespace Binboo.Jira.Tests.Tests.Commands
 		private static void AssertInvalidArguments(string expectedMessage, params string[] arguments)
 		{
 			var jiraProxyMock = new Mock<IJiraProxy>();
-			var commandMock = new CommandMock<SetOrderCommand>(new SetOrderCommand(jiraProxyMock.Object, "Help"), jiraProxyMock);
+			var commandMock = new CommandMock<SetOrderCommand, IJiraProxy>(new SetOrderCommand(jiraProxyMock.Object, "Help"), jiraProxyMock);
 			var contextMock = ContextMockFor("some-user", arguments);
 
 			var result = commandMock.Process(contextMock.Object);

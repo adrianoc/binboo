@@ -23,7 +23,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Binboo.Core.Commands.Support;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Jira.Integration;
 
 namespace Binboo.Jira.Commands

@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  **/
 
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -57,10 +58,14 @@ namespace Binboo.Core.Commands.Arguments
 			}
 		}
 
+        public T ValueOrDefault<T>(T defaultValue)
+        {
+            return IsPresent ? (T)Convert.ChangeType(Value, typeof(T)) : defaultValue;
+        }
+
 		public override string ToString()
 		{
 			return Name + ": " + Value;
 		}
-
 	}
 }

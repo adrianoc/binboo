@@ -21,7 +21,7 @@
  **/
 
 using System;
-using Binboo.Core.Commands.Support;
+using Binboo.Core;
 using Binboo.Jira.Commands;
 using Binboo.Jira.Integration;
 using Moq;
@@ -38,7 +38,6 @@ namespace Binboo.Jira.Tests.Tests.Commands
 			var issue = new RemoteIssue {key = "BTST-123", status="1", created = new DateTime(2009, 01, 05), summary = "summary"};
 			using (var issueCommandMock = NewCommand<IssueCommand, RemoteIssue>(proxy => proxy.GetIssue("BTST-123"), issue))
 			{
-
 				Mock<IContext> contextMock = ContextMockFor("issue-user", issue.key);
 
 				var result = issueCommandMock.Process(contextMock.Object);

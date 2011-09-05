@@ -23,7 +23,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Binboo.Core.Commands.Arguments;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.Core.Exceptions;
@@ -51,61 +52,26 @@ namespace Binboo.Jira.Commands
 		}
 
 		protected abstract ICommandResult ProcessCommand(IContext context);
-		
-		protected static T OptionalArgumentOrDefault<T>(IDictionary<string, Argument> args, string argName, T defaultValue)
-		{
-			Argument argument = args[argName];
-			return argument.IsPresent ? (T) Convert.ChangeType(argument.Value, typeof (T)) : defaultValue;
-		}
 
 		protected static string Run(Func<string> command)
 		{
-			try
-			{
-				return command();
-			}
-			catch (JiraProxyException jipe)
-			{
-				return jipe.Message + Environment.NewLine + jipe.InnerException.Message;
-			}
+		    return Run<JiraProxyException>(command);
 		}
 
-		protected static ICommandResult Run<T>(Func<T> command, Func<T, ICommandResult> messageMapping)
+		protected static ICommandResult Run<TResult>(Func<TResult> command, Func<TResult, ICommandResult> messageMapping)
 		{
-			try
-			{
-				return messageMapping(command());
-			}
-			catch (JiraProxyException jipe)
-			{
-				return CommandResult.Exception(jipe);
-			}
-		}
+            return Run<TResult, JiraProxyException>(command, messageMapping);
+        }
 
 		protected static string Run<T>(Func<T> command, Func<T, string> messageMapping)
 		{
-			try
-			{
-				return messageMapping(command());
-			}
-			catch (JiraProxyException jipe)
-			{
-				return CommandResult.Exception(jipe).HumanReadable;
-			}
+		    return Run<T, JiraProxyException>(command, messageMapping);
 		}
 
 		protected static string Run(Action command, string message)
 		{
-			try
-			{
-				command();
-				return message;
-			}
-			catch (JiraProxyException jipe)
-			{
-				return jipe.Message + Environment.NewLine + jipe.InnerException.Message;
-			}
-		}
+            return Run<JiraProxyException>(command, message);
+        }
 
 		protected static string UrlFor(RemoteIssue issue)
 		{

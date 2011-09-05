@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2011 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,49 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System;
-using Binboo.Core.Commands.Support;
-using Binboo.Jira.Integration;
-using Binboo.Jira.Tests.Mocks;
-using Moq;
-using NUnit.Framework;
+using System.Collections.Generic;
+using Binboo.Core.Persistence;
 
-namespace Binboo.Jira.Tests.Tests.Commands
+namespace Binboo.Plugins.Tests.Foundation.Mocks
 {
-	internal class CommandMock<T> : IDisposable where T : IBotCommand
+	class DummyStorage : IStorage
 	{
-		private readonly Mock<IJiraProxy> _mock;
-		private readonly T _command;
-		private bool _exceptionThrown;
+	    public object Value { get; set; }
 
-		public CommandMock(T command, Mock<IJiraProxy> mock)
+	    public object this[string name]
 		{
-			_mock = mock;
-			_command = command;
-			_command.Storage = new DummyStorage();
+			get { return _items[name]; }
+			set { _items[name] = value; }
 		}
 
-		public ICommandResult Process(IContext context)
+		public bool Contains(string name)
 		{
-			AppDomain.CurrentDomain.FirstChanceException += (sender, args) => 
-			{
-				_exceptionThrown = args.Exception.GetType() == typeof (AssertionException);
-			};
-
-			return _command.Process(context);
+			return _items.ContainsKey(name);
 		}
 
-		public void Verify()
-		{
-			_mock.VerifyAll();
-		}
-
-		public void Dispose()
-		{
-			if (!_exceptionThrown)
-			{
-				_mock.VerifyAll();
-			}
-		}
+	    private readonly IDictionary<string, object> _items = new Dictionary<string, object>();
 	}
 }

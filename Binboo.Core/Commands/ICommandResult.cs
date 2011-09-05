@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2011 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,28 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+using System;
 
-namespace Binboo.Core.Commands.Support
+namespace Binboo.Core.Commands
 {
-	public class Context : IContext
+	public interface ICommandResult
 	{
-		public Context(string userName, string args)
-		{
-			_args = args;
-			_userName = userName;
-		}
-
-		public string Arguments
-		{
-			get { return _args; }
-		}
-
-		public string UserName
-		{
-			get { return _userName; }
-		}
-
-		private readonly string _args;
-		private readonly string _userName;
+		CommandStatus Status { get; }
+		string HumanReadable { get; }
+		string PipeValue { get; }
+		T PipeThrough<T>(string originalArgs, Func<string, T> func);
 	}
 }

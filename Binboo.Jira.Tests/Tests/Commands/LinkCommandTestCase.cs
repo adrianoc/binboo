@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  **/
 using System;
+using Binboo.Core;
 using Binboo.Core.Commands.Support;
 using Binboo.Jira.Commands;
 using Binboo.Core.Configuration;

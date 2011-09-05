@@ -31,6 +31,8 @@ namespace Binboo.Core.Tests.Tests
 			var userMock = new Mock<SKYPE4COMLib.User>();
 			userMock.Setup(user => user.IsBlocked).Returns(false);
 			userMock.Setup(user => user.Handle).Returns("test");
+			userMock.Setup(user => user.LanguageCode).Returns("cz");
+			userMock.Setup(user => user.CountryCode).Returns("cn");
 
 			return userMock.Object;
 		}

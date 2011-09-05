@@ -23,8 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq.Expressions;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Commands.Support;
 using Binboo.Core.Plugins;
 using Binboo.Core.Tests.Tests.Support;
 

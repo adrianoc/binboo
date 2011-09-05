@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2010 Adriano Carlos Verona
+ * Copyright (c) 2009 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,31 +19,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Collections.Generic;
+
 using Binboo.Core.Persistence;
 
-namespace Binboo.Jira.Tests.Mocks
+namespace Binboo.Core.Commands
 {
-	class DummyStorage : IStorage
+	public interface IBotCommand
 	{
-		public object Value
-		{
-			get { return _value; }
-			set { _value = value; }
-		}
+		void Initialize();
+		IStorage Storage { set; }
 
-		public object this[string name]
-		{
-			get { return _items[name]; }
-			set { _items[name] = value; }
-		}
-
-		public bool Contains(string name)
-		{
-			return _items.ContainsKey(name);
-		}
-		
-		private object _value;
-		private IDictionary<string, object> _items = new Dictionary<string, object>();
+		string Help { get; }
+		string Id { get; }
+		ICommandResult Process(IContext context);
 	}
 }

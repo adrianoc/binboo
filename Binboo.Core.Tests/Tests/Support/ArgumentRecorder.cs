@@ -22,8 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Commands.Support;
 
 namespace Binboo.Core.Tests.Tests.Support
 {

@@ -72,7 +72,67 @@ namespace Binboo.Core.Commands.Support
 			return Regex.Replace(contents, "%cmd%", command);
 		}
 
-		private readonly string _help;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TException">Type of exception that may be thrown by the command.</typeparam>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        protected static string Run<TException>(Func<string> command) where TException : Exception
+        {
+            try
+            {
+                return command();
+            }
+            catch (TException ex)
+            {
+                return SafeMessage(ex) + Environment.NewLine + SafeMessage(ex.InnerException);
+            }
+        }
+
+        private static string SafeMessage<TException>(TException ex) where TException : Exception
+        {
+            return ex != null ? ex.Message : string.Empty;
+        }
+
+        protected static ICommandResult Run<TResult, TException>(Func<TResult> command, Func<TResult, ICommandResult> messageMapping) where TException : Exception
+        {
+            try
+            {
+                return messageMapping(command());
+            }
+            catch (TException ex)
+            {
+                return CommandResult.Exception(ex);
+            }
+        }
+
+        protected static string Run<TResult, TException>(Func<TResult> command, Func<TResult, string> messageMapping) where TException : Exception
+        {
+            try
+            {
+                return messageMapping(command());
+            }
+            catch (TException ex)
+            {
+                return CommandResult.Exception(ex).HumanReadable;
+            }
+        }
+
+        protected static string Run<TException>(Action command, string message) where TException : Exception
+        {
+            try
+            {
+                command();
+                return message;
+            }
+            catch (TException ex)
+            {
+                return ex.Message + Environment.NewLine + ex.InnerException.Message;
+            }
+        }
+
+        private readonly string _help;
 		private IStorage _storage;
 	}
 }

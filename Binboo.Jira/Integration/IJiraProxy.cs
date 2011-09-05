@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace Binboo.Jira.Integration
 {
-	internal interface IJiraProxy
+    public interface IJiraProxy
 	{
 		void LogOut();
 		RemoteIssue[] SearchIssues(string content);

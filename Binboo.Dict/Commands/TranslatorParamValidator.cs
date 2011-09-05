@@ -19,12 +19,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-namespace Binboo.Core.Commands.Support
+using Binboo.Core.Commands.Arguments;
+
+namespace Binboo.Dict.Commands
 {
-	public enum CommandStatus
-	{
-		Success,
-		Exception,
-		Error
-	}
+    class TranslatorParamValidator : ParamValidator
+    {
+        protected TranslatorParamValidator(string regex, bool optional) : base(regex, optional)
+        {
+        }
+
+        protected TranslatorParamValidator(string regex, params ParamValidator[] validators) : base(regex, validators)
+        {
+        }
+
+        public static readonly ParamValidator SourceLanguage = new TranslatorParamValidator(@"(?<param>[a-z]*)\s*\>", optional: false);
+        public static readonly ParamValidator TargetLanguage = new TranslatorParamValidator(@"\<(?<param>[a-z]+)", optional: false);
+    }
 }

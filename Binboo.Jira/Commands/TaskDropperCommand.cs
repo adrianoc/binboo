@@ -21,8 +21,9 @@
  **/
 
 using System.Text;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Commands.Support;
 using Binboo.Jira.Integration;
 
 namespace Binboo.Jira.Commands

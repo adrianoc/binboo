@@ -24,8 +24,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Commands.Support;
 using Binboo.Jira.Integration;
 
 namespace Binboo.Jira.Commands
@@ -43,7 +44,7 @@ namespace Binboo.Jira.Commands
 
 		protected override ICommandResult ProcessCommand(IContext context)
 		{
-			return CalculateIDs(OptionalArgumentOrDefault(CollectArguments(context), "status", "all"));
+			return CalculateIDs(CollectArguments(context)["status"].ValueOrDefault("all"));
 		}
 
 		private IDictionary<string, Argument> CollectArguments(IContext context)
