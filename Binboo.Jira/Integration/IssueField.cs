@@ -26,7 +26,7 @@ using System.Linq.Expressions;
 
 namespace Binboo.Jira.Integration
 {
-	internal class IssueField
+    public class IssueField
 	{
 		internal static IssueField Assignee = FieldName((RemoteIssue r) => r.assignee);
 		internal static IssueField Description = FieldName((RemoteIssue r) => r.description);

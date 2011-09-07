@@ -36,7 +36,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: InternalsVisibleTo("Binboo.Tests")]
-//TODO: Get rid of the dependency of Binboo.Core.Tests on Binboo.Jira
-[assembly: InternalsVisibleTo("Binboo.Core.Tests")]
 [assembly: InternalsVisibleTo("Binboo.Jira.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

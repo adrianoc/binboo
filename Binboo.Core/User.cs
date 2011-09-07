@@ -20,14 +20,19 @@
  * THE SOFTWARE.
  **/
 
+using System;
+using System.Globalization;
+using Binboo.Core.Framework;
+
 namespace Binboo.Core
 {
-    public class User
+    public class User : IUser
 	{
-		public User(string name, string password)
+		public User(string name, string password, string countryCode = null)
 		{
 			_name = name;
 			_password = password;
+		    _countryCode = countryCode ?? CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
 		}
 
 		public string Password
@@ -41,7 +46,13 @@ namespace Binboo.Core
 			get { return _name; }
 		}
 
-		private string _password;
-		private readonly string _name;
+        public string CountryCode
+        {
+            get { return _countryCode; }
+        }
+
+        private string _password;
+        private readonly string _countryCode;
+        private readonly string _name;
 	}
 }

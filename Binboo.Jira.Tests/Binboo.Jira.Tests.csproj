@@ -48,7 +48,6 @@
     </Compile>
     <Compile Include="Tests\Arguments\ArgumentsTestCase.cs" />
     <Compile Include="Tests\Arguments\ParamValidatorTestCase.cs" />
-    <Compile Include="Tests\Commands\CommandMock.cs" />
     <Compile Include="Tests\Commands\CountIdsTestCase.cs" />
     <Compile Include="Tests\Commands\EstimateCommandTestCase.cs" />
     <Compile Include="Tests\Commands\FileIssueTestCase.cs" />
@@ -70,9 +69,6 @@
     <Compile Include="Tests\Commands\SetOrderCommandTestCase.Helper.cs" />
     <Compile Include="Tests\Commands\TaskDropperCommandTestCase.cs" />
     <Compile Include="Tests\Integration\JiraHttp\JiraHttpProxyTestCase.cs" />
-    <Compile Include="Mocks\DummyStorage.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\IssueTestService.cs" />
   </ItemGroup>
@@ -88,6 +84,10 @@
     <ProjectReference Include="..\Binboo.Jira\Binboo.Jira.csproj">
       <Project>{1E7398B3-9EED-451A-852B-AD9000C1949D}</Project>
       <Name>Binboo.Jira</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Binboo.Plugins.Tests.Foundation\Binboo.Plugins.Tests.Foundation.csproj">
+      <Project>{1CE3DA6D-F44F-4319-8B59-233041B47C71}</Project>
+      <Name>Binboo.Plugins.Tests.Foundation</Name>
     </ProjectReference>
     <ProjectReference Include="..\TCL.Net\TCL.Net.csproj">
       <Project>{E468BBD6-A194-455F-A157-E22CF2726B1C}</Project>

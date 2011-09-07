@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Binboo.Core.Commands.Support;
+using Binboo.Core.Commands;
 using Binboo.Jira.Commands;
 using Binboo.Jira.Integration;
 using Moq;

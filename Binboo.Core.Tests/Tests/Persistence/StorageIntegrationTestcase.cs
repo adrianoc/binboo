@@ -19,11 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System.Linq;
-using Binboo.Core.Commands.Support;
+using Binboo.Core.Commands;
 using Binboo.Core.Persistence;
-using Binboo.Tests;
-using Binboo.Tests.Mocks;
 using NUnit.Framework;
 
 namespace Binboo.Core.Tests.Tests.Persistence

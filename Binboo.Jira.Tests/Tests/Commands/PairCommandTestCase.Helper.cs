@@ -23,7 +23,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Binboo.Core.Commands.Support;
+using Binboo.Core.Commands;
 using Binboo.Core.Configuration;
 using NUnit.Framework;
 

@@ -21,8 +21,9 @@
  **/
 
 using System;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.Jira.Integration;
 
@@ -55,12 +56,12 @@ namespace Binboo.Jira.Commands
 
 			return Run(
 						() => _jira.FileIssue(
-									ConfigServices.IMUserToIssueTrackerUser(context.UserName),
+									ConfigServices.IMUserToIssueTrackerUser(context.User.Name),
 									arguments["project"].Value,
 									arguments["summary"].Value,
-									OptionalArgumentOrDefault(arguments, "description", String.Empty),
-									IssueType.Parse(OptionalArgumentOrDefault(arguments, "type", "bug")).Id,
-									OptionalArgumentOrDefault(arguments, "order", DefaultIssueOrder)),
+									arguments["description"].ValueOrDefault(String.Empty),
+									IssueType.Parse(arguments["type"].ValueOrDefault("bug")).Id,
+									arguments["order"].ValueOrDefault(DefaultIssueOrder)),
 
 						mapping);
 		}

@@ -22,8 +22,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Commands.Support;
 using Binboo.Jira.Integration;
 
 namespace Binboo.Jira.Commands
@@ -44,7 +45,7 @@ namespace Binboo.Jira.Commands
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context);
 			return ResolveIssue(
 						arguments["issueId"],
-						OptionalArgumentOrDefault(arguments, "comment", string.Empty),
+						arguments["comment"].ValueOrDefault(string.Empty),
 						arguments["resolution"],
 						arguments["fixedInVersion"]);
 		}

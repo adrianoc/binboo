@@ -21,6 +21,7 @@
  **/
 using System.Linq;
 using Binboo.Jira.Commands;
+using Binboo.Jira.Integration;
 using NUnit.Framework;
 
 namespace Binboo.Jira.Tests.Tests.Commands

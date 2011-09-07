@@ -19,12 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.Jira.Integration;
 
@@ -75,7 +75,10 @@ namespace Binboo.Jira.Commands
 			Assignees assignees = ResolveAssignees(context, arguments["toUser"], arguments["peer"]);
 			var tickets = arguments["issueId"].Values;
 
-			if (assignees == null) return CommandResult.Fail(string.Format("Failed to assign issue {0}; assignee not informed and no previous assignment found for user '{1}'", CommaSeparated(tickets), context.UserName));
+			if (assignees == null)
+			{
+			    return CommandResult.Fail(string.Format("Failed to assign issue {0}; assignee not informed and no previous assignment found for user '{1}'", CommaSeparated(tickets), context.User.Name));
+			}
 
 			var sb = new StringBuilder();
 			foreach (var ticket in tickets)
@@ -98,13 +101,13 @@ namespace Binboo.Jira.Commands
 		{
 			if (assignee.IsPresent)
 			{
-				var resolvedAssignee = ConfigServices.ResolveUser(assignee.Value, context.UserName);
+				var resolvedAssignee = ConfigServices.ResolveUser(assignee.Value, context.User.Name);
 				var peerField = IssueField.CustomField(CustomFieldId.Peers) <= Peer(context, peer);
 
-				return AddToAssigneesMap(context.UserName, resolvedAssignee, peerField);
+				return AddToAssigneesMap(context.User.Name, resolvedAssignee, peerField);
 			}
 			
-			return LookupAssignees(context.UserName);
+			return LookupAssignees(context.User.Name);
 		}
 
 		private Assignees LookupAssignees(string userName)
@@ -147,7 +150,7 @@ namespace Binboo.Jira.Commands
 
 		private static string Peer(IContext context, Argument peer)
 		{
-			return peer.IsPresent ? ConfigServices.ResolveUser(peer, context.UserName) : NoOne ;
+			return peer.IsPresent ? ConfigServices.ResolveUser(peer, context.User.Name) : NoOne ;
 		}
 		
 		private class Assignees

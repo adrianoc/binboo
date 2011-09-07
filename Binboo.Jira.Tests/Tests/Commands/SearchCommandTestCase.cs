@@ -22,6 +22,7 @@
 
 using System;
 using System.Linq;
+using Binboo.Core;
 using Binboo.Core.Commands.Support;
 using Binboo.Jira.Commands;
 using Binboo.Jira.Integration;

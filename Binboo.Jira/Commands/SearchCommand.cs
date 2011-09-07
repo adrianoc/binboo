@@ -24,8 +24,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Binboo.Core;
+using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Commands.Support;
 using Binboo.Jira.Integration;
 
 namespace Binboo.Jira.Commands
@@ -47,7 +48,7 @@ namespace Binboo.Jira.Commands
 
 			var result = Run(() =>
 			           	{
-			           		string status = OptionalArgumentOrDefault(arguments, "status", IssueStatus.Open.Description);
+			           		string status = arguments["status"].ValueOrDefault(IssueStatus.Open.Description);
 			           		
 							var sb = new StringBuilder();
 							int max = 0;

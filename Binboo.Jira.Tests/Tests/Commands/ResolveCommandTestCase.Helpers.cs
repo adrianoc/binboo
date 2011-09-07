@@ -50,7 +50,7 @@ namespace Binboo.Jira.Tests.Tests.Commands
 			using (var commandMock = NewCommand<ResolveIssueCommand>(ExpectedMethodCalls(ticket, noQuotesComment, resolution, fixedInVersions)))
 			{
 				var contextMock = ContextMockFor("resolving-user", String.Format("{0} \"{1}\"{2} {3}", ticket, resolution.Description.ToLower(), fixedInVersions, String.IsNullOrEmpty(comment) ? "" : (" " + comment)));
-				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
+				contextMock.Setup(ctx => ctx.User.Name).Returns("unit.test.user");
 
 				var expectedOutput = string.Format("Issue {0} ('{1}') resolved as '{2}'.", ticket, IssueTestService.Issue[ticket].summary, resolution.Description);
 

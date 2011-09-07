@@ -25,7 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Binboo.Core.Commands.Support
+namespace Binboo.Core.Commands
 {
     public class CommandResult : ICommandResult
 	{

@@ -68,6 +68,7 @@
     <Compile Include="Tests\Commands\CommandPipingTestCase.Success.cs" />
     <Compile Include="Tests\Configuration\ConfigServicesTestCase.cs" />
     <Compile Include="Tests\Configuration\ConfigServicesTestCase.Helper.cs" />
+    <Compile Include="Tests\ContextTestCase.cs" />
     <Compile Include="Tests\CustomFilters\CustomFiltersTestCase.cs" />
     <Compile Include="Tests\Persistence\StorageIntegrationTestcase.cs" />
     <Compile Include="Tests\Persistence\StoragePathTestCase.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Tests\TestWithUser.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Tests\UserTestCase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binboo.Core\Binboo.Core.csproj">

@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace Binboo.Jira.Integration
 {
-	internal class IssueResolution : JiraConstantBase<RemoteResolution, IssueResolution>
+    public class IssueResolution : JiraConstantBase<RemoteResolution, IssueResolution>
 	{
 		internal static IssueResolution Fixed;
 		internal static IssueResolution WontFix;

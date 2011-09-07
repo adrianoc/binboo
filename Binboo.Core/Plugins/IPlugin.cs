@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  **/
 using System.Collections.Generic;
-using Binboo.Core.Commands.Support;
+using Binboo.Core.Commands;
 
 namespace Binboo.Core.Plugins
 {

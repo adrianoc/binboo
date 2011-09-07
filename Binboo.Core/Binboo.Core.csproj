@@ -69,12 +69,12 @@
     <Compile Include="Commands\Arguments\ParamValidator.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\Support\BotCommandBase.cs" />
-    <Compile Include="Commands\Support\CommandResult.cs" />
-    <Compile Include="Commands\Support\CommandStatus.cs" />
-    <Compile Include="Commands\Support\Context.cs" />
-    <Compile Include="Commands\Support\IBotCommand.cs" />
-    <Compile Include="Commands\Support\ICommandResult.cs" />
-    <Compile Include="Commands\Support\IContext.cs" />
+    <Compile Include="Commands\CommandResult.cs" />
+    <Compile Include="Commands\CommandStatus.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="Commands\IBotCommand.cs" />
+    <Compile Include="Commands\ICommandResult.cs" />
+    <Compile Include="IContext.cs" />
     <Compile Include="Commands\UnknowCommand.cs" />
     <Compile Include="Configuration\ConfigServices.cs">
       <SubType>Code</SubType>
@@ -88,10 +88,13 @@
     <Compile Include="Events\ErrorEventArgs.cs" />
     <Compile Include="Exceptions\InvalidCommandArgumentsException.cs" />
     <Compile Include="Exceptions\MessageExtensions.cs" />
+    <Compile Include="Framework\IUser.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\IPluginManager.cs" />
+    <Compile Include="Plugins\AbstractBasePlugin.cs" />
     <Compile Include="Plugins\PluginManagerFactory.cs" />
     <Compile Include="Plugins\MEFBasedPluginManager.cs" />
+    <Compile Include="SkypeExtensions.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Persistence\IStorage.cs" />
     <Compile Include="Persistence\IStorageManager.cs" />

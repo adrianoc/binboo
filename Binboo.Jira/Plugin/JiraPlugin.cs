@@ -20,39 +20,24 @@
  * THE SOFTWARE.
  **/
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using Binboo.Core.Commands;
-using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.Core.Persistence;
 using Binboo.Core.Plugins;
 using Binboo.Jira.Commands;
 using Binboo.Jira.Integration;
 using Binboo.Jira.Integration.JiraHttp;
-using log4net;
 using TCL.Net.Net;
 
 namespace Binboo.Jira.Plugin
 {
     [Export(typeof(IPlugin))]
-    class JiraPlugin : IPlugin
+    class JiraPlugin : AbstractBasePlugin, IPlugin
     {
         public string Name
         {
             get { return "jira"; }
-        }
-
-        public IEnumerable<IBotCommand> Commands
-        {
-            get { return _commands; }
-        }
-
-        public ICommandResult ExecuteCommand(string commandName, IContext context)
-        {
-            var command = _commands.Where(cmd => StringComparer.InvariantCultureIgnoreCase.Compare(cmd.Id, commandName) == 0).Single();
-            return command.Process(context);
         }
 
         [ImportingConstructor]
@@ -74,14 +59,6 @@ namespace Binboo.Jira.Plugin
             AddCommand(storageManager, new SetOrderCommand(JiraProxy(), Binboo_Jira.SetOrder));
             AddCommand(storageManager, new LinkIssueCommand(JiraProxy(), Binboo_Jira.Link));
             AddCommand(storageManager, new LabelCommand(JiraProxy(), Binboo_Jira.Label));
-        }
-
-        private void AddCommand(IStorageManager storageManager, IBotCommand command)
-        {
-            command.Storage = storageManager.StorageFor(command.Id);
-            command.Initialize();
-
-            _commands.Add(command);
         }
 
         private JiraProxy JiraProxy()
@@ -111,8 +88,5 @@ namespace Binboo.Jira.Plugin
         }
 
         private JiraProxy _jira;
-        private readonly IList<IBotCommand> _commands = new List<IBotCommand>();
-
-        private readonly ILog _log = LogManager.GetLogger(typeof(JiraPlugin));
     }
 }

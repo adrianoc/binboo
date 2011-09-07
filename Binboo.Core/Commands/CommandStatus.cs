@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2011 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,18 +19,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
-using Binboo.Core.Persistence;
-
-namespace Binboo.Core.Commands.Support
+namespace Binboo.Core.Commands
 {
-	public interface IBotCommand
+	public enum CommandStatus
 	{
-		void Initialize();
-		IStorage Storage { set; }
-
-		string Help { get; }
-		string Id { get; }
-		ICommandResult Process(IContext context);
+		Success,
+		Exception,
+		Error
 	}
 }

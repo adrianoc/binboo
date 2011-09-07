@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Reflection;
-using Binboo.Core.Commands.Support;
+using Binboo.Core.Commands;
 using Binboo.Core.Plugins;
 using NUnit.Framework;
 

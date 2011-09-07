@@ -35,7 +35,7 @@ namespace Binboo.Jira.Integration
 	/// </summary>
 	/// <typeparam name="JT">Jira type for the constant.</typeparam>
 	/// <typeparam name="D">Constant type (class deriving from JiraConstantBase<JT,D>)</typeparam>
-	internal abstract class JiraConstantBase<JT, D> where D : JiraConstantBase<JT, D>
+	public abstract class JiraConstantBase<JT, D> where D : JiraConstantBase<JT, D>
 	{
 		public string Id
 		{

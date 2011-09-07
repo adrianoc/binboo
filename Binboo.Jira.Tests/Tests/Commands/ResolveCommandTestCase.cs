@@ -71,7 +71,7 @@ namespace Binboo.Jira.Tests.Tests.Commands
 			using (var commandMock = NewCommand<ResolveIssueCommand>())
 			{
 				var contextMock = ContextMockFor(UserName, "TBC-009", "non-existing-resolution");
-				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
+				contextMock.Setup(ctx => ctx.User.Name).Returns("unit.test.user");
 
 				StringAssert.Contains("Resolve: Argument index 1 (vale = 'non-existing-resolution') is invalid", commandMock.Process(contextMock.Object).HumanReadable);
 			}
@@ -83,7 +83,7 @@ namespace Binboo.Jira.Tests.Tests.Commands
 			using (var commandMock = NewCommand<ResolveIssueCommand>(mock => mock.Setup(proxy => proxy.ResolveIssue("TBC-010", It.IsAny<String>(), It.IsAny<IssueResolution>(), It.IsAny<IEnumerable<string>>())).Throws(new JiraProxyException("Failed to resolve issue: TBC-010", new Exception()))))
 			{
 				var contextMock = ContextMockFor(UserName, "TBC-010", "fixed");
-				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
+				contextMock.Setup(ctx => ctx.User.Name).Returns("unit.test.user");
 
 				var result = commandMock.Process(contextMock.Object);
 				Assert.AreEqual("Failed to resolve issue: TBC-010\r\nException of type 'System.Exception' was thrown.", result.HumanReadable);

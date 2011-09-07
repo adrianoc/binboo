@@ -25,7 +25,7 @@ using System.Linq;
 
 namespace Binboo.Jira.Integration
 {
-	internal class CustomFieldId : JiraConstantBase<RemoteField, CustomFieldId>
+    public class CustomFieldId : JiraConstantBase<RemoteField, CustomFieldId>
 	{
 		internal static CustomFieldId OriginalIDsEstimate;
 		internal static CustomFieldId Peers;

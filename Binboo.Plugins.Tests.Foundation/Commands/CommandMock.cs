@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2011 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,13 +19,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+using System;
+using Binboo.Core;
+using Binboo.Core.Commands;
+using Binboo.Plugins.Tests.Foundation.Mocks;
+using Moq;
 
-namespace Binboo.Core.Commands.Support
+namespace Binboo.Plugins.Tests.Foundation.Commands
 {
-	public interface IContext
+    public class CommandMock<TCommand, TMock> : IDisposable where TCommand : IBotCommand where TMock : class
 	{
-		string Arguments { get; }
-		string UserName { get; }
-	}
+		private readonly Mock<TMock> _mock;
+		private readonly TCommand _command;
+		private bool _exceptionThrown;
 
+		public CommandMock(TCommand command, Mock<TMock> mock)
+		{
+			_mock = mock;
+			_command = command;
+			_command.Storage = new DummyStorage();
+		}
+
+		public ICommandResult Process(IContext context)
+		{
+			AppDomain.CurrentDomain.FirstChanceException += (sender, args) => 
+			{
+				//_exceptionThrown = args.Exception.GetType() == typeof (AssertionException);
+			    _exceptionThrown = true;
+			};
+
+		    return _command.Process(context);
+		}
+
+		public void Verify()
+		{
+			_mock.VerifyAll();
+		}
+
+		public void Dispose()
+		{
+			if (!_exceptionThrown)
+			{
+				_mock.VerifyAll();
+			}
+		}
+	}
 }

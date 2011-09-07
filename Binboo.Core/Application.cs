@@ -29,7 +29,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Binboo.Core.Commands.Support;
+using Binboo.Core.Commands;
 using Binboo.Core.Exceptions;
 using Binboo.Core.Persistence;
 using Binboo.Core.Plugins;
@@ -38,6 +38,7 @@ using log4net.Config;
 using SKYPE4COMLib;
 using ErrorEventArgs = Binboo.Core.Events.ErrorEventArgs;
 using ErrorEventHandler = Binboo.Core.Events.ErrorEventHandler;
+using IUser = Binboo.Core.Framework.IUser;
 
 namespace Binboo.Core
 {
@@ -49,27 +50,27 @@ namespace Binboo.Core
 
 		static Application()
 		{
-			XmlConfigurator.Configure(new FileInfo("Binboo.config.xml"));	
+			XmlConfigurator.Configure(new FileInfo("Binboo.config.xml"));
 		}
 
         public static Application WithPluginsFrom(ComposablePartCatalog catalog)
-		{
+        {
             return new Application(catalog);
-		}
+        }
 
         public void Dispose()
-		{
+        {
             var storageManager = StorageManager;
             if (storageManager != null)
             {
                 storageManager.Dispose();
-		}
+            }
         }
 
 	    public ISet<IPlugin> Plugins
-		{
+	    {
             get { return _plugins; }
-		}
+	    }
 
 		public void Stop()
 		{
@@ -270,13 +271,13 @@ namespace Binboo.Core
 		private void SafeProcessCommands(IChatMessage message)
 		{
 		    IPlugin plugin = _plugins.Where( p => p.Name == message.Body.PluginName() ).Single();
-			var results = new List<string>();
+            var results = new List<string>();
 			ICommandResult result = CommandResult.None;
 			foreach (var commandLine in CommandsFor(message.Body))
 			{
 				_log.DebugFormat("Processing command line: {0}", commandLine);
 
-                result = ProcessCommand(message.Sender.Handle, plugin, commandLine, result);
+                result = ProcessCommand(message.Sender.AsUser(), plugin, commandLine, result);
 				results.Add(result.HumanReadable);
 
 				_log.Info(result);
@@ -289,7 +290,7 @@ namespace Binboo.Core
 			message.Chat.SendMessage(resultMessage);
 		}
 
-	    private static ICommandResult ProcessCommand(string user, IPlugin plugin, string commandLine, ICommandResult previousResullt)
+	    private static ICommandResult ProcessCommand(IUser user, IPlugin plugin, string commandLine, ICommandResult previousResullt)
 		{
 			try
 			{
@@ -301,9 +302,9 @@ namespace Binboo.Core
 			}
 		}
 
-        private static ICommandResult SafeProcessCommand(string user, IPlugin plugin, string commandLine, ICommandResult previousResullt)
+        private static ICommandResult SafeProcessCommand(IUser user, IPlugin plugin, string commandLine, ICommandResult previousResullt)
 		{
-			var ctx = PipedContextFor(user, commandLine, previousResullt);
+			var ctx = PipedContextFor(plugin, user, commandLine, previousResullt);
 			return plugin.ExecuteCommand(GetCommandName(commandLine), ctx);
 		}
 
@@ -344,10 +345,10 @@ namespace Binboo.Core
 			return count;
 		}
 
-		private static IContext PipedContextFor(string user, string commandLine, ICommandResult result)
+	    private static IContext PipedContextFor(IPlugin plugin, IUser user, string commandLine, ICommandResult result)
 		{
 			var passedArguments = CommandParameters(commandLine);
-			return result.PipeThrough(passedArguments, pipedArgs => new Context(user, pipedArgs));
+			return result.PipeThrough(passedArguments, pipedArgs => new Context(user, plugin, pipedArgs));
 		}
 
 		private static string CommandParameters(string commandLine)
@@ -377,12 +378,12 @@ namespace Binboo.Core
         //    return NormalizeCommandName(GetCommandName(message));
         //}
 
-		private static string GetCommandName(string message)
+        private static string GetCommandName(string message)
 		{
 			string[] strings = Regex.Split(message, " ");
 			return strings[0];
 		}
-
+        
 		private void RaiseErrorEvent(string message, Exception e)
 		{
 			ErrorEventHandler errorHandler = Error;
@@ -413,22 +414,22 @@ namespace Binboo.Core
 		}
 
         private Application(ComposablePartCatalog catalog)
-		{
+        {
             _commandQueue = new CommandQueue(_exitEvent);
 		
             var pluginManager = PluginManagerFactory.Create(catalog);
             _plugins = pluginManager.Plugins;
 
             StartCommandProcessor();
-		}
-		
+        }
+
         [Import]
         private IStorageManager StorageManager { get; set; }
 
 	    private readonly ISet<IPlugin> _plugins = new HashSet<IPlugin>();
 		private readonly CommandQueue _commandQueue;
 
-		private readonly ILog _log = LogManager.GetLogger(typeof(Application));
+        private readonly ILog _log = LogManager.GetLogger(typeof(Application));
 
 		private ISkype _skype = new Skype();
 		private bool _attached;

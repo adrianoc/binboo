@@ -19,19 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using Binboo.Core.Commands.Support;
 using Binboo.Jira.Commands;
 using Binboo.Jira.Integration;
-using Moq;
+using Binboo.Plugins.Tests.Foundation.Commands;
 
 namespace Binboo.Jira.Tests.Tests.Commands
 {
-	public class JiraCommandTestCaseBase
+	public class JiraCommandTestCaseBase : PluginCommandTestCaseBase<IJiraProxy>
 	{
 		private static readonly RemoteStatus[] WellKnownIssueStatus = 
 												{
@@ -75,9 +69,6 @@ namespace Binboo.Jira.Tests.Tests.Commands
 		protected const int CurrentIteration = 2;
 		private const int NextIteration = CurrentIteration + 1;
 
-		private Mock<IJiraProxy> _jiraProxyMock;
-		private static readonly IDictionary<Type, JiraCommandBase> Commands = new Dictionary<Type, JiraCommandBase>();
-
 		static JiraCommandTestCaseBase()
 		{
 			IssueType.Initialize(WellKnownIssueTypes);
@@ -108,57 +99,11 @@ namespace Binboo.Jira.Tests.Tests.Commands
 			}
 		}
 
-		protected static Mock<IContext> ContextMockFor(string userName, params string[] arguments)
+		protected override T FromCacheOrNew<T>()
 		{
-			var contextMock = new Mock<IContext>();
-			contextMock.Setup(context => context.Arguments).Returns(ZipArguments(arguments));
-			contextMock.Setup(context => context.UserName).Returns(userName);
-			
-			return contextMock;
-		}
-
-		private static string ZipArguments(string[] arguments)
-		{
-			return arguments.Length > 0 ? arguments.Aggregate("", (acc, current) => acc + " " + current).Substring(1) : "";
-		}
-
-		internal CommandMock<T> NewCommand<T, TResult>(Expression<Func<IJiraProxy, TResult>> expectedMethodCall, TResult valueToReturn) where T : JiraCommandBase
-		{
-			_jiraProxyMock = new Mock<IJiraProxy>();
-			_jiraProxyMock.Setup(expectedMethodCall).Returns(valueToReturn);
-
-			return new CommandMock<T>(FromCacheOrNew<T>(), _jiraProxyMock);
-		}
-
-		internal CommandMock<T> NewCommand<T>(params Action<Mock<IJiraProxy>>[] mockSetups) where T: JiraCommandBase
-		{
-			_jiraProxyMock = new Mock<IJiraProxy>();
-			foreach (var setup in mockSetups)
-			{
-				setup(_jiraProxyMock);
-			}
-
-			return new CommandMock<T>(FromCacheOrNew<T>(), _jiraProxyMock);
-		}
-
-		internal void Reset<T>()
-		{
-			if (Commands.ContainsKey(typeof(T)))
-			{
-				Commands.Remove(typeof(T));
-			}
-		}
-
-		private T FromCacheOrNew<T>() where T : JiraCommandBase
-		{
-			if (!Commands.ContainsKey(typeof (T)))
-			{
-				Commands[typeof (T)] = (T) Activator.CreateInstance(typeof (T), new object[] {_jiraProxyMock.Object, typeof (T).Name});
-			}
-
-			JiraCommandBase command = Commands[typeof (T)];
-			command.Proxy = _jiraProxyMock.Object;
-			return (T) command;
+		    var command = (JiraCommandBase) (object) base.FromCacheOrNew<T>();
+		    command.Proxy = _mock.Object;
+			return (T) (object) command;
 		}
 
 		private static RemoteCustomFieldValue[] CustomFields(int iteration, int estimation, params string[] labels)

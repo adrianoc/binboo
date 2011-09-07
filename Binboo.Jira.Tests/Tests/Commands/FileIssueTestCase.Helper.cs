@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  **/
 using System;
-using Binboo.Core.Commands.Support;
+using Binboo.Core.Commands;
 using Binboo.Jira.Commands;
 using Binboo.Jira.Integration;
 using Binboo.Tests.Core.Commands;
@@ -72,7 +72,7 @@ namespace Binboo.Jira.Tests.Tests.Commands
 			using (var commandMock = NewCommand<FileIssueCommand>(proxyMock => proxyMock.Setup(p => p.FileIssue(string.Empty, project.Value, summary.Value, description.Value, issueType.Id, order.Value)).Returns(new RemoteIssue { key = project.Value + "-001", status = "1", created = CreationDate, summary = summary.Value })))
 			{
 				var contextMock = ContextMockFor("creator", String.Format("{0} \"{1}\" {2} {3} type={4}", project.Value, summary.Value, QuotedStringOrEmpty(description), OrderOrEmpty(order), type.Value));
-				contextMock.Setup(ctx => ctx.UserName).Returns("unit.test.user");
+				contextMock.Setup(ctx => ctx.User.Name).Returns("unit.test.user");
 
 				return commandMock.Process(contextMock.Object);
 			}
