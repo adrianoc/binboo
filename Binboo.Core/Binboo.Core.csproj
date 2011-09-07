@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{89B1E578-05FB-4C7A-A561-284F266097A6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Binboo.Core</RootNamespace>
+    <AssemblyName>Binboo.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Db4objects.Db4o">
+      <HintPath>..\Libs\db4o\Db4objects.Db4o.dll</HintPath>
+    </Reference>
+    <Reference Include="Db4objects.Db4o.Linq">
+      <HintPath>..\Libs\db4o\Db4objects.Db4o.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\Libs\log4net\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="SKYPE4COMLib">
+      <HintPath>..\Libs\SKYPE4COMLib.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition.Codeplex">
+      <HintPath>..\Libs\MEF2_Preview3\build\System.ComponentModel.Composition.Codeplex.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition.Registration">
+      <HintPath>..\Libs\MEF2_Preview3\build\System.ComponentModel.Composition.Registration.dll</HintPath>
+    </Reference>
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Application.cs" />
+    <Compile Include="Application.Debug.cs" />
+    <Compile Include="Binboo.Core.Designer.cs">
+      <DependentUpon>Binboo.Core.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="CommandQueue.cs" />
+    <Compile Include="Commands\Arguments\Argument.cs" />
+    <Compile Include="Commands\Arguments\ArgumentCollector.cs" />
+    <Compile Include="Commands\Arguments\ButNotParamValidator.cs" />
+    <Compile Include="Commands\Arguments\DelegatingParamValidator.cs" />
+    <Compile Include="Commands\Arguments\ParamValidator.cs" />
+    <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Commands\Support\BotCommandBase.cs" />
+    <Compile Include="Commands\Support\CommandResult.cs" />
+    <Compile Include="Commands\Support\CommandStatus.cs" />
+    <Compile Include="Commands\Support\Context.cs" />
+    <Compile Include="Commands\Support\IBotCommand.cs" />
+    <Compile Include="Commands\Support\ICommandResult.cs" />
+    <Compile Include="Commands\Support\IContext.cs" />
+    <Compile Include="Commands\UnknowCommand.cs" />
+    <Compile Include="Configuration\ConfigServices.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\HttpInterfaceConfiguration.cs" />
+    <Compile Include="Configuration\IHttpInterfaceConfiguration.cs" />
+    <Compile Include="CustomFilters\CustomPredicateFactory.cs" />
+    <Compile Include="CustomFilters\DisposableCustomFilterPredicate.cs" />
+    <Compile Include="CustomFilters\ICustomFilterPredicate.cs" />
+    <Compile Include="CustomFilters\PredicateServices.cs" />
+    <Compile Include="Events\ErrorEventArgs.cs" />
+    <Compile Include="Exceptions\InvalidCommandArgumentsException.cs" />
+    <Compile Include="Exceptions\MessageExtensions.cs" />
+    <Compile Include="Plugins\IPlugin.cs" />
+    <Compile Include="Plugins\IPluginManager.cs" />
+    <Compile Include="Plugins\PluginManagerFactory.cs" />
+    <Compile Include="Plugins\MEFBasedPluginManager.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="Persistence\IStorage.cs" />
+    <Compile Include="Persistence\IStorageManager.cs" />
+    <Compile Include="Persistence\Storage.cs" />
+    <Compile Include="Persistence\Storage.InnerClasses.cs" />
+    <Compile Include="Persistence\StorageManager.cs" />
+    <Compile Include="Util\ExtensionMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TCL.Net\TCL.Net.csproj">
+      <Project>{E468BBD6-A194-455F-A157-E22CF2726B1C}</Project>
+      <Name>TCL.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Binboo.Core.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Binboo.Core.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

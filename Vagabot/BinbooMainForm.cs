@@ -21,28 +21,31 @@
  **/
 
 using System;
+using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.Primitives;
 using System.Windows.Forms;
 
 using Binboo.Core;
-using Binboo.Core.Commands;
 using Binboo.Core.Configuration;
 using Binboo.Core.Events;
-using Binboo.JiraIntegration;
-using Binboo.JiraIntegration.JiraHttp;
+using Binboo.Core.Persistence;
 using Microsoft.Win32;
-using TCL.Net.Net;
 
 namespace Binboo
 {
-	public partial class BinbooMainForm : Form
+    //TODO: Detect when no plugins can be fould.
+    //TODO: How to handle errors?
+    //          - Config file not found
+    //          - Failure to resolve imports
+    //          - Exceptions in general
+    //TODO: How to avoid configuration duplication ?
+    public partial class BinbooMainForm : Form
 	{
 		public BinbooMainForm()
 		{
 			InitializeComponent();
 
 			InitializeUI();
-
-			InitializeCommmands();
 
 			RegisterForSleepModeNotifications();
 
@@ -66,7 +69,7 @@ namespace Binboo
 		{
 			if (e.Mode == PowerModes.Resume)
 			{
-				_jira = null;
+				//_jira = null;
 			}
 		}
 
@@ -89,10 +92,11 @@ namespace Binboo
 
 		private void Quit(object sender, EventArgs e)
 		{
-			if (null != _jira)
-			{
-				_jira.LogOut();
-			}
+            //TODO: Notify plugins that we ate going to unload.
+            //if (null != _jira)
+            //{
+            //    _jira.LogOut();
+            //}
 
 			Close();
 		}
@@ -118,60 +122,16 @@ namespace Binboo
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					ConfigServices.User = new JiraUser(f.User, f.Password);	
+					ConfigServices.User = new User(f.User, f.Password);	
 				}
 			}
 		}
 
-		private void InitializeCommmands()
-		{
-			_controler
-				.AddCommand(new FileIssueCommand(JiraProxy(), Binboo.File))
-				.AddCommand(new EstimateCommand(JiraProxy(), Binboo.Estimate))
-				.AddCommand(new ResolveIssueCommand(JiraProxy(), Binboo.Resolve))
-				.AddCommand(new SearchCommand(JiraProxy(), Binboo.Search))
-				.AddCommand(new CountIDSCommand(JiraProxy(), Binboo.CountIDS))
-				.AddCommand(new HelpCommand(_controler, Binboo.Help))
-				.AddCommand(new IssueCommand(JiraProxy(), Binboo.Issue))
-				.AddCommand(new IssueAssignCommand(JiraProxy(), Binboo.Assign))
-				.AddCommand(new TaskDropperCommand(JiraProxy(), Binboo.Drop))
-				.AddCommand(new ListProjectsCommand(JiraProxy(), Binboo.ListProjects))
-				.AddCommand(new PairsCommand(JiraProxy(), Binboo.Pairs))
-				.AddCommand(new SetOrderCommand(JiraProxy(), Binboo.SetOrder))
-				.AddCommand(new LinkIssueCommand(JiraProxy(), Binboo.Link))
-				.AddCommand(new LabelCommand(JiraProxy(), Binboo.Label));
-		}
-
-		private JiraProxy JiraProxy()
-		{
-			if (_jira == null)
-			{
-				try
-				{
-					_jira = new JiraProxy(
-									ConfigServices.EndPoint, 
-									ConfigServices.User,
-									new JiraHttpProxy(new SystemNetHttpFactory(), ConfigServices.HttpInterfaceConfiguration));
-				}
-				catch(Exception e)
-				{
-					if (MessageBox.Show("Unable to log user on. Have you copied config file from another machine?", "Error", MessageBoxButtons.OK | MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
-					{
-						SetJiraAccount(null, EventArgs.Empty);
-					}
-					
-					Environment.Exit(-1);
-				}
-			}
-
-			return _jira;
-		}
-
-		private void popupShowConsole_Click(object sender, EventArgs e)
-		{
-		}
-
-		private JiraProxy _jira;
-		private readonly Core.Application _controler = new Core.Application("Jira");
+	    private static ComposablePartCatalog Catalog()
+        {
+            return new AggregateCatalog(new DirectoryCatalog("Plugins"), new TypeCatalog(typeof (IStorageManager)));
+        }
+        
+        private readonly Core.Application _controler = Core.Application.WithPluginsFrom(Catalog());
 	}
 }
