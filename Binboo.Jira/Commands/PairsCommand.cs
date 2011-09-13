@@ -26,8 +26,9 @@ using System.Linq;
 using System.Text;
 using Binboo.Core;
 using Binboo.Core.Commands;
-using Binboo.Core.Configuration;
+using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
+using Binboo.Jira.Plugin;
 
 namespace Binboo.Jira.Commands
 {
@@ -44,7 +45,7 @@ namespace Binboo.Jira.Commands
 
 		protected override ICommandResult ProcessCommand(IContext context)
 		{
-			IEnumerator<string> randomUsers = Random(ConfigServices.PairingUsers);
+			var randomUsers = Random(JiraConfig.Instance.PairingUsers);
 			var msg = new StringBuilder("Pairs: ");
 
 			string pair = NextPair(randomUsers);
@@ -70,7 +71,7 @@ namespace Binboo.Jira.Commands
 		private IEnumerator<string> Random(IEnumerable<string> enumerable)
 		{
 			List<string> items = enumerable.ToList();
-			Random rand = new Random(Environment.TickCount + GC.CollectionCount(1));
+			var rand = new Random(Environment.TickCount + GC.CollectionCount(1));
 
 			IList<int> alreadyReturned = new List<int>();
 			int i = 0;

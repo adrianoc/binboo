@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Binboo.Core.Configuration
+namespace Binboo.Jira.Configuration
 {
 	class HttpInterfaceConfiguration : IHttpInterfaceConfiguration
 	{

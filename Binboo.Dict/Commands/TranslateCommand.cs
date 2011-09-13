@@ -60,7 +60,8 @@ namespace Binboo.Dict.Commands
             return CommandResult.Success(Run<Exception>(delegate
             {
                 //TODO: Move AppId to configuration
-                var translated = _languageSrv.Translate(  "710BDF670CF25F48C327B3BDD0890EE507AC3384",
+                var translated = _languageSrv.Translate(
+												"710BDF670CF25F48C327B3BDD0890EE507AC3384",
                                                 arguments["toBeTranslated"],
                                                 EnsureValid(arguments["sourceLanguage"], context.User.CountryCode),
                                                 arguments["targetLanguage"],

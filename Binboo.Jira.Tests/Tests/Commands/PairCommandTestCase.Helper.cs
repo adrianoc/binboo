@@ -24,7 +24,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Binboo.Core.Commands;
-using Binboo.Core.Configuration;
+using Binboo.Jira.Configuration;
+using Binboo.Jira.Plugin;
 using NUnit.Framework;
 
 namespace Binboo.Jira.Tests.Tests.Commands
@@ -34,7 +35,7 @@ namespace Binboo.Jira.Tests.Tests.Commands
 		private static void AssertPairsAreValid(string expectedMessageRegExp, ICommandResult actual)
 		{
 			MatchCollection matches = Regex.Matches(actual.HumanReadable, expectedMessageRegExp);
-			CollectionAssert.AreEquivalent(ConfigServices.PairingUsers.Select(userName => FirstUsableName(userName)), DevNamesFrom(matches[0].Groups));
+			CollectionAssert.AreEquivalent(JiraConfig.Instance.PairingUsers.Select(userName => FirstUsableName(userName)), DevNamesFrom(matches[0].Groups));
 		}
 
 		private static string FirstUsableName(string jiraName)

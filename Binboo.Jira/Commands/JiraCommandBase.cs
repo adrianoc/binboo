@@ -28,7 +28,9 @@ using Binboo.Core.Commands;
 using Binboo.Core.Commands.Support;
 using Binboo.Core.Configuration;
 using Binboo.Core.Exceptions;
+using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
+using Binboo.Jira.Plugin;
 
 namespace Binboo.Jira.Commands
 {
@@ -75,7 +77,7 @@ namespace Binboo.Jira.Commands
 
 		protected static string UrlFor(RemoteIssue issue)
 		{
-			return String.Format("{0}/browse/{1}", ConfigServices.Server, issue.key);
+			return String.Format("{0}/browse/{1}", JiraConfig.Instance.Server, issue.key);
 		}
 
 		internal IJiraProxy Proxy

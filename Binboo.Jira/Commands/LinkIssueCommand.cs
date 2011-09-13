@@ -24,7 +24,9 @@ using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Configuration;
+using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
+using Binboo.Jira.Plugin;
 using TCL.Net.Extensions;
 
 namespace Binboo.Jira.Commands
@@ -81,7 +83,7 @@ namespace Binboo.Jira.Commands
 
 		private static LinkConfiguration Configuration()
 		{
-			return ConfigServices.CommandConfigurationFor("link").Deserialize<LinkConfiguration>();
+			return JiraConfig.Instance.CommandConfigurationFor("link").Deserialize<LinkConfiguration>();
 		}
 
 		private string ResultMessageFor(string failureMessage, string successMessage)

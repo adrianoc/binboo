@@ -70,6 +70,8 @@
     <Compile Include="Commands\SetOrderCommand.cs" />
     <Compile Include="Commands\JiraCommandBase.cs" />
     <Compile Include="Commands\TaskDropperCommand.cs" />
+    <Compile Include="Configuration\HttpInterfaceConfiguration.cs" />
+    <Compile Include="Configuration\IHttpInterfaceConfiguration.cs" />
     <Compile Include="Integration\CustomFieldId.cs" />
     <Compile Include="Integration\ExpirationStrategy.cs" />
     <Compile Include="Integration\ExtensionsHelper.cs" />
@@ -85,6 +87,8 @@
     <Compile Include="Integration\JiraHttp\JiraHttpProxy.cs" />
     <Compile Include="Integration\JiraProxy.cs" />
     <None Include="Integration\JiraWS\JiraSoapServiceService.cs" />
+    <Compile Include="Configuration\IJiraConfig.cs" />
+    <Compile Include="Configuration\JiraConfig.cs" />
     <Compile Include="Plugin\JiraPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

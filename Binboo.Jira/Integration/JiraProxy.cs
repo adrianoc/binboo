@@ -25,8 +25,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+
 using Binboo.Core;
-using Binboo.Core.Configuration;
+using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration.JiraHttp;
 
 namespace Binboo.Jira.Integration
@@ -219,7 +220,7 @@ namespace Binboo.Jira.Integration
 		public string CreateLink(string source, string linkDescription, string target, bool verbose)
 		{
 			RemoteIssue sourceIssue = GetIssue(source);
-			_httpProxy.Login(ConfigServices.User.Name, ConfigServices.User.Password);
+			_httpProxy.Login(JiraConfig.Instance.User.Name, JiraConfig.Instance.User.Password);
 			return _httpProxy.CreateLink(Int32.Parse(sourceIssue.id), linkDescription, target, verbose);
 		}
 

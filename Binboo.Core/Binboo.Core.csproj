@@ -72,16 +72,16 @@
     <Compile Include="Commands\Support\BotCommandBase.cs" />
     <Compile Include="Commands\CommandResult.cs" />
     <Compile Include="Commands\CommandStatus.cs" />
+    <Compile Include="Configuration\ConfigurationFactory.cs" />
+    <Compile Include="Configuration\ICoreConfig.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Commands\IBotCommand.cs" />
     <Compile Include="Commands\ICommandResult.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="Commands\UnknowCommand.cs" />
-    <Compile Include="Configuration\ConfigServices.cs">
+    <Compile Include="Configuration\CoreConfig.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Configuration\HttpInterfaceConfiguration.cs" />
-    <Compile Include="Configuration\IHttpInterfaceConfiguration.cs" />
     <Compile Include="CustomFilters\CustomPredicateFactory.cs" />
     <Compile Include="CustomFilters\DisposableCustomFilterPredicate.cs" />
     <Compile Include="CustomFilters\ICustomFilterPredicate.cs" />

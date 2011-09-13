@@ -24,8 +24,9 @@ using System;
 using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Configuration;
+using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
+using Binboo.Jira.Plugin;
 
 namespace Binboo.Jira.Commands
 {
@@ -56,7 +57,7 @@ namespace Binboo.Jira.Commands
 
 			return Run(
 						() => _jira.FileIssue(
-									ConfigServices.IMUserToIssueTrackerUser(context.User.Name),
+									JiraConfig.Instance.IMUserToIssueTrackerUser(context.User.Name),
 									arguments["project"].Value,
 									arguments["summary"].Value,
 									arguments["description"].ValueOrDefault(String.Empty),

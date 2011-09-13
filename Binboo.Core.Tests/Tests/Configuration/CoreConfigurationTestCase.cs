@@ -19,28 +19,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
 using System;
-using System.Linq.Expressions;
+using System.IO;
+using System.Xml;
 using Binboo.Core.Configuration;
 using NUnit.Framework;
 
 namespace Binboo.Core.Tests.Tests.Configuration
 {
-	partial class ConfigServicesTestCase
+	[TestFixture]
+	public class CoreConfigurationTestCase
 	{
-		private void AssertJiraHttpLink(Expression<Func<IHttpInterfaceConfiguration, string>> configPropertyAccessor)
+		private ICoreConfig _coreConfig;
+
+		[SetUp]
+		public void SetUp()
 		{
-			IHttpInterfaceConfiguration httpConfig = ConfigServices.HttpInterfaceConfiguration;
-			Assert.AreEqual(
-					ExpectedUrlFrom(configPropertyAccessor),
-					configPropertyAccessor.Compile().Invoke(httpConfig));
+			_coreConfig = ConfigurationFactory.Create();
 		}
 
-		private string ExpectedUrlFrom(Expression<Func<IHttpInterfaceConfiguration, string>> configPropExpression)
+		[Test]
+		public void StoragePath_Temp_CorrectFolder()
 		{
-			MemberExpression me = (MemberExpression)configPropExpression.Body;
-			string propertyName = me.Member.Name.ToLowerInvariant();
-			return propertyName.Insert(propertyName.Length - "url".Length, ".");
+			Assert.That(_coreConfig.StoragePath, Is.EqualTo(Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "BinbooTest")));
 		}
 	}
 }

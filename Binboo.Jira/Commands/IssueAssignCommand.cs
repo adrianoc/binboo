@@ -26,7 +26,9 @@ using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Configuration;
+using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
+using Binboo.Jira.Plugin;
 
 namespace Binboo.Jira.Commands
 {
@@ -101,7 +103,7 @@ namespace Binboo.Jira.Commands
 		{
 			if (assignee.IsPresent)
 			{
-				var resolvedAssignee = ConfigServices.ResolveUser(assignee.Value, context.User.Name);
+				var resolvedAssignee = JiraConfig.Instance.ResolveUser(assignee.Value, context.User.Name);
 				var peerField = IssueField.CustomField(CustomFieldId.Peers) <= Peer(context, peer);
 
 				return AddToAssigneesMap(context.User.Name, resolvedAssignee, peerField);
@@ -150,7 +152,7 @@ namespace Binboo.Jira.Commands
 
 		private static string Peer(IContext context, Argument peer)
 		{
-			return peer.IsPresent ? ConfigServices.ResolveUser(peer, context.User.Name) : NoOne ;
+			return peer.IsPresent ? JiraConfig.Instance.ResolveUser(peer, context.User.Name) : NoOne ;
 		}
 		
 		private class Assignees

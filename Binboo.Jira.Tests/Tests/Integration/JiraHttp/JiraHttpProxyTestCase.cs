@@ -22,7 +22,7 @@
 
 using System;
 using System.IO;
-using Binboo.Core.Configuration;
+using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration.JiraHttp;
 using Moq;
 using NUnit.Framework;

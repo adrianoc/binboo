@@ -24,9 +24,6 @@ using System;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Windows.Forms;
-
-using Binboo.Core;
-using Binboo.Core.Configuration;
 using Binboo.Core.Events;
 using Binboo.Core.Persistence;
 using Microsoft.Win32;
@@ -122,7 +119,8 @@ namespace Binboo
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					ConfigServices.User = new User(f.User, f.Password);	
+					//TODO: FIX THIS SHIT
+					//CoreConfig.User = new User(f.User, f.Password);	
 				}
 			}
 		}

@@ -21,11 +21,13 @@
  **/
 using System;
 using System.ComponentModel.Composition;
+
 using Binboo.Core.Commands;
-using Binboo.Core.Configuration;
 using Binboo.Core.Persistence;
 using Binboo.Core.Plugins;
+
 using Binboo.Jira.Commands;
+using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
 using Binboo.Jira.Integration.JiraHttp;
 using TCL.Net.Net;
@@ -68,9 +70,9 @@ namespace Binboo.Jira.Plugin
                 try
                 {
                     _jira = new JiraProxy(
-                                    ConfigServices.EndPoint,
-                                    ConfigServices.User,
-                                    new JiraHttpProxy(new SystemNetHttpFactory(), ConfigServices.HttpInterfaceConfiguration));
+                                    JiraConfig.Instance.EndPoint,
+                                    JiraConfig.Instance.User,
+                                    new JiraHttpProxy(new SystemNetHttpFactory(), JiraConfig.Instance.HttpInterfaceConfiguration));
                 }
                 catch (Exception e)
                 {

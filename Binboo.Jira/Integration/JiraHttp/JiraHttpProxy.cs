@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
-using Binboo.Core.Configuration;
+using Binboo.Jira.Configuration;
 using HtmlAgilityPack;
 using TCL.Net;
 using TCL.Net.Extensions;

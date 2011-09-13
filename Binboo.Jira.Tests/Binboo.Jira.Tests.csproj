@@ -71,6 +71,8 @@
     <Compile Include="Tests\Commands\TaskDropperCommandTestCase.cs" />
     <Compile Include="Tests\Integration\JiraHttp\JiraHttpProxyTestCase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\Plugin\JiraConfigTestCase.cs" />
+    <Compile Include="Tests\Plugin\JiraConfigTestCase.Helper.cs" />
     <Compile Include="Utils\IssueTestService.cs" />
   </ItemGroup>
   <ItemGroup>

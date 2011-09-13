@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Net\Http\ContentEncodingcs.cs" />
-    <Compile Include="Net\Http\HttpTestCase.cs" />
     <Compile Include="Net\Http\ContentLengthTestCase.cs" />
     <Compile Include="Net\Http\HttpVariablesTestCaseBase.cs" />
     <Compile Include="Net\Http\PostArgumentsTestCase.cs" />

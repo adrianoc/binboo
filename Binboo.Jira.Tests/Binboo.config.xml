@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <binboo>
   <active refid="unit-test" />
-  
-  <jira id="unit-test">
-    <user name="john doe" password="blabla" />
-    <endpoint value="http://sei.la.com" />
-	<storage path="%TEMP%\BinbooTest" />
-	<im-user-mapping>
-      <user skypeName="susan" jiraName="Susan Murphy" pair ="true"/>
-	  <user skypeName="link" jiraName="The Lost Link" alias="the.lost.LINK"/>
-	  <user skypeName="bob" jiraName="BOB"  pair="true" />
-	  <user skypeName="frank" jiraName="Frank Abagnale Jr." pair="true" />
-	  <user skypeName="carl" jiraName="carl@hanratty.com" pair="true" />
-	</im-user-mapping>
 
-	<http>
+  <core>
+	<storage path="%TEMP%\BinbooTest" />  
+  </core>
+
+  <configuration id="unit-test">
+	
+	<jira>
+	  <user name="john doe" password="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAACQThqjwfwk6FoDpUwgpeBQAAAAACAAAAAAAQZgAAAAEAACAAAAA7FjA8Cub+bVdf0WMKnZhTRNe1XaHXx98EtoDj2L4NfQAAAAAOgAAAAAIAACAAAABDpaJbzdthb6rkTf7DUwhKcg1+ncorIn5U5vYx8qGBdRAAAADfRbgSYBpseGf0Z62SuhpsQAAAACommmejjWQ9oPSaex4vVluxbmO65IaZyT7auFlOx8y3JQYTPoGoHQkA2eCc8viX6pQpuQPGJDfK74/6h8Q67a8=" />
+	  <endpoint value="http://sei.la.com" />
+	  <im-user-mapping>
+		<user skypeName="susan" jiraName="Susan Murphy" pair ="true"/>
+		<user skypeName="link" jiraName="The Lost Link" alias="the.lost.LINK"/>
+		<user skypeName="bob" jiraName="BOB"  pair="true" />
+		<user skypeName="frank" jiraName="Frank Abagnale Jr." pair="true" />
+		<user skypeName="carl" jiraName="carl@hanratty.com" pair="true" />
+	  </im-user-mapping>
+
+	  <http>
 		<link url="link.url" />
 		<login url="login.url" />
-	</http>
+	  </http>
 
-	<commands>
-	  <link>
-		<description-aliases>
+	  <commands>
+		<link>
+		  <description-aliases>
 			<alias original="associate" replacement="links to" />
 			<alias original="Add" replacement="add=>create new" />
 			<alias original="remove" replacement="remove=>delete" />
-		</description-aliases>
-	  </link>
-	</commands>
-  </jira>
-
+		  </description-aliases>
+		</link>
+	  </commands>
+	</jira>
+  </configuration>
+  
   <log4net>
 	<appender name="RollingFile" type="log4net.Appender.RollingFileAppender">
 	  <file value="Binboo.Tests.log" />

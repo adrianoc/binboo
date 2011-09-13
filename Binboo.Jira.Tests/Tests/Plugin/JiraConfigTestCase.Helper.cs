@@ -1,5 +1,5 @@
 ﻿/**
- * Copyright (c) 2009 Adriano Carlos Verona
+ * Copyright (c) 2011 Adriano Carlos Verona
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,19 +20,28 @@
  * THE SOFTWARE.
  **/
 using System;
-using System.IO;
-using Binboo.Core.Configuration;
+using System.Linq.Expressions;
+using Binboo.Jira.Configuration;
+using Binboo.Jira.Plugin;
 using NUnit.Framework;
 
-namespace Binboo.Tests.Core.Persistence
+namespace Binboo.Jira.Tests.Tests.Plugin
 {
-	[TestFixture]
-	public class StoragePathTestCase
+	partial class JiraConfigTestCase
 	{
-		[Test]
-		public void Test()
+		private void AssertJiraHttpLink(Expression<Func<IHttpInterfaceConfiguration, string>> configPropertyAccessor)
 		{
-			Assert.AreEqual(Path.Combine(Environment.GetEnvironmentVariable("TEMP"), "BinbooTest"), ConfigServices.StoragePath);
+			IHttpInterfaceConfiguration httpConfig = JiraConfig.Instance.HttpInterfaceConfiguration;
+			Assert.AreEqual(
+					ExpectedUrlFrom(configPropertyAccessor),
+					configPropertyAccessor.Compile().Invoke(httpConfig));
+		}
+
+		private string ExpectedUrlFrom(Expression<Func<IHttpInterfaceConfiguration, string>> configPropExpression)
+		{
+			MemberExpression me = (MemberExpression)configPropExpression.Body;
+			string propertyName = me.Member.Name.ToLowerInvariant();
+			return propertyName.Insert(propertyName.Length - "url".Length, ".");
 		}
 	}
 }

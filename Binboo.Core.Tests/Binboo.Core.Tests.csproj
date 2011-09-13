@@ -55,6 +55,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\MEF2_Preview3\build\System.Reflection.Context.dll</HintPath>
     </Reference>
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Framework\ArgumentCollectingTestCaseBase.cs" />
@@ -67,12 +68,10 @@
     <Compile Include="Tests\Commands\CommandPipingTestCase.Failures.cs" />
     <Compile Include="Tests\Commands\CommandPipingTestCase.Helper.cs" />
     <Compile Include="Tests\Commands\CommandPipingTestCase.Success.cs" />
-    <Compile Include="Tests\Configuration\ConfigServicesTestCase.cs" />
-    <Compile Include="Tests\Configuration\ConfigServicesTestCase.Helper.cs" />
+    <Compile Include="Tests\Configuration\CoreConfigurationTestCase.cs" />
     <Compile Include="Tests\ContextTestCase.cs" />
     <Compile Include="Tests\CustomFilters\CustomFiltersTestCase.cs" />
     <Compile Include="Tests\Persistence\StorageIntegrationTestcase.cs" />
-    <Compile Include="Tests\Persistence\StoragePathTestCase.cs" />
     <Compile Include="Tests\Persistence\StorageTestCase.cs" />
     <Compile Include="Tests\Persistence\StorageTestCase.Helper.cs" />
     <Compile Include="Tests\Plugins\IPluginTestCase.cs" />
@@ -96,6 +95,7 @@
   <ItemGroup>
     <Content Include="Binboo.config.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
