@@ -61,6 +61,7 @@
     <Compile Include="Framework\ArgumentCollectingTestCaseBase.cs" />
     <Compile Include="Framework\ArgumentPipingCommand.cs" />
     <Compile Include="Framework\ArgumentEchoingPlugin.cs" />
+    <Compile Include="Mocks\PluginStub.cs" />
     <Compile Include="Tests\ApplicationTestCase.cs" />
     <Compile Include="Tests\CommandQueueTestCase.cs" />
     <Compile Include="Tests\CommandQueueTestCase.Helper.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Tests\Persistence\StorageIntegrationTestcase.cs" />
     <Compile Include="Tests\Persistence\StorageTestCase.cs" />
     <Compile Include="Tests\Persistence\StorageTestCase.Helper.cs" />
+    <Compile Include="Tests\Plugins\AbstractBasePluginTestCase.cs" />
     <Compile Include="Tests\Plugins\IPluginTestCase.cs" />
     <Compile Include="Tests\Plugins\PluginManagerTestCase.cs" />
     <Compile Include="Tests\Support\ArgumentRecorder.cs" />
@@ -94,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Binboo.config.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>

@@ -38,11 +38,17 @@ namespace Binboo.Core.Plugins
 
         public ICommandResult ExecuteCommand(string commandName, IContext context)
         {
-            var command = _commands.Where(cmd => StringComparer.InvariantCultureIgnoreCase.Compare(cmd.Id, commandName) == 0).Single();
+            var command = GetCommand(commandName);
             return command.Process(context);
         }
 
-        protected void AddCommand(IStorageManager storageManager, IBotCommand command)
+    	private IBotCommand GetCommand(string commandName)
+    	{
+    		var candidate = _commands.Where(cmd => StringComparer.InvariantCultureIgnoreCase.Compare(cmd.Id, commandName) == 0);
+    		return candidate.Count() == 1 ? candidate.Single() : new UnknowCommand(commandName, _commands);
+    	}
+
+    	protected void AddCommand(IStorageManager storageManager, IBotCommand command)
         {
             command.Storage = storageManager.StorageFor(command.Id);
             command.Initialize();
@@ -50,7 +56,7 @@ namespace Binboo.Core.Plugins
             _commands.Add(command);
         }
 
-        private readonly IList<IBotCommand> _commands = new List<IBotCommand>();
+        private readonly ISet<IBotCommand> _commands = new HashSet<IBotCommand>();
         protected readonly ILog _log = LogManager.GetLogger(typeof(AbstractBasePlugin));
     }
 }

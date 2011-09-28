@@ -60,6 +60,8 @@ namespace Binboo.Core
 
         public void Dispose()
         {
+			//TODO: Notify plugins that we ate going to unload.
+			//BUG: Dispose() is not being invoked anymore....
             var storageManager = StorageManager;
             if (storageManager != null)
             {
@@ -366,19 +368,7 @@ namespace Binboo.Core
 				: string.Empty;
 		}
 
-        //private IBotCommand GetCommand(string message)
-        //{
-        //    string commandName = GetNormilizedCommandName(message);
-        //    //return _commands.ContainsKey(commandName) ? _commands[commandName] : new UnknowCommand(commandName, _commands);
-        //    return null;
-        //}
-
-        //private static string GetNormilizedCommandName(string message)
-        //{
-        //    return NormalizeCommandName(GetCommandName(message));
-        //}
-
-        private static string GetCommandName(string message)
+		private static string GetCommandName(string message)
 		{
 			string[] strings = Regex.Split(message, " ");
 			return strings[0];

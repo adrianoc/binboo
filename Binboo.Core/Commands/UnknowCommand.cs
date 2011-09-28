@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Binboo.Core.Commands.Support;
 using Binboo.Core.Persistence;
 using TCL.Extensions;
 
@@ -31,7 +30,7 @@ namespace Binboo.Core.Commands
 {
 	class UnknowCommand : IBotCommand
 	{
-		public UnknowCommand(string commandName, IDictionary<string, IBotCommand> commands)
+		public UnknowCommand(string commandName, ISet<IBotCommand> commands)
 		{
 			_commandName = commandName;
 			_commands = commands;
@@ -69,7 +68,7 @@ namespace Binboo.Core.Commands
 
 			var inputSoundex = _commandName.SoundEx();
 
-			var probableCommand = _commands.Where(candidate => candidate.Key.SoundEx() == inputSoundex).Select(pair => pair.Key).SingleOrDefault();
+			var probableCommand = _commands.Where(candidate => candidate.Id.SoundEx() == inputSoundex).Select(pair => pair.Id).SingleOrDefault();
 			if (probableCommand != null)
 			{
 				output.AppendFormat("\r\nDid you mean \"{0}\" ?", probableCommand);
@@ -79,6 +78,6 @@ namespace Binboo.Core.Commands
 		}
 
 		private readonly string _commandName;
-		private readonly IDictionary<string, IBotCommand> _commands;
+		private readonly ISet<IBotCommand> _commands;
 	}
 }

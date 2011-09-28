@@ -119,7 +119,7 @@ namespace Binboo
 			{
 				if (f.ShowDialog(this) == DialogResult.OK)
 				{
-					//TODO: FIX THIS SHIT
+					//TODO: How to handle this in a better way?
 					//CoreConfig.User = new User(f.User, f.Password);	
 				}
 			}

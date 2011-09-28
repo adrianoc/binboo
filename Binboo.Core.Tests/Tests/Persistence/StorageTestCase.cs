@@ -33,7 +33,7 @@ namespace Binboo.Core.Tests.Tests.Persistence
 			const string command1Value = "command1 value";
 			const string command2Value = "command2 value";
 
-			using (IStorageManager manager = new StorageManager())
+			using (IStorageManager manager = new StorageManager(null))
 			{
 				var value1 = SetValueFor(manager, Command1Id, command1Value);
 				var value2 = SetValueFor(manager, Command2Id, command2Value);
@@ -42,7 +42,7 @@ namespace Binboo.Core.Tests.Tests.Persistence
 				Assert.AreEqual(value2, command2Value);
 			}
 
-			using (IStorageManager manager = new StorageManager())
+			using (IStorageManager manager = new StorageManager(null))
 			{
 				IStorage stg1 = manager.StorageFor(Command1Id);
 				IStorage stg2 = manager.StorageFor(Command2Id);
@@ -58,14 +58,14 @@ namespace Binboo.Core.Tests.Tests.Persistence
 			const string subfield = "cmd1-subfield";
 			const string subfieldValue = "command1 subfield value";
 
-			using (IStorageManager manager = new StorageManager())
+			using (IStorageManager manager = new StorageManager(null))
 			{
 				IStorage storage = manager.StorageFor(Command1Id);
 				storage.Value = "command1 value";
 				storage[subfield] = subfieldValue;
 			}
 
-			using (IStorageManager manager = new StorageManager())
+			using (IStorageManager manager = new StorageManager(null))
 			{
 				IStorage storage = manager.StorageFor(Command1Id);
 				Assert.AreEqual("command1 value", storage.Value);
@@ -79,14 +79,14 @@ namespace Binboo.Core.Tests.Tests.Persistence
 			const string subfield = "cmd1-subfield";
 			const string subfieldValue = "command1 subfield value";
 
-			using (IStorageManager manager = new StorageManager())
+			using (IStorageManager manager = new StorageManager(null))
 			{
 				IStorage storage = manager.StorageFor(Command1Id);
 				storage.Value = "command1 value";
 				storage[subfield] = subfieldValue;
 			}
 
-			using (IStorageManager manager = new StorageManager())
+			using (IStorageManager manager = new StorageManager(null))
 			{
 				IStorage storage = manager.StorageFor(Command1Id);
 				Assert.AreEqual("command1 value", storage.Value);
@@ -96,7 +96,7 @@ namespace Binboo.Core.Tests.Tests.Persistence
 				storage[subfield] = "new-" + subfieldValue;
 			}
 			
-			using (IStorageManager manager = new StorageManager())
+			using (IStorageManager manager = new StorageManager(null))
 			{
 				IStorage storage = manager.StorageFor(Command1Id);
 				Assert.AreEqual("new value", storage.Value);
@@ -107,7 +107,7 @@ namespace Binboo.Core.Tests.Tests.Persistence
 		[Test]
 		public void TestDefaultValues()
 		{
-		    using (IStorageManager manager = new StorageManager())
+		    using (IStorageManager manager = new StorageManager(null))
 			{
 				IStorage stg1 = manager.StorageFor("cmd1");
 				Assert.IsNull(stg1.Value);
@@ -118,7 +118,7 @@ namespace Binboo.Core.Tests.Tests.Persistence
 		[SetUp]
 		public void Setup()
 		{
-			using (IStorageManager manager = new StorageManager())
+			using (IStorageManager manager = new StorageManager(null))
 			{
 				manager.DeleteAll();
 			}

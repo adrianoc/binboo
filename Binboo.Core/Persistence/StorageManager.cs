@@ -22,6 +22,7 @@
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
+using Binboo.Core.Configuration;
 using Db4objects.Db4o;
 using Db4objects.Db4o.Config;
 using Db4objects.Db4o.TA;
@@ -37,7 +38,7 @@ namespace Binboo.Core.Persistence
 
 		public StorageManager(string basePath)
 		{
-			_basePath = basePath ?? Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+			_basePath = basePath ?? new CoreConfig().StoragePath;
 			if (!Directory.Exists(_basePath))
 			{
 				Directory.CreateDirectory(_basePath);

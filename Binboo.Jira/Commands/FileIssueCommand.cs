@@ -26,7 +26,6 @@ using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
-using Binboo.Jira.Plugin;
 
 namespace Binboo.Jira.Commands
 {

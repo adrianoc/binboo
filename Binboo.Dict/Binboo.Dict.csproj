@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Commands\TranslatorParamValidator.cs" />
     <Compile Include="Commands\TranslateCommand.cs" />
+    <Compile Include="Configuration\TranslateConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\MicrosoftTranslator\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -69,7 +70,9 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\MicrosoftTranslator\Binboo.Dict.MicrosoftTranslator.GetTranslationsResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

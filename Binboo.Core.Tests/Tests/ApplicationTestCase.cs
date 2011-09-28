@@ -120,7 +120,7 @@ namespace Binboo.Core.Tests.Tests
 
             public ICommandResult ExecuteCommand(string commandName, IContext context)
             {
-                return (new UnknowCommand(commandName, new Dictionary<string, IBotCommand>())).Process(context);
+                return (new UnknowCommand(commandName, new HashSet<IBotCommand>())).Process(context);
             }
         }
 

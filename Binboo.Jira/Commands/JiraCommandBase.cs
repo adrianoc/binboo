@@ -26,11 +26,9 @@ using System.Linq;
 using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Support;
-using Binboo.Core.Configuration;
 using Binboo.Core.Exceptions;
 using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
-using Binboo.Jira.Plugin;
 
 namespace Binboo.Jira.Commands
 {

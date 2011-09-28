@@ -24,6 +24,7 @@ using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Commands.Support;
+using Binboo.Dict.Configuration;
 using Binboo.Dict.MicrosoftTranslator;
 
 namespace Binboo.Dict.Commands
@@ -46,7 +47,8 @@ namespace Binboo.Dict.Commands
         /// <summary>
         /// Argument format:
         /// 
-        /// $translate blabla :xxble ble :de
+        /// $translate blabla de>pt
+        /// $translate blabla >pt
         /// $translate blabla ble ble pt:de
         /// </summary>
         public override ICommandResult Process(IContext context)
@@ -59,9 +61,8 @@ namespace Binboo.Dict.Commands
 
             return CommandResult.Success(Run<Exception>(delegate
             {
-                //TODO: Move AppId to configuration
                 var translated = _languageSrv.Translate(
-												"710BDF670CF25F48C327B3BDD0890EE507AC3384",
+												TranslateConfig.Instance.APIKey,
                                                 arguments["toBeTranslated"],
                                                 EnsureValid(arguments["sourceLanguage"], context.User.CountryCode),
                                                 arguments["targetLanguage"],
