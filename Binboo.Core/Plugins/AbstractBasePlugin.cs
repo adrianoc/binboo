@@ -29,8 +29,15 @@ using Binboo.Core.Persistence;
 
 namespace Binboo.Core.Plugins
 {
-    public abstract class AbstractBasePlugin
+    public abstract class AbstractBasePlugin : IPlugin
     {
+    	protected AbstractBasePlugin(IStorageManager storageManager)
+		{
+			this.storageManager = storageManager;
+		}
+
+    	public abstract string Name { get;  }
+		
         public IEnumerable<IBotCommand> Commands
         {
             get { return _commands; }
@@ -41,6 +48,9 @@ namespace Binboo.Core.Plugins
             var command = GetCommand(commandName);
             return command.Process(context);
         }
+
+	   	public bool Enabled { get; set;  }
+    	public abstract void Initialize();
 
     	private IBotCommand GetCommand(string commandName)
     	{
@@ -56,7 +66,8 @@ namespace Binboo.Core.Plugins
             _commands.Add(command);
         }
 
-        private readonly ISet<IBotCommand> _commands = new HashSet<IBotCommand>();
+    	private readonly ISet<IBotCommand> _commands = new HashSet<IBotCommand>();
         protected readonly ILog _log = LogManager.GetLogger(typeof(AbstractBasePlugin));
-    }
+		protected IStorageManager storageManager;
+	}
 }

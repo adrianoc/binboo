@@ -28,7 +28,7 @@ namespace Binboo.Core.Tests.Mocks
 {
 	class PluginStub : AbstractBasePlugin
 	{
-		public PluginStub(params string[] commands)
+		public PluginStub(params string[] commands) : base(null)
 		{
 			foreach (var command in commands)
 			{
@@ -39,6 +39,16 @@ namespace Binboo.Core.Tests.Mocks
 				storageManMock.Setup(sm => sm.StorageFor(command)).Returns((IStorage) null);
 				AddCommand(storageManMock.Object, cmdMock.Object);
 			}
+		}
+
+		public override string Name
+		{
+			get { return "plugin-stub"; }
+		}
+
+		public override void Initialize()
+		{
+			throw new System.NotImplementedException();
 		}
 	}
 }

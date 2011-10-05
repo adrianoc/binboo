@@ -50,5 +50,12 @@ namespace Binboo.Core.Tests.Framework
         {
             return new ArgumentPipingCommand(commandName, ValidatorExpressions, ArgumentRecorder).Process(context);
         }
+
+    	public bool Enabled { get; set; }
+
+    	public void Initialize()
+    	{
+    		throw new NotImplementedException();
+    	}
     }
 }

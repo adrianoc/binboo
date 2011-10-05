@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using System;
 using System.ComponentModel.Composition;
 
 using Binboo.Core.Commands;
@@ -35,60 +34,60 @@ using TCL.Net.Net;
 namespace Binboo.Jira.Plugin
 {
     [Export(typeof(IPlugin))]
-    class JiraPlugin : AbstractBasePlugin, IPlugin
+    class JiraPlugin : AbstractBasePlugin
     {
-        public string Name
+        override public string Name
         {
-            get { return "jira"; }
+            get
+            {
+            	return PluginName;
+            }
         }
+		
+		[ImportingConstructor]
+        JiraPlugin(IStorageManager storageManager) : base(storageManager)
+		{
+		}
 
-        [ImportingConstructor]
-        JiraPlugin(IStorageManager storageManager)
-        {
-            _log.InfoFormat("Initializing plugin: {0}.", typeof(JiraPlugin).Name);
-
-            AddCommand(storageManager, new FileIssueCommand(JiraProxy(), Binboo_Jira.File));
-            AddCommand(storageManager, new EstimateCommand(JiraProxy(), Binboo_Jira.Estimate));
-            AddCommand(storageManager, new ResolveIssueCommand(JiraProxy(), Binboo_Jira.Resolve));
-            AddCommand(storageManager, new SearchCommand(JiraProxy(), Binboo_Jira.Search));
-            AddCommand(storageManager, new CountIDSCommand(JiraProxy(), Binboo_Jira.CountIDS));
-            AddCommand(storageManager, new HelpCommand(this));
-            AddCommand(storageManager, new IssueCommand(JiraProxy(), Binboo_Jira.Issue));
-            AddCommand(storageManager, new IssueAssignCommand(JiraProxy(), Binboo_Jira.Assign));
-            AddCommand(storageManager, new TaskDropperCommand(JiraProxy(), Binboo_Jira.Drop));
-            AddCommand(storageManager, new ListProjectsCommand(JiraProxy(), Binboo_Jira.ListProjects));
-            AddCommand(storageManager, new PairsCommand(JiraProxy(), Binboo_Jira.Pairs));
-            AddCommand(storageManager, new SetOrderCommand(JiraProxy(), Binboo_Jira.SetOrder));
-            AddCommand(storageManager, new LinkIssueCommand(JiraProxy(), Binboo_Jira.Link));
-            AddCommand(storageManager, new LabelCommand(JiraProxy(), Binboo_Jira.Label));
-        }
+    	public override void Initialize()
+		{
+			try
+			{
+				AddCommand(storageManager, new FileIssueCommand(JiraProxy(), Binboo_Jira.File));
+				AddCommand(storageManager, new EstimateCommand(JiraProxy(), Binboo_Jira.Estimate));
+				AddCommand(storageManager, new ResolveIssueCommand(JiraProxy(), Binboo_Jira.Resolve));
+				AddCommand(storageManager, new SearchCommand(JiraProxy(), Binboo_Jira.Search));
+				AddCommand(storageManager, new CountIDSCommand(JiraProxy(), Binboo_Jira.CountIDS));
+				AddCommand(storageManager, new IssueCommand(JiraProxy(), Binboo_Jira.Issue));
+				AddCommand(storageManager, new IssueAssignCommand(JiraProxy(), Binboo_Jira.Assign));
+				AddCommand(storageManager, new TaskDropperCommand(JiraProxy(), Binboo_Jira.Drop));
+				AddCommand(storageManager, new ListProjectsCommand(JiraProxy(), Binboo_Jira.ListProjects));
+				AddCommand(storageManager, new PairsCommand(JiraProxy(), Binboo_Jira.Pairs));
+				AddCommand(storageManager, new SetOrderCommand(JiraProxy(), Binboo_Jira.SetOrder));
+				AddCommand(storageManager, new LinkIssueCommand(JiraProxy(), Binboo_Jira.Link));
+				AddCommand(storageManager, new LabelCommand(JiraProxy(), Binboo_Jira.Label));
+				AddCommand(storageManager, new HelpCommand(this));
+			}
+			finally
+			{
+				storageManager = null;
+			}
+		}
 
         private JiraProxy JiraProxy()
         {
             if (_jira == null)
             {
-                try
-                {
-                    _jira = new JiraProxy(
-                                    JiraConfig.Instance.EndPoint,
-                                    JiraConfig.Instance.User,
-                                    new JiraHttpProxy(new SystemNetHttpFactory(), JiraConfig.Instance.HttpInterfaceConfiguration));
-                }
-                catch (Exception e)
-                {
-                    //TODO: How to handle such exceptions ???
-                    //if (MessageBox.Show("Unable to log user on. Have you copied config file from another machine?", "Error", MessageBoxButtons.OK | MessageBoxButtons.RetryCancel, MessageBoxIcon.Error) == DialogResult.Retry)
-                    //{
-                    //    SetJiraAccount(null, EventArgs.Empty);
-                    //}
-
-                    //Environment.Exit(-1);
-                }
+				_jira = new JiraProxy(
+								JiraConfig.Instance.EndPoint,
+                                JiraConfig.Instance.User,
+                                new JiraHttpProxy(new SystemNetHttpFactory(), JiraConfig.Instance.HttpInterfaceConfiguration));
             }
 
             return _jira;
         }
 
         private JiraProxy _jira;
-    }
+    	private const string PluginName = "jira";
+	}
 }

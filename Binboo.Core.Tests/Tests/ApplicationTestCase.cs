@@ -26,7 +26,6 @@ using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Binboo.Core.Commands;
-using Binboo.Core.Commands.Support;
 using Binboo.Core.Plugins;
 using Binboo.Tests.Mocks;
 using NUnit.Framework;
@@ -122,6 +121,13 @@ namespace Binboo.Core.Tests.Tests
             {
                 return (new UnknowCommand(commandName, new HashSet<IBotCommand>())).Process(context);
             }
+
+        	public bool Enabled { get; set; }
+        	
+			public void Initialize()
+        	{
+        		throw new NotImplementedException();
+        	}
         }
 
         [Export(typeof(IPlugin))]

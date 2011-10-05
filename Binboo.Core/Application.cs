@@ -26,6 +26,7 @@ using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -55,7 +56,21 @@ namespace Binboo.Core
 
         public static Application WithPluginsFrom(ComposablePartCatalog catalog)
         {
-            return new Application(catalog);
+			try
+			{
+				return new Application(catalog);
+			}
+			catch(ReflectionTypeLoadException rtle)
+			{
+				GetLogger().ErrorFormat("Could not start application, exiting. Error: {0}", rtle.LoaderExceptions);
+			}
+			catch(Exception ex)
+			{
+				GetLogger().ErrorFormat("Could not start application, exiting. Error: {0}", ex);
+			}
+			
+			Environment.Exit(-101);
+        	throw new Exception("Never reach this point.");
         }
 
         public void Dispose()
@@ -407,19 +422,46 @@ namespace Binboo.Core
         {
             _commandQueue = new CommandQueue(_exitEvent);
 		
-            var pluginManager = PluginManagerFactory.Create(catalog);
-            _plugins = pluginManager.Plugins;
+        	InitializePlugins(catalog);
 
-            StartCommandProcessor();
+			StartCommandProcessor();
         }
 
-        [Import]
+		private void InitializePlugins(ComposablePartCatalog catalog)
+		{
+			var pluginManager = PluginManagerFactory.Create(catalog);
+			_plugins = pluginManager.Plugins;
+
+			foreach (var plugin in Plugins)
+			{
+				_log.InfoFormat("Initializing plugin '{0}'.", plugin.Name);
+				try
+				{
+					plugin.Initialize();
+					_log.InfoFormat("'{0}' initialized successfuly", plugin.Name);
+				}
+				catch(Exception ex)
+				{
+					_log.ErrorFormat("Plugin '{0}' failed to initialize and will be disabled. See next entry for more details.", plugin.Name);
+					_log.Error(ex);
+
+					plugin.Enabled = false;
+				}
+			}
+		}
+
+		private static ILog GetLogger()
+		{
+			return LogManager.GetLogger(typeof(Application));
+		}
+
+		[Import]
         private IStorageManager StorageManager { get; set; }
 
-	    private readonly ISet<IPlugin> _plugins = new HashSet<IPlugin>();
+	    private ISet<IPlugin> _plugins = new HashSet<IPlugin>();
 		private readonly CommandQueue _commandQueue;
 
-        private readonly ILog _log = LogManager.GetLogger(typeof(Application));
+        private readonly ILog _log = GetLogger();
 
 		private ISkype _skype = new Skype();
 		private bool _attached;

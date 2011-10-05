@@ -43,5 +43,16 @@ namespace Binboo.Core.Tests.Tests.Plugins
         {
             throw new NotImplementedException();
         }
+
+    	public bool Enabled
+    	{
+    		get { throw new NotImplementedException(); }
+    		set { throw new NotImplementedException(); }
+    	}
+
+    	public void Initialize()
+    	{
+    		throw new NotImplementedException();
+    	}
     }
 }

@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
 using System.Collections.Generic;
 using Binboo.Core.Commands;
 
@@ -29,5 +30,7 @@ namespace Binboo.Core.Plugins
         string Name { get; }
         IEnumerable<IBotCommand> Commands { get; }
         ICommandResult ExecuteCommand(string commandName, IContext context);
+    	bool Enabled { get; set; }
+    	void Initialize();
     }
 }

@@ -34,9 +34,8 @@ namespace Binboo.Core.Plugins
         public MEFBasedPluginManager(ComposablePartCatalog catalog)
         {
             Plugins = new HashSet<IPlugin>();
-
-            var container = new CompositionContainer(catalog);
-            container.ComposeParts(this); 
+			var container = new CompositionContainer(catalog);
+			container.ComposeParts(this);
         }
     }
 }
