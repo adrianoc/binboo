@@ -48,12 +48,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition.Codeplex">
-      <HintPath>..\Libs\MEF2_Preview3\build\System.ComponentModel.Composition.Codeplex.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition.Registration">
-      <HintPath>..\Libs\MEF2_Preview3\build\System.ComponentModel.Composition.Registration.dll</HintPath>
-    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>

@@ -23,10 +23,8 @@ using System.Linq;
 using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
-using Binboo.Core.Configuration;
 using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
-using Binboo.Jira.Plugin;
 using TCL.Net.Extensions;
 
 namespace Binboo.Jira.Commands

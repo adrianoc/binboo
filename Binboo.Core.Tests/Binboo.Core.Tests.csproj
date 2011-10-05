@@ -43,13 +43,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition.Codeplex, Version=4.1.2.0, Culture=neutral, PublicKeyToken=13e5ffd4e05db186, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libs\MEF2_Preview3\build\System.ComponentModel.Composition.Codeplex.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition.Registration">
-      <HintPath>..\Libs\MEF2_Preview3\build\System.ComponentModel.Composition.Registration.dll</HintPath>
-    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reflection.Context, Version=4.1.2.0, Culture=neutral, PublicKeyToken=13e5ffd4e05db186, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
