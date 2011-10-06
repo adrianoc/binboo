@@ -108,25 +108,15 @@ namespace Binboo.Core
 
 			events.MessageStatus += ProcessMessage;
 			events.AttachmentStatus += ProcessAttachmentStatus;
-			events.CallStatus += CallStatusChanged;
 
 			try
 			{
-				_skype.Attach(5, true);
+				_skype.Attach(8);
 			}
 			catch(COMException ce)
 			{
 				RaiseErrorEvent("Unable to attach to skype.", ce);
 			}
-		}
-
-		private void CallStatusChanged(Call pcall, TCallStatus status)
-		{
-			//if (status == TCallStatus.clsInProgress)
-			//{
-			//    pcall.set_OutputDevice(TCallIoDeviceType.callIoDeviceTypeFile, "c:\\temp\\output.wav");
-			//    pcall.set_CaptureMicDevice(TCallIoDeviceType.callIoDeviceTypeFile, "c:\\temp\\output-mic.wav");
-			//}
 		}
 
 		[Conditional("DEBUG")]
