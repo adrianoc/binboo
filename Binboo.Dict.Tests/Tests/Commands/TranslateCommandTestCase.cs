@@ -40,6 +40,14 @@ namespace Binboo.Dict.Tests.Commands
             Reset<TranslateCommand>();
             AssertCommand("a ser traduzido ", "", "de", "texto em alemão");
         }
+
+        [Test]
+        public void TestTargetLanguageOmmited()
+        {
+            //TODO: Come up with a solution to get correct cache behavior.
+            Reset<TranslateCommand>();
+            AssertCommand("a ser traduzido ", "en", "", "texto em portuga");
+        }
         
         [Test]
         public void TestSourceAndTargetLanguagesSpecified()
@@ -49,13 +57,19 @@ namespace Binboo.Dict.Tests.Commands
 
         private void AssertCommand(string toBeTranslated, string from, string to, string translated)
         {
-            var explicityFrom = string.IsNullOrEmpty(@from) ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : @from;
-            using (var command = NewCommand<TranslateCommand, string>(service => service.Translate(It.IsAny<string>(), toBeTranslated, explicityFrom, to, It.IsAny<string>(), It.IsAny<string>()), translated))
+            var explicityFrom = LangCodeFrom(@from);
+        	var explicityTo = LangCodeFrom(to);
+            using (var command = NewCommand<TranslateCommand, string>(service => service.Translate(It.IsAny<string>(), toBeTranslated, explicityFrom, explicityTo, It.IsAny<string>(), It.IsAny<string>()), translated))
             {
-                Mock<IContext> contextMock = ContextMockFor("translate-user", toBeTranslated + from + "><" + to);
+                Mock<IContext> contextMock = ContextMockFor("translate-user", from + ":" + to + " \"" + toBeTranslated + "\"");
                 var result = command.Process(contextMock.Object);
-                Assert.That(result.Status, Is.EqualTo(CommandStatus.Success));
+                Assert.That(result.Status, Is.EqualTo(CommandStatus.Success), result.HumanReadable);
             }
         }
+
+    	private static string LangCodeFrom(string lang)
+    	{
+    		return string.IsNullOrEmpty(lang) ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : lang;
+    	}
     }
 }

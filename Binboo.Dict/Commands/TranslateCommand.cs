@@ -40,45 +40,50 @@ namespace Binboo.Dict.Commands
 
         public override string Id
         {
-            get { return "translate"; }
+            get { return "t"; }
         }
 
         
         /// <summary>
         /// Argument format:
         /// 
-        /// $translate blabla de>pt
-        /// $translate blabla >pt
-        /// $translate blabla ble ble pt:de
+        /// $translate pt:de "some text"
+        /// $translate :de "some text"
         /// </summary>
         public override ICommandResult Process(IContext context)
         {
-            var arguments = CollectAndValidateArguments(
-                                    context.Arguments,
-                                    toBeTranslated => ParamValidator.Custom(@"(?<param>^((?![a-z]{2}\>)\w|\s)+)", false),
-                                    sourceLanguage => TranslatorParamValidator.SourceLanguage,
-                                    targetLanguage => TranslatorParamValidator.TargetLanguage);
+        	var arguments = CollectAndValidateArguments(
+        								context.Arguments,
+        								languagePair => TranslatorParamValidator.LanguagePair,
+        								toBeTranslated => ParamValidator.Custom(@"\s*""(?<param>[^""]+)""", false));
 
-            return CommandResult.Success(Run<Exception>(delegate
-            {
-                var translated = _languageSrv.Translate(
-												TranslateConfig.Instance.APIKey,
-                                                arguments["toBeTranslated"],
-                                                EnsureValid(arguments["sourceLanguage"], context.User.CountryCode),
-                                                arguments["targetLanguage"],
-                                                "text/plain",
-                                                "general");
 
-                return translated;
-            }));
+
+            return Run<string, Exception>(delegate
+											{
+												var langs = arguments["languagePair"].Value.Split(':');
+												var translated = _languageSrv.Translate(
+																				TranslateConfig.Instance.APIKey,
+																				arguments["toBeTranslated"],
+																				EnsureValid(langs[SourceIndex], context.User.CountryCode),
+																				EnsureValid(langs[TargetIndex], context.User.CountryCode),
+																				"text/plain",
+																				"general");
+
+												return translated;
+											},
+											
+											result => CommandResult.Success(result)
+			
+			);
         }
 
         private static string EnsureValid(string sourceLanguage, string defaultValue)
         {
-            //TODO:  Fix regular expression. Tried just wrap \> (in SourceLanguageValidator) with (?=\>)
-            //       It works, but then another step in checking the paramenters fails because we check
-            //       "" against SourceLanguageParameter (empty string) and it fails.
-            return string.IsNullOrWhiteSpace(sourceLanguage) || sourceLanguage == ">" ? defaultValue : sourceLanguage;
+            return string.IsNullOrWhiteSpace(sourceLanguage) ? defaultValue : sourceLanguage;
         }
+
+    	private const byte SourceIndex = 0;
+    	private const byte TargetIndex = 1;
     }
 }

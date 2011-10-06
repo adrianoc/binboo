@@ -19,20 +19,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using Binboo.Core.Commands.Arguments;
+using System.ComponentModel.Composition;
+using Binboo.Core.Persistence;
+using Binboo.Core.Plugins;
+using Binboo.Dict.Commands;
+using Binboo.Dict.MicrosoftTranslator;
 
-namespace Binboo.Dict.Commands
+namespace Binboo.Dict.Plugin
 {
-    class TranslatorParamValidator : ParamValidator
-    {
-        protected TranslatorParamValidator(string regex, bool optional) : base(regex, optional)
-        {
-        }
+	[Export(typeof(IPlugin))]
+	public class DictPlugin : AbstractBasePlugin
+	{
+		[ImportingConstructor]
+		DictPlugin(IStorageManager storageManager) : base(storageManager)
+		{
+		}
 
-        protected TranslatorParamValidator(string regex, params ParamValidator[] validators) : base(regex, validators)
-        {
-        }
+		public override string Name
+		{
+			get { return "translate"; }
+		}
 
-		public static readonly ParamValidator LanguagePair = new TranslatorParamValidator(@"(?<param>(?:[a-z]{2})?\:(?:[a-z]{2})?)", optional: false);
-    }
+		public override void Initialize()
+		{
+			try
+			{
+				AddCommand(storageManager,
+				           new TranslateCommand(new LanguageServiceClient("BasicHttpBinding_LanguageService"), Binboo_Dict.translate));
+			}
+			finally
+			{
+				storageManager = null;
+			}
+		}
+	}
 }

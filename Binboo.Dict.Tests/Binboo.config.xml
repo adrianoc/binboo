@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<binboo>
+  <active refid="unit-test" />
+
+  <configuration id="unit-test">
+	
+	<core>
+	  <storage path="%TEMP%\BinbooTest" />
+	</core>
+
+	<translate>
+	  <endpoint value="http://what.ever.com.pqp" />
+	  <api-key value="1234" />
+	</translate>	
+  </configuration>
+  
+  <log4net>
+	<appender name="RollingFile" type="log4net.Appender.RollingFileAppender">
+	  <file value="Binboo.Tests.log" />
+	  <appendToFile value="true" />
+	  <maximumFileSize value="10000MB" />
+	  <maxSizeRollBackups value="4" />
+
+	  <layout type="log4net.Layout.PatternLayout">
+		<conversionPattern value="%date [%thread] %-5level %logger %ndc - %message%newline" />
+	  </layout>
+	</appender>
+
+	<root>
+	  <level value="ALL" />
+	  <appender-ref ref="RollingFile" />
+	</root>
+  </log4net>
+</binboo>
