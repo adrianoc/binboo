@@ -98,8 +98,10 @@ namespace Binboo.Core
 		private void UnregisterEvents()
 		{
 			var skypeEvents = ((_ISkypeEvents_Event)_skype);
+
 			skypeEvents.MessageStatus -= ProcessMessage;
 			skypeEvents.AttachmentStatus -= ProcessAttachmentStatus;
+			skypeEvents.Reply -= ProcessReply;
 		}
 
 		public void AttachToSkype()
@@ -108,6 +110,7 @@ namespace Binboo.Core
 
 			events.MessageStatus += ProcessMessage;
 			events.AttachmentStatus += ProcessAttachmentStatus;
+			events.Reply += ProcessReply;
 
 			try
 			{
@@ -116,6 +119,23 @@ namespace Binboo.Core
 			catch(COMException ce)
 			{
 				RaiseErrorEvent("Unable to attach to skype.", ce);
+			}
+		}
+
+		private void ProcessReply(Command command)
+		{
+			try
+			{
+				var match = Regex.Match(command.Reply, @"CHATMESSAGE (?<MSG_ID>\d+) EDITED_TIMESTAMP (?<EDITED_TIMESTAMP>\d+)");
+				if (match.Success)
+				{
+					var msg = _skype.Message[int.Parse(match.Groups["MSG_ID"].Value)];
+					ProcessMessage(msg, TChatMessageStatus.cmsSent);
+				}
+			}
+			catch (Exception ex)
+			{
+				RaiseErrorEvent("Error in Reply event handler.", ex);
 			}
 		}
 
@@ -258,7 +278,7 @@ namespace Binboo.Core
 			if (message == null) return;
 			
 			_log.InfoFormat("Received command: {0}", message.Body);
-			if (!IsSafeToProcess(message)) 
+			if (!IsSafeToProcess(message))
 			{
 				_log.InfoFormat("Command ignored (not safe): {0}", message.Body);
 				return;
