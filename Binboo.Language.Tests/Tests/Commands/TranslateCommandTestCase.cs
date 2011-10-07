@@ -22,13 +22,13 @@
 using System.Globalization;
 using Binboo.Core;
 using Binboo.Core.Commands;
-using Binboo.Dict.Commands;
-using Binboo.Dict.MicrosoftTranslator;
+using Binboo.Language.Commands;
+using Binboo.Language.MicrosoftTranslator;
 using Binboo.Plugins.Tests.Foundation.Commands;
 using Moq;
 using NUnit.Framework;
 
-namespace Binboo.Dict.Tests.Commands
+namespace Binboo.Language.Tests.Commands
 {
     [TestFixture]
     public class TranslateCommandTestCase : PluginCommandTestCaseBase<LanguageService>

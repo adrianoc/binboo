@@ -8,8 +8,8 @@
     <ProjectGuid>{A19458F7-F499-4BCD-82AB-1D713BB464C6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Binboo.Dict.Tests</RootNamespace>
-    <AssemblyName>Binboo.Dict.Tests</AssemblyName>
+    <RootNamespace>Binboo.Language.Tests</RootNamespace>
+    <AssemblyName>Binboo.Language.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -44,15 +44,16 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\Commands\TranslateCommandTestCase.cs" />
+    <Compile Include="Tests\Configuration\TranslateConfigurationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Binboo.Core\Binboo.Core.csproj">
       <Project>{89B1E578-05FB-4C7A-A561-284F266097A6}</Project>
       <Name>Binboo.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Binboo.Dict\Binboo.Dict.csproj">
+    <ProjectReference Include="..\Binboo.Language\Binboo.Language.csproj">
       <Project>{353FE52C-915F-4D9A-BF4F-C0C5C155AC79}</Project>
-      <Name>Binboo.Dict</Name>
+      <Name>Binboo.Language</Name>
     </ProjectReference>
     <ProjectReference Include="..\Binboo.Plugins.Tests.Foundation\Binboo.Plugins.Tests.Foundation.csproj">
       <Project>{1CE3DA6D-F44F-4319-8B59-233041B47C71}</Project>

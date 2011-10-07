@@ -19,26 +19,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
-using Binboo.Core.Configuration;
 
-namespace Binboo.Dict.Configuration
+using System.IO;
+using Binboo.Core.Configuration;
+using TCL.Net.Extensions;
+
+namespace Binboo.Language.Configuration
 {
-	class TranslateConfig
+	class LanguageConfig
 	{
-		public static TranslateConfig Instance = new TranslateConfig(ConfigurationFactory.Create());
+		public static LanguageConfig Instance = new LanguageConfig(ConfigurationFactory.Create());
 		
 		private readonly ICoreConfig _coreConfig;
 
-		public TranslateConfig(ICoreConfig coreConfig)
+		public LanguageConfig(ICoreConfig coreConfig)
 		{
 			_coreConfig = coreConfig;
 		}
-		
+
 		public string APIKey
 		{
 			get
 			{
-				return _coreConfig.FindConfigItem("translate", "api-key/@value").Value;
+				var value = _coreConfig.CommandConfigurationFor("language_services", "translate").OuterXml;
+				var config = new StringReader(value).Deserialize<TranslateCommandConfig>();
+				return config.ApiKey;
 			}
 		}
 	}

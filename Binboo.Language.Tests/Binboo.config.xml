@@ -8,10 +8,11 @@
 	  <storage path="%TEMP%\BinbooTest" />
 	</core>
 
-	<translate>
-	  <endpoint value="http://what.ever.com.pqp" />
-	  <api-key value="1234" />
-	</translate>	
+	<language_services>
+	  <commands>
+		  <translate endpoint = "http://what.ever.com.pqp" api-key = "42.42.42" />
+	  </commands>
+	</language_services>
   </configuration>
   
   <log4net>

@@ -107,7 +107,7 @@ namespace Binboo.Jira.Configuration
 
 		public TextReader CommandConfigurationFor(string commandName)
 		{
-			var commandConfigurarion = _coreConfig.FindConfigItem("jira", string.Format("commands/{0}", commandName.ToLowerInvariant()));
+			var commandConfigurarion = _coreConfig.CommandConfigurationFor("jira", commandName);
 			return new StringReader(commandConfigurarion.OuterXml);
 		}
 

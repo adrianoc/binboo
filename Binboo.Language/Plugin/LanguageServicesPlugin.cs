@@ -19,25 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
 using System.ComponentModel.Composition;
 using Binboo.Core.Persistence;
 using Binboo.Core.Plugins;
-using Binboo.Dict.Commands;
-using Binboo.Dict.MicrosoftTranslator;
+using Binboo.Language.Commands;
+using Binboo.Language.MicrosoftTranslator;
 
-namespace Binboo.Dict.Plugin
+namespace Binboo.Language.Plugin
 {
 	[Export(typeof(IPlugin))]
-	public class DictPlugin : AbstractBasePlugin
+	public class LanguageServicesPlugin : AbstractBasePlugin
 	{
 		[ImportingConstructor]
-		DictPlugin(IStorageManager storageManager) : base(storageManager)
+		LanguageServicesPlugin(IStorageManager storageManager) : base(storageManager)
 		{
 		}
 
 		public override string Name
 		{
-			get { return "translate"; }
+			get { return "lang"; }
 		}
 
 		public override void Initialize()
@@ -45,7 +46,7 @@ namespace Binboo.Dict.Plugin
 			try
 			{
 				AddCommand(storageManager,
-				           new TranslateCommand(new LanguageServiceClient("BasicHttpBinding_LanguageService"), Binboo_Dict.translate));
+				           new TranslateCommand(new LanguageServiceClient("BasicHttpBinding_LanguageService"), Binboo_LanguageServices.translate));
 			}
 			finally
 			{

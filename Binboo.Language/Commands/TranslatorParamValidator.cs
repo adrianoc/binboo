@@ -19,9 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
 using Binboo.Core.Commands.Arguments;
 
-namespace Binboo.Dict.Commands
+namespace Binboo.Language.Commands
 {
     class TranslatorParamValidator : ParamValidator
     {

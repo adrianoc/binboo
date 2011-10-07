@@ -55,7 +55,12 @@ namespace Binboo.Core.Configuration
 
 		}
 
-    	public void SaveConfig()
+		public XmlNode CommandConfigurationFor(string plugin, string commandName)
+		{
+			return FindConfigItem(plugin, string.Format("commands/{0}", commandName.ToLowerInvariant())); 
+		}
+		
+		public void SaveConfig()
 		{
 			_config.Save(ConfigFilePath());
 		}

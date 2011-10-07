@@ -19,15 +19,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
 using System;
 using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Commands.Support;
-using Binboo.Dict.Configuration;
-using Binboo.Dict.MicrosoftTranslator;
+using Binboo.Language.Configuration;
+using Binboo.Language.MicrosoftTranslator;
 
-namespace Binboo.Dict.Commands
+namespace Binboo.Language.Commands
 {
     public class TranslateCommand : BotCommandBase
     {
@@ -63,7 +64,7 @@ namespace Binboo.Dict.Commands
 											{
 												var langs = arguments["languagePair"].Value.Split(':');
 												var translated = _languageSrv.Translate(
-																				TranslateConfig.Instance.APIKey,
+																				LanguageConfig.Instance.APIKey,
 																				arguments["toBeTranslated"],
 																				EnsureValid(langs[SourceIndex], context.User.CountryCode),
 																				EnsureValid(langs[TargetIndex], context.User.CountryCode),

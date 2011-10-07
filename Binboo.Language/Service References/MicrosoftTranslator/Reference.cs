@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Binboo.Dict.MicrosoftTranslator {
+namespace Binboo.Language.MicrosoftTranslator {
     using System.Runtime.Serialization;
     using System;
     
@@ -154,7 +154,7 @@ namespace Binboo.Dict.MicrosoftTranslator {
         private string StateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private Binboo.Dict.MicrosoftTranslator.TranslationMatch[] TranslationsField;
+        private Binboo.Language.MicrosoftTranslator.TranslationMatch[] TranslationsField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -193,7 +193,7 @@ namespace Binboo.Dict.MicrosoftTranslator {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
-        public Binboo.Dict.MicrosoftTranslator.TranslationMatch[] Translations {
+        public Binboo.Language.MicrosoftTranslator.TranslationMatch[] Translations {
             get {
                 return this.TranslationsField;
             }
@@ -583,33 +583,33 @@ namespace Binboo.Dict.MicrosoftTranslator {
         string[] GetLanguagesForTranslate(string appId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://api.microsofttranslator.com/V2/LanguageService/GetTranslations", ReplyAction="http://api.microsofttranslator.com/V2/LanguageService/GetTranslationsResponse")]
-        Binboo.Dict.MicrosoftTranslator.GetTranslationsResponse GetTranslations(string appId, string text, string from, string to, int maxTranslations, Binboo.Dict.MicrosoftTranslator.TranslateOptions options);
+        Binboo.Language.MicrosoftTranslator.GetTranslationsResponse GetTranslations(string appId, string text, string from, string to, int maxTranslations, Binboo.Language.MicrosoftTranslator.TranslateOptions options);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://api.microsofttranslator.com/V2/LanguageService/Translate", ReplyAction="http://api.microsofttranslator.com/V2/LanguageService/TranslateResponse")]
         string Translate(string appId, string text, string from, string to, string contentType, string category);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://api.microsofttranslator.com/V2/LanguageService/AddTranslationArray", ReplyAction="http://api.microsofttranslator.com/V2/LanguageService/AddTranslationArrayResponse" +
             "")]
-        void AddTranslationArray(string appId, Binboo.Dict.MicrosoftTranslator.Translation[] translations, string from, string to, Binboo.Dict.MicrosoftTranslator.TranslateOptions options);
+        void AddTranslationArray(string appId, Binboo.Language.MicrosoftTranslator.Translation[] translations, string from, string to, Binboo.Language.MicrosoftTranslator.TranslateOptions options);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://api.microsofttranslator.com/V2/LanguageService/GetTranslationsArray", ReplyAction="http://api.microsofttranslator.com/V2/LanguageService/GetTranslationsArrayRespons" +
             "e")]
-        Binboo.Dict.MicrosoftTranslator.GetTranslationsResponse[] GetTranslationsArray(string appId, string[] texts, string from, string to, int maxTranslations, Binboo.Dict.MicrosoftTranslator.TranslateOptions options);
+        Binboo.Language.MicrosoftTranslator.GetTranslationsResponse[] GetTranslationsArray(string appId, string[] texts, string from, string to, int maxTranslations, Binboo.Language.MicrosoftTranslator.TranslateOptions options);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://api.microsofttranslator.com/V2/LanguageService/Speak", ReplyAction="http://api.microsofttranslator.com/V2/LanguageService/SpeakResponse")]
         string Speak(string appId, string text, string language, string format);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://api.microsofttranslator.com/V2/LanguageService/TranslateArray", ReplyAction="http://api.microsofttranslator.com/V2/LanguageService/TranslateArrayResponse")]
-        Binboo.Dict.MicrosoftTranslator.TranslateArrayResponse[] TranslateArray(string appId, string[] texts, string from, string to, Binboo.Dict.MicrosoftTranslator.TranslateOptions options);
+        Binboo.Language.MicrosoftTranslator.TranslateArrayResponse[] TranslateArray(string appId, string[] texts, string from, string to, Binboo.Language.MicrosoftTranslator.TranslateOptions options);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface LanguageServiceChannel : Binboo.Dict.MicrosoftTranslator.LanguageService, System.ServiceModel.IClientChannel {
+    public interface LanguageServiceChannel : Binboo.Language.MicrosoftTranslator.LanguageService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class LanguageServiceClient : System.ServiceModel.ClientBase<Binboo.Dict.MicrosoftTranslator.LanguageService>, Binboo.Dict.MicrosoftTranslator.LanguageService {
+    public partial class LanguageServiceClient : System.ServiceModel.ClientBase<Binboo.Language.MicrosoftTranslator.LanguageService>, Binboo.Language.MicrosoftTranslator.LanguageService {
         
         public LanguageServiceClient() {
         }
@@ -662,7 +662,7 @@ namespace Binboo.Dict.MicrosoftTranslator {
             return base.Channel.GetLanguagesForTranslate(appId);
         }
         
-        public Binboo.Dict.MicrosoftTranslator.GetTranslationsResponse GetTranslations(string appId, string text, string from, string to, int maxTranslations, Binboo.Dict.MicrosoftTranslator.TranslateOptions options) {
+        public Binboo.Language.MicrosoftTranslator.GetTranslationsResponse GetTranslations(string appId, string text, string from, string to, int maxTranslations, Binboo.Language.MicrosoftTranslator.TranslateOptions options) {
             return base.Channel.GetTranslations(appId, text, from, to, maxTranslations, options);
         }
         
@@ -670,11 +670,11 @@ namespace Binboo.Dict.MicrosoftTranslator {
             return base.Channel.Translate(appId, text, from, to, contentType, category);
         }
         
-        public void AddTranslationArray(string appId, Binboo.Dict.MicrosoftTranslator.Translation[] translations, string from, string to, Binboo.Dict.MicrosoftTranslator.TranslateOptions options) {
+        public void AddTranslationArray(string appId, Binboo.Language.MicrosoftTranslator.Translation[] translations, string from, string to, Binboo.Language.MicrosoftTranslator.TranslateOptions options) {
             base.Channel.AddTranslationArray(appId, translations, from, to, options);
         }
         
-        public Binboo.Dict.MicrosoftTranslator.GetTranslationsResponse[] GetTranslationsArray(string appId, string[] texts, string from, string to, int maxTranslations, Binboo.Dict.MicrosoftTranslator.TranslateOptions options) {
+        public Binboo.Language.MicrosoftTranslator.GetTranslationsResponse[] GetTranslationsArray(string appId, string[] texts, string from, string to, int maxTranslations, Binboo.Language.MicrosoftTranslator.TranslateOptions options) {
             return base.Channel.GetTranslationsArray(appId, texts, from, to, maxTranslations, options);
         }
         
@@ -682,7 +682,7 @@ namespace Binboo.Dict.MicrosoftTranslator {
             return base.Channel.Speak(appId, text, language, format);
         }
         
-        public Binboo.Dict.MicrosoftTranslator.TranslateArrayResponse[] TranslateArray(string appId, string[] texts, string from, string to, Binboo.Dict.MicrosoftTranslator.TranslateOptions options) {
+        public Binboo.Language.MicrosoftTranslator.TranslateArrayResponse[] TranslateArray(string appId, string[] texts, string from, string to, Binboo.Language.MicrosoftTranslator.TranslateOptions options) {
             return base.Channel.TranslateArray(appId, texts, from, to, options);
         }
     }

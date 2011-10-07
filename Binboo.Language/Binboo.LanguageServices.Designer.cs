@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Binboo.Dict {
+namespace Binboo.Language {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Binboo.Dict {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Binboo_Dict {
+    internal class Binboo_LanguageServices {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Binboo_Dict() {
+        internal Binboo_LanguageServices() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Binboo.Dict {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Binboo.Dict.Binboo.Dict", typeof(Binboo_Dict).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Binboo.Language.Binboo.LanguageServices", typeof(Binboo_LanguageServices).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
