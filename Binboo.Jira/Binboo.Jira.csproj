@@ -61,7 +61,7 @@
     <Compile Include="Commands\LabelCommand.cs" />
     <Compile Include="Commands\LabelFormatConveter.cs" />
     <Compile Include="Commands\LinkAlias.cs" />
-    <Compile Include="Commands\LinkConfiguration.cs" />
+    <Compile Include="Configuration\LinkConfiguration.cs" />
     <Compile Include="Commands\LinkIssueCommand.cs" />
     <Compile Include="Commands\ListProjectsCommand.cs" />
     <Compile Include="Commands\PairsCommand.cs" />

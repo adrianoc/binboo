@@ -19,11 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
+using Binboo.Jira.Commands;
 
-namespace Binboo.Jira.Commands
+namespace Binboo.Jira.Configuration
 {
 	[XmlRoot("link")]
 	public class LinkConfiguration
