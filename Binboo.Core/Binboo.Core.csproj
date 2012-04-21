@@ -44,7 +44,7 @@
       <HintPath>..\Libs\log4net\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SKYPE4COMLib">
-      <HintPath>..\Libs\SKYPE4COMLib.dll</HintPath>
+      <HintPath>..\Libs\Skype\SKYPE4COMLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />

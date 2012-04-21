@@ -39,7 +39,7 @@
       <HintPath>..\Libs\NUnit-2.6.0.11240\bin\framework\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="SKYPE4COMLib">
-      <HintPath>..\Libs\SKYPE4COMLib.dll</HintPath>
+      <HintPath>..\Libs\Skype\SKYPE4COMLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
