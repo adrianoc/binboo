@@ -24,8 +24,10 @@ using System;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Windows.Forms;
+using Binboo.Core;
 using Binboo.Core.Events;
 using Binboo.Core.Persistence;
+using Binboo.Jira.Configuration;
 using Microsoft.Win32;
 
 namespace Binboo
@@ -127,7 +129,18 @@ namespace Binboo
 
 	    private static ComposablePartCatalog Catalog()
         {
-            return new AggregateCatalog(new DirectoryCatalog("Plugins"), new TypeCatalog(typeof (IStorageManager)));
+			try
+			{
+				return new AggregateCatalog(new DirectoryCatalog("Plugins"), new TypeCatalog(typeof(IStorageManager)));
+			}
+			catch(Exception ex)
+			{
+				MessageBox.Show("Binboo cannot continue due to an exception during initialization: " + ex);
+				Environment.Exit(-1);
+				// Make the compiler happy
+				return null;
+			}
+
         }
         
         private readonly Core.Application _controler = Core.Application.WithPluginsFrom(Catalog());
