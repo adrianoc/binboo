@@ -4,13 +4,13 @@
 
   <configuration id="unit-test">
 	<test-plugin>
-	  <item value="42" />  
+	  <item value="42" />
 	</test-plugin>
-	
+
 	<core>
-		<storage path="%TEMP%\BinbooTest" />
+	  <storage path="%TEMP%\BinbooTest" />
 	</core>
-  
+
 	<jira>
 	  <user name="john doe" password="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAACQThqjwfwk6FoDpUwgpeBQAAAAACAAAAAAAQZgAAAAEAACAAAAA7FjA8Cub+bVdf0WMKnZhTRNe1XaHXx98EtoDj2L4NfQAAAAAOgAAAAAIAACAAAABDpaJbzdthb6rkTf7DUwhKcg1+ncorIn5U5vYx8qGBdRAAAADfRbgSYBpseGf0Z62SuhpsQAAAACommmejjWQ9oPSaex4vVluxbmO65IaZyT7auFlOx8y3JQYTPoGoHQkA2eCc8viX6pQpuQPGJDfK74/6h8Q67a8=" />
 	  <endpoint value="http://sei.la.com" />
@@ -23,22 +23,22 @@
 	  </im-user-mapping>
 
 	  <http>
-		  <link url="link.url" />
-		  <login url="login.url" />
+		<link url="link.url" />
+		<login url="login.url" />
 	  </http>
 
 	  <commands>
 		<link>
 		  <description-aliases>
-			  <alias original="associate" replacement="links to" />
-			  <alias original="Add" replacement="add=>create new" />
-			  <alias original="remove" replacement="remove=>delete" />
+			<alias original="associate" replacement="links to" />
+			<alias original="Add" replacement="add=>create new" />
+			<alias original="remove" replacement="remove=>delete" />
 		  </description-aliases>
 		</link>
 	  </commands>
 	</jira>
   </configuration>
-  
+
   <log4net>
 	<appender name="RollingFile" type="log4net.Appender.RollingFileAppender">
 	  <file value="Binboo.Tests.log" />

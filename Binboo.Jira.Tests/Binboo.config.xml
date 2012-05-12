@@ -1,53 +1,48 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <binboo>
   <active refid="unit-test" />
-
   <configuration id="unit-test">
-	
+	<test-plugin>
+	  <item value="42" />
+	</test-plugin>
 	<core>
 	  <storage path="%TEMP%\BinbooTest" />
 	</core>
-
 	<jira>
-	  <user name="john doe" password="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAACQThqjwfwk6FoDpUwgpeBQAAAAACAAAAAAAQZgAAAAEAACAAAAA7FjA8Cub+bVdf0WMKnZhTRNe1XaHXx98EtoDj2L4NfQAAAAAOgAAAAAIAACAAAABDpaJbzdthb6rkTf7DUwhKcg1+ncorIn5U5vYx8qGBdRAAAADfRbgSYBpseGf0Z62SuhpsQAAAACommmejjWQ9oPSaex4vVluxbmO65IaZyT7auFlOx8y3JQYTPoGoHQkA2eCc8viX6pQpuQPGJDfK74/6h8Q67a8=" />
+	  <user name="john doe" password="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAdiK1TvlWS0iehLWy136HdwAAAAACAAAAAAAQZgAAAAEAACAAAADaAjRSlIqCOU6x9auKxdxLQ5trJ7px8GvuqmOKC+j56AAAAAAOgAAAAAIAACAAAACyod1OMSSt+Jpqx2wpeuQDjK03UHqQ3t0ObNcTVqvWQBAAAABvCBqcTv4W90m5lf0bO86uQAAAAEqqFgu3rHLAFWRfx7eET69sq4D72U7Gj7dpcD/gLKqGrXoCI2IZtZ8jjj0Ap6BtAoNMmA/zd91Ga8Jd/W+zZPo=" />
 	  <endpoint value="http://sei.la.com" />
 	  <im-user-mapping>
-		<user skypeName="susan" jiraName="Susan Murphy" pair ="true"/>
-		<user skypeName="link" jiraName="The Lost Link" alias="the.lost.LINK"/>
-		<user skypeName="bob" jiraName="BOB"  pair="true" />
+		<user skypeName="susan" jiraName="Susan Murphy" pair="true" />
+		<user skypeName="link" jiraName="The Lost Link" alias="the.lost.LINK" />
+		<user skypeName="bob" jiraName="BOB" pair="true" />
 		<user skypeName="frank" jiraName="Frank Abagnale Jr." pair="true" />
 		<user skypeName="carl" jiraName="carl@hanratty.com" pair="true" />
 	  </im-user-mapping>
-
 	  <http>
 		<link url="link.url" />
 		<login url="login.url" />
 	  </http>
-
 	  <commands>
 		<link>
 		  <description-aliases>
 			<alias original="associate" replacement="links to" />
-			<alias original="Add" replacement="add=>create new" />
-			<alias original="remove" replacement="remove=>delete" />
+			<alias original="Add" replacement="add=&gt;create new" />
+			<alias original="remove" replacement="remove=&gt;delete" />
 		  </description-aliases>
 		</link>
 	  </commands>
 	</jira>
   </configuration>
-  
   <log4net>
 	<appender name="RollingFile" type="log4net.Appender.RollingFileAppender">
 	  <file value="Binboo.Tests.log" />
 	  <appendToFile value="true" />
 	  <maximumFileSize value="10000MB" />
 	  <maxSizeRollBackups value="4" />
-
 	  <layout type="log4net.Layout.PatternLayout">
 		<conversionPattern value="%date [%thread] %-5level %logger %ndc - %message%newline" />
 	  </layout>
 	</appender>
-
 	<root>
 	  <level value="ALL" />
 	  <appender-ref ref="RollingFile" />
