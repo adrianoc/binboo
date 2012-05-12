@@ -63,19 +63,18 @@ namespace Binboo.Core
 			catch(ReflectionTypeLoadException rtle)
 			{
 				GetLogger().ErrorFormat("Could not start application, exiting. Error: {0}", rtle.LoaderExceptions);
+				throw;
 			}
 			catch(Exception ex)
 			{
 				GetLogger().ErrorFormat("Could not start application, exiting. Error: {0}", ex);
+				throw;
 			}
-			
-			Environment.Exit(-101);
-        	throw new Exception("Never reach this point.");
         }
 
         public void Dispose()
         {
-			//TODO: Notify plugins that we ate going to unload.
+			//TODO: Notify plugins that we are going to unload.
 			//BUG: Dispose() is not being invoked anymore....
             var storageManager = StorageManager;
             if (storageManager != null)
