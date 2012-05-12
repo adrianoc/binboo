@@ -19,6 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
+using Binboo.Core.Commands.Arguments;
 using NUnit.Framework;
 
 namespace Binboo.Core.Tests.Tests.Commands
@@ -69,6 +71,17 @@ namespace Binboo.Core.Tests.Tests.Commands
 		public void TestMultiplePipesComplex()
 		{
 			AssertPiping("$test CMD1 s1 | CMD2 m1, m2 | CMD3", (msgs, rec) => AreEqual(rec.ArgumentsFor("CMD2"), "s1", "m1", "m2") && AreEqual(rec.ArgumentsFor("CMD3"), "s1", "m1", "m2"));
+		}
+
+		[Test]
+		public void TestExplicitSArgumentExpansionSeparators()
+		{
+			AssertPiping(	"$test CMD1 s1 s2 | CMD_SINGLE_ARG PARAM_%[/ ]%",
+							(msgs, rec) => AreEqual(rec.ArgumentsFor("CMD_SINGLE_ARG"), "PARAM_s1/ s2"),
+							s1 => ParamValidator.Custom("s1", true),
+							s2 => ParamValidator.Custom("s2", true),
+							multiple => ParamValidator.Custom("PARAM_.*", true)
+							);
 		}
 	}
 }

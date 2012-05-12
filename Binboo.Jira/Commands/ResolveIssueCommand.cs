@@ -40,6 +40,14 @@ namespace Binboo.Jira.Commands
 			get { return "Resolve"; }
 		}
 
+		/**
+		 * args: issue resolution (fixed, wont fix, etc) versions=[+]v1,[+]v2,...,vn "comment"
+		 * 
+		 * if version is informed but does not exist yet:
+		 *		+ present    : force adding the version in case it doesn't exist
+		 *		+ NOT present: error if version does not exist
+		 * 
+		 */ 
 		protected override ICommandResult ProcessCommand(IContext context)
 		{
 			IDictionary<string, Argument> arguments = CollectAndValidateArguments(context);

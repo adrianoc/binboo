@@ -44,31 +44,67 @@ namespace Binboo.Core.Commands
 			get { return string.Join(", ", _pipeValue); }
 		}
 
-		public T PipeThrough<T>(string originalArgs, Func<string, T> func)
+		public T PipeThrough<T>(string originalArgs, Func<string, T> func) where T: class
 		{
-			var toBeReplaced = ArgumentIndexRegexp.Matches(originalArgs);
-			if (toBeReplaced.Count > 0)
-			{
-				return PipeThroughIndexed(originalArgs, toBeReplaced, func);
-			}
+			return TryPipeThroughIndexed(originalArgs, func)
+			       ?? PipeAll(originalArgs, func);
 
-			var pipeValue = PipeValue;
-			return func(string.IsNullOrEmpty(pipeValue) ? originalArgs : pipeValue + " " + originalArgs);
+
 		}
 
-		private T PipeThroughIndexed<T>(string originalArgs, MatchCollection toBeReplaced, Func<string, T> func)
+    	private T PipeAll<T>(string originalArgs, Func<string, T> func)
+    	{
+			var pipeValue = PipeValue;
+			return func(string.IsNullOrEmpty(pipeValue) ? originalArgs : pipeValue + " " + originalArgs);
+    	}
+
+    	private T TryPipeThroughIndexed<T>(string originalArgs, Func<string, T> func)
+    	{
+    		var toBeReplaced = ArgumentIndexRegexp.Matches(originalArgs);
+    		return toBeReplaced.Count > 0 
+						? PipeThroughIndexed(originalArgs, toBeReplaced, func) 
+						: default(T);
+    	}
+
+    	private T PipeThroughIndexed<T>(string originalArgs, MatchCollection toBeReplaced, Func<string, T> func)
 		{
-			var piped = new StringBuilder(originalArgs);
+			var pipeThroug = new StringBuilder(originalArgs);
 				
 			int amountOfseted = 0;
 			foreach (Match tbr in toBeReplaced)
 			{
-				string newValue = PipedValueFor(tbr.Groups["index"].Value);
-				piped.Replace(tbr.Value, newValue, tbr.Index + amountOfseted, tbr.Length);
-				amountOfseted += newValue.Length - tbr.Value.Length;
+				amountOfseted += TryPipeExplicityIndexedArg(amountOfseted, tbr, pipeThroug);
+				amountOfseted += TryPipeExplicityArgExpansion(amountOfseted, tbr, pipeThroug);
 			}
 
-			return func(piped.ToString());
+			return func(pipeThroug.ToString());
+		}
+
+    	private int TryPipeExplicityArgExpansion(int amountOfseted, Match tbr, StringBuilder pipeThroug)
+    	{
+    		var group = tbr.Groups["expand"];
+			if (!group.Success) return 0;
+
+    		var expanded = string.Join(@group.Value, _pipeValue);
+			return ReplaceArg(amountOfseted, tbr, pipeThroug, expanded);
+    	}
+
+    	private int TryPipeExplicityIndexedArg(int amountOfseted, Match tbr, StringBuilder pipeThroug)
+    	{
+    		var group = tbr.Groups["index"];
+			if (!group.Success) return 0;
+
+    		string newValue = PipedValueFor(@group.Value);
+			return ReplaceArg(amountOfseted, tbr, pipeThroug, newValue);
+
+    		pipeThroug.Replace(tbr.Value, newValue, tbr.Index + amountOfseted, tbr.Length);
+    		return newValue.Length - tbr.Value.Length;
+    	}
+
+		private static int ReplaceArg(int amountOfseted, Match tbr, StringBuilder pipeThroug, string expanded)
+		{
+			pipeThroug.Replace(tbr.Value, expanded, tbr.Index + amountOfseted, tbr.Length);
+			return expanded.Length - tbr.Value.Length;
 		}
 
 		private string PipedValueFor(string index)
@@ -113,7 +149,7 @@ namespace Binboo.Core.Commands
 			return string.Format("{0} [{1}, '{2}', '{3}']", GetType().Name, Status, HumanReadable, PipeValue);
 		}
 
-		private static readonly Regex ArgumentIndexRegexp = new Regex("%(?<index>[0-9]+)%");
+		private static readonly Regex ArgumentIndexRegexp = new Regex(@"%(?<index>[0-9]+)%|%\[(?<expand>[^\]]+)\]%");
 		private readonly string _humanReadable;
 		private readonly string[] _pipeValue;
 	}

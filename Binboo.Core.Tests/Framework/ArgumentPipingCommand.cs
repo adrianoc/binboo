@@ -37,7 +37,7 @@ namespace Binboo.Core.Tests.Framework
         {
             this.commandName = commandName;
             this.recorder = recorder;
-            this.validatorExpressions = validatorExpressions;
+            this.validatorExpressions = (validatorExpressions != null && validatorExpressions.Length > 0) ? validatorExpressions : null;
         }
 
         public override string Id

@@ -19,6 +19,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  **/
+
+using Binboo.Core;
 using Binboo.Core.Configuration;
 using Binboo.Jira.Configuration;
 using Binboo.Jira.Plugin;

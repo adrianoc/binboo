@@ -22,6 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using Binboo.Core.Commands.Arguments;
 using Binboo.Core.Tests.Framework;
 using Binboo.Core.Tests.Tests.Support;
 using NUnit.Framework;
@@ -30,9 +32,9 @@ namespace Binboo.Core.Tests.Tests.Commands
 {
 	partial class CommandPipingTestCase : ArgumentCollectingTestCaseBase
 	{
-		private void AssertPiping(string commandLine, Func<string, ArgumentRecorder, bool> argumentChecker)
+		private void AssertPiping(string commandLine, Func<string, ArgumentRecorder, bool> argumentChecker, params Expression<Func<int, ParamValidator>> []validators)
 		{
-		    SendCommandAndCollectResult(commandLine, null, argumentChecker);
+		    SendCommandAndCollectResult(commandLine, validators, argumentChecker);
 		}
 
 		private static bool AreEqual(IEnumerable<string> lhs, params string[] rhs)
