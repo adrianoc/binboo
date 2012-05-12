@@ -51,54 +51,46 @@ namespace Binboo
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.ContextMenuStrip binbooNotifyPopUp;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BinbooMainForm));
-			this.popupJiraAccount = new System.Windows.Forms.ToolStripMenuItem();
-			this.popupShowConsole = new System.Windows.Forms.ToolStripMenuItem();
+			this.binbooNotifyPopUp = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.popupOptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.popupExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.binbooNotify = new System.Windows.Forms.NotifyIcon(this.components);
 			this.txtConsole = new System.Windows.Forms.TextBox();
-			binbooNotifyPopUp = new System.Windows.Forms.ContextMenuStrip(this.components);
-			binbooNotifyPopUp.SuspendLayout();
+			this.binbooNotifyPopUp.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// binbooNotifyPopUp
 			// 
-			binbooNotifyPopUp.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.popupJiraAccount,
-            this.popupShowConsole,
+			this.binbooNotifyPopUp.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.popupOptions,
             this.toolStripMenuItem1,
             this.popupExit});
-			binbooNotifyPopUp.Name = "vagabotNotifyPopUp";
-			binbooNotifyPopUp.Size = new System.Drawing.Size(223, 98);
+			this.binbooNotifyPopUp.Name = "vagabotNotifyPopUp";
+			this.binbooNotifyPopUp.Size = new System.Drawing.Size(153, 76);
 			// 
-			// popupJiraAccount
+			// popupOptions
 			// 
-			this.popupJiraAccount.Name = "popupJiraAccount";
-			this.popupJiraAccount.Size = new System.Drawing.Size(222, 22);
-			this.popupJiraAccount.Text = "Set Jira account information";
-			// 
-			// popupShowConsole
-			// 
-			this.popupShowConsole.Name = "popupShowConsole";
-			this.popupShowConsole.Size = new System.Drawing.Size(222, 22);
-			this.popupShowConsole.Text = "Show Console";
+			this.popupOptions.Name = "popupOptions";
+			this.popupOptions.Size = new System.Drawing.Size(152, 22);
+			this.popupOptions.Text = "Options...";
+			this.popupOptions.Click += new System.EventHandler(this.popupOptions_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(219, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// popupExit
 			// 
 			this.popupExit.Name = "popupExit";
-			this.popupExit.Size = new System.Drawing.Size(222, 22);
-			this.popupExit.Text = "Exiit";
+			this.popupExit.Size = new System.Drawing.Size(152, 22);
+			this.popupExit.Text = "Exit";
 			// 
 			// binbooNotify
 			// 
-			this.binbooNotify.ContextMenuStrip = binbooNotifyPopUp;
+			this.binbooNotify.ContextMenuStrip = this.binbooNotifyPopUp;
 			this.binbooNotify.Icon = ((System.Drawing.Icon)(resources.GetObject("binbooNotify.Icon")));
 			this.binbooNotify.Text = "Binboo";
 			this.binbooNotify.Visible = true;
@@ -126,7 +118,7 @@ namespace Binboo
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "BinbooMainForm";
 			this.Text = "Binboo Console";
-			binbooNotifyPopUp.ResumeLayout(false);
+			this.binbooNotifyPopUp.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -135,11 +127,11 @@ namespace Binboo
 		#endregion
 
 		private System.Windows.Forms.NotifyIcon binbooNotify;
-		private System.Windows.Forms.ToolStripMenuItem popupJiraAccount;
 		private System.Windows.Forms.ToolStripMenuItem popupExit;
-		private System.Windows.Forms.ToolStripMenuItem popupShowConsole;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
 		private System.Windows.Forms.TextBox txtConsole;
+		private System.Windows.Forms.ContextMenuStrip binbooNotifyPopUp;
+		private System.Windows.Forms.ToolStripMenuItem popupOptions;
 	}
 }
 

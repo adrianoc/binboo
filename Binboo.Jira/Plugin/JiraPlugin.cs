@@ -20,21 +20,23 @@
  * THE SOFTWARE.
  **/
 using System.ComponentModel.Composition;
-
+using System.Windows.Forms;
+using Binboo.Core;
 using Binboo.Core.Commands;
 using Binboo.Core.Persistence;
 using Binboo.Core.Plugins;
-
 using Binboo.Jira.Commands;
 using Binboo.Jira.Configuration;
 using Binboo.Jira.Integration;
 using Binboo.Jira.Integration.JiraHttp;
+using Binboo.UI.Configuration;
+using ConfigurationDialog;
 using TCL.Net.Net;
 
 namespace Binboo.Jira.Plugin
 {
     [Export(typeof(IPlugin))]
-    class JiraPlugin : AbstractBasePlugin
+	class JiraPlugin : AbstractBasePlugin, IPluginConfigurationPageProvider
     {
         override public string Name
         {
@@ -87,7 +89,21 @@ namespace Binboo.Jira.Plugin
             return _jira;
         }
 
-        private JiraProxy _jira;
+		public TabPage ConfigurationPage
+		{
+			get
+			{
+				return _configurationPage ?? (_configurationPage = new JiraConfigurationPage());
+			}
+		}
+
+		public void Accept()
+		{
+			JiraConfig.Instance.User = new User(_configurationPage.UserName, _configurationPage.Password);
+		}
+
+    	private JiraConfigurationPage _configurationPage;
+		private JiraProxy _jira;
     	private const string PluginName = "jira";
-	}
+    }
 }

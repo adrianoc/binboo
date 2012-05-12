@@ -42,8 +42,11 @@
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +75,12 @@
     <Compile Include="Commands\TaskDropperCommand.cs" />
     <Compile Include="Configuration\HttpInterfaceConfiguration.cs" />
     <Compile Include="Configuration\IHttpInterfaceConfiguration.cs" />
+    <Compile Include="Configuration\UI\JiraConfigurationPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Configuration\UI\JiraConfigurationPage.Designer.cs">
+      <DependentUpon>JiraConfigurationPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Integration\CustomFieldId.cs" />
     <Compile Include="Integration\ExpirationStrategy.cs" />
     <Compile Include="Integration\ExtensionsHelper.cs" />
@@ -97,6 +106,10 @@
       <Project>{89B1E578-05FB-4C7A-A561-284F266097A6}</Project>
       <Name>Binboo.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Binboo.UI\Binboo.UI.csproj">
+      <Project>{1E5162A6-339E-4D3A-8049-FE471AF476EE}</Project>
+      <Name>Binboo.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TCL.Net\TCL.Net.csproj">
       <Project>{E468BBD6-A194-455F-A157-E22CF2726B1C}</Project>
       <Name>TCL.Net</Name>
@@ -113,6 +126,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Binboo.Jira.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Configuration\UI\JiraConfigurationPage.resx">
+      <DependentUpon>JiraConfigurationPage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -21,13 +21,16 @@
  **/
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Windows.Forms;
-using Binboo.Core;
 using Binboo.Core.Events;
 using Binboo.Core.Persistence;
-using Binboo.Jira.Configuration;
+using Binboo.Core.UI;
+using Binboo.UI.Configuration;
+using TCL.Net.UI.Configuration;
+
 using Microsoft.Win32;
 
 namespace Binboo
@@ -38,7 +41,7 @@ namespace Binboo
     //          - Failure to resolve imports
     //          - Exceptions in general
     //TODO: How to avoid configuration duplication ?
-    public partial class BinbooMainForm : Form
+    public partial class BinbooMainForm : Form, IMenuContainer
 	{
 		public BinbooMainForm()
 		{
@@ -77,7 +80,6 @@ namespace Binboo
 			ShowInTaskbar = false;
 
 			popupExit.Click += delegate { Close(); };
-			popupJiraAccount.Click += SetJiraAccount;
 
 			_controler.Quit += Quit;
 			_controler.Error += Error;
@@ -115,18 +117,6 @@ namespace Binboo
 			                                  	};
 		}
 
-		private void SetJiraAccount(object sender, EventArgs e)
-		{
-			using (var f = new ConfigForm())
-			{
-				if (f.ShowDialog(this) == DialogResult.OK)
-				{
-					//TODO: How to handle this in a better way?
-					//CoreConfig.User = new User(f.User, f.Password);	
-				}
-			}
-		}
-
 	    private static ComposablePartCatalog Catalog()
         {
 			try
@@ -142,7 +132,37 @@ namespace Binboo
 			}
 
         }
-        
-        private readonly Core.Application _controler = Core.Application.WithPluginsFrom(Catalog());
+
+		public void Add(string desc, Action action)
+		{
+			binbooNotifyPopUp.Items.Add(desc).Click += delegate { action(); };
+		}
+
+		private void popupOptions_Click(object sender, EventArgs e)
+		{
+			using(var cfg = new ConfigurationDialog())
+			{
+				IList<IPluginConfigurationPageProvider> configProviders = new List<IPluginConfigurationPageProvider>();
+				foreach (var plugin in _controler.Plugins)
+				{
+					var configPageProvider = plugin as IPluginConfigurationPageProvider;
+					if (configPageProvider != null)
+					{
+						cfg.AddPages(configPageProvider.ConfigurationPage);
+						configProviders.Add(configPageProvider);
+					}
+				}
+
+				if (cfg.ShowDialog() == DialogResult.OK)
+				{
+					foreach (var configProvider in configProviders)
+					{
+						configProvider.Accept();
+					}
+				}
+			}
+		}
+
+		private readonly Core.Application _controler = Core.Application.WithPluginsFrom(Catalog());
 	}
 }

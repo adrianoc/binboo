@@ -11,7 +11,7 @@ namespace Binboo.Jira.Configuration
 		IEnumerable<string> PairingUsers { get; }
 		string EndPoint { get; }
 		string Server { get; }
-		User User { get; }
+		User User { get; set; }
 		TextReader CommandConfigurationFor(string commandName);
 		IHttpInterfaceConfiguration HttpInterfaceConfiguration { get; }
 	}

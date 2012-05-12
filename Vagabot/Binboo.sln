@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Language", "..\Binbo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Language.Tests", "..\Binboo.Language.Tests\Binboo.Language.Tests.csproj", "{A19458F7-F499-4BCD-82AB-1D713BB464C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.UI", "..\Binboo.UI\Binboo.UI.csproj", "{1E5162A6-339E-4D3A-8049-FE471AF476EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{A19458F7-F499-4BCD-82AB-1D713BB464C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A19458F7-F499-4BCD-82AB-1D713BB464C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A19458F7-F499-4BCD-82AB-1D713BB464C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E5162A6-339E-4D3A-8049-FE471AF476EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E5162A6-339E-4D3A-8049-FE471AF476EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E5162A6-339E-4D3A-8049-FE471AF476EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E5162A6-339E-4D3A-8049-FE471AF476EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
