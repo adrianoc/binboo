@@ -85,7 +85,7 @@
     <Compile Include="CustomFilters\PredicateServices.cs" />
     <Compile Include="Events\ErrorEventArgs.cs" />
     <Compile Include="Exceptions\InvalidCommandArgumentsException.cs" />
-    <Compile Include="Exceptions\MessageExtensions.cs" />
+    <Compile Include="Util\MessageExtensions.cs" />
     <Compile Include="Framework\IUser.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\IPluginManager.cs" />
