@@ -59,6 +59,12 @@ namespace Binboo.Core.CustomFilters
 
 		public void Dispose()
 		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool disposing)
+		{
 			if (_domain != null)
 			{
 				AppDomain.Unload(_domain);
