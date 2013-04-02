@@ -9,7 +9,7 @@
 	  <storage path="%TEMP%\BinbooTest" />
 	</core>
 	<jira>
-	  <user name="john doe" password="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAdiK1TvlWS0iehLWy136HdwAAAAACAAAAAAAQZgAAAAEAACAAAADaAjRSlIqCOU6x9auKxdxLQ5trJ7px8GvuqmOKC+j56AAAAAAOgAAAAAIAACAAAACyod1OMSSt+Jpqx2wpeuQDjK03UHqQ3t0ObNcTVqvWQBAAAABvCBqcTv4W90m5lf0bO86uQAAAAEqqFgu3rHLAFWRfx7eET69sq4D72U7Gj7dpcD/gLKqGrXoCI2IZtZ8jjj0Ap6BtAoNMmA/zd91Ga8Jd/W+zZPo=" />
+	  <user name="john doe" password="AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA3nFMy9GxCEC0zDyzJP8m1QAAAAACAAAAAAAQZgAAAAEAACAAAABQX1Tfs0N4X1LOvLUGlh1M6Hs3LuAXFfD9d+o8ODQAowAAAAAOgAAAAAIAACAAAADMSH92Sh9uKp488Mc5ffwmbXz/ydwyBUe1U1BHybDeBRAAAAATPlA52eXrVgUB9aMgh1KSQAAAAP4O/gsSIjVqfA1s0d25GDAr74SOTJDcwpBWe8dGe7VLK2vyLj7nLqHHWjOPKe+A0tZGxYAHHz8Di4msAP0aaqA=" />
 	  <endpoint value="http://sei.la.com" />
 	  <im-user-mapping>
 		<user skypeName="susan" jiraName="Susan Murphy" pair="true" />

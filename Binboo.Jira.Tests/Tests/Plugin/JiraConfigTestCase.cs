@@ -20,10 +20,8 @@
  * THE SOFTWARE.
  **/
 
-using Binboo.Core;
 using Binboo.Core.Configuration;
 using Binboo.Jira.Configuration;
-using Binboo.Jira.Plugin;
 using NUnit.Framework;
 
 namespace Binboo.Jira.Tests.Tests.Plugin
@@ -78,6 +76,8 @@ namespace Binboo.Jira.Tests.Tests.Plugin
 		[Test]
 		public void TestUser()
 		{
+			//TODO: Fix password is machine dependent. Fix: generate a "binboo.config.xml" and set the
+			//      password accordingly
 			Assert.That(_jiraConfig.User.Name, Is.EqualTo("john doe"));
 			Assert.That(_jiraConfig.User.Password, Is.EqualTo("who"));
 		}
