@@ -1,8 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo", "Binboo.csproj", "{E154BA05-1592-44A6-9135-6A47C94DD5F8}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCL.Net", "..\TCL.Net\TCL.Net.csproj", "{E468BBD6-A194-455F-A157-E22CF2726B1C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TCL.Net.Tests", "..\TCL.Net\TCL.Net.Tests\TCL.Net.Tests.csproj", "{2F44BA8F-11BE-40AB-A913-7489952D3294}"
@@ -23,16 +21,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Language.Tests", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.UI", "..\Binboo.UI\Binboo.UI.csproj", "{1E5162A6-339E-4D3A-8049-FE471AF476EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Binboo.Main", "Binboo.Main.csproj", "{E154BA05-1592-44A6-9135-6A47C94DD5F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E468BBD6-A194-455F-A157-E22CF2726B1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E468BBD6-A194-455F-A157-E22CF2726B1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E468BBD6-A194-455F-A157-E22CF2726B1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -73,6 +69,10 @@ Global
 		{1E5162A6-339E-4D3A-8049-FE471AF476EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E5162A6-339E-4D3A-8049-FE471AF476EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E5162A6-339E-4D3A-8049-FE471AF476EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E154BA05-1592-44A6-9135-6A47C94DD5F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
